@@ -4,21 +4,26 @@ import domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ProductTest {
-    private Product product;
+    private Product p1;
+    private Product p2;
+
     @BeforeEach
     void setUp() {
-        // Initialize the product with some sample data
-        product = new Product("Example Product", 12345, 1, "Producer", 100, 50, 50, 10.0, 0.1, 15, 5);
+        p1 = new Product("milk 3% 500ml", 123, 1, "Tnuva", 50, 50, 6.5, 3, 20);
+        p2 = new Product("milk 3% 500ml", 456, 1, "Tara", 5, 5, 7.5, 3, 20);
     }
 
     @Test
-    void testGetName() {
-        //assertEquals("Example Product", product.getName());
+    void testIsUnderMinAmount() {
+        assertFalse(p1.isUnderMinAmount());
+        assertTrue(p2.isUnderMinAmount());
     }
-
     @Test
-    void testGetTotalAmount() {
-        //assertEquals(100, product.getTotalAmount());
+    void testSetAmount() {
+        p1.setStoreAmount(60);
+        assertEquals(p1.getTotalAmount(), 110);
     }
 }

@@ -11,8 +11,6 @@ public class Product {
     private int totalAmount;
     private int storeAmount;
     private int storageAmount;
-    private double buyingPrice;
-    private double buyingDiscount;
     private  double sellingPrice;
     private int deliveryDays;
     private int minimumAmount;
@@ -21,16 +19,13 @@ public class Product {
     private List<Item> items;
 
     // new product without items
-    public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount,
-                   double buyingPrice, double buyingDiscount, double sellingPrice, int deliveryDays, int minimumAmount) {
+    public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount) {
         this.name = name;
         this.MKT = MKT;
         this.aisle = aisle;
         this.producerName = producerName;
         this.storeAmount = storeAmount;
         this.storageAmount = storageAmount;
-        this.buyingPrice = buyingPrice;
-        this.buyingDiscount = buyingDiscount;
         this.sellingPrice = sellingPrice;
         this.deliveryDays = deliveryDays;
         this.minimumAmount = minimumAmount;
@@ -40,12 +35,9 @@ public class Product {
     }
 
     // new product + it's items list
-    public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount,
-                   double buyingPrice, double buyingDiscount, double sellingPrice, int deliveryDays, int minimumAmount, List<Item> items) {
-        this(name, MKT, aisle, producerName, storeAmount, storageAmount,
-                buyingPrice, buyingDiscount, sellingPrice, deliveryDays, minimumAmount);
+    public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount, List<Item> items) {
+        this(name, MKT, aisle, producerName, storeAmount, storageAmount, sellingPrice, deliveryDays, minimumAmount);
         this.items = items;
-
     }
 
     public void addItemToStore(Item item) {
@@ -64,6 +56,7 @@ public class Product {
         items.remove(item);
         storeAmount--;
         totalAmount--;
+        checkMinAmountAlert(); // alert if needed
     }
 
     public void addItemFromStorage(Item item) {
@@ -72,10 +65,19 @@ public class Product {
         totalAmount--;
     }
 
+    public boolean isUnderMinAmount(){
+        return (this.totalAmount <= this.minimumAmount);
+    }
+
+    public void checkMinAmountAlert(){
+        if (isUnderMinAmount())
+            System.out.println("\n-----INVENTORY ALERT!-----\n" + this.toString() + "\nis almost out of stock!");
+    }
 
 
 
-    // Getters and setters
+
+
     public String getName() {
         return name;
     }
@@ -112,17 +114,19 @@ public class Product {
         return totalAmount;
     }
 
-    public void setTotalAmount(int totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
     public int getStoreAmount() {
         return storeAmount;
     }
 
     public void setStoreAmount(int storeAmount) {
-        this.storeAmount = storeAmount;
-        this.totalAmount = this.storageAmount + this.storeAmount;
+        if (storeAmount >= 0){
+            this.storeAmount = storeAmount;
+            this.totalAmount = this.storageAmount + this.storeAmount;
+            checkMinAmountAlert();
+        }
+        else{
+            System.out.println("invalid new amount");
+        }
     }
 
     public int getStorageAmount() {
@@ -130,24 +134,14 @@ public class Product {
     }
 
     public void setStorageAmount(int storageAmount) {
-        this.storageAmount = storageAmount;
-        this.totalAmount = this.storageAmount + this.storeAmount;
-    }
-
-    public double getBuyingPrice() {
-        return buyingPrice;
-    }
-
-    public void setBuyingPrice(double buyingPrice) {
-        this.buyingPrice = buyingPrice;
-    }
-
-    public double getBuyingDiscount() {
-        return buyingDiscount;
-    }
-
-    public void setBuyingDiscount(double buyingDiscount) {
-        this.buyingDiscount = buyingDiscount;
+        if (storageAmount >= 0){
+            this.storageAmount = storageAmount;
+            this.totalAmount = this.storageAmount + this.storeAmount;
+            checkMinAmountAlert();
+        }
+        else{
+            System.out.println("invalid new amount");
+        }
     }
 
     public double getSellingPrice() {
@@ -155,7 +149,12 @@ public class Product {
     }
 
     public void setSellingPrice(double sellingPrice) {
-        this.sellingPrice = sellingPrice;
+        if (sellingPrice > 0){
+            this.sellingPrice = sellingPrice;
+        }
+        else {
+            System.out.println("Invalid Price");
+        }
     }
 
     public int getDeliveryDays() {
@@ -182,4 +181,11 @@ public class Product {
         this.items = items;
     }
 
+    @Override
+    public String toString() {
+        return "Product Name: " + name + '\n' +
+                "MKT: " + MKT + '\n' +
+                "Producer Name: " + producerName + '\n' +
+                "Total Amount: " + totalAmount;
+    }
 }
