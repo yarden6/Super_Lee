@@ -51,7 +51,7 @@ public class CategoryTest {
     }
 
     @Test
-    void testIs() {
+    void testIsLeafCategory() {
         assertTrue(subSubCategory.isLeafCategory());
         assertFalse(subCategory1.isLeafCategory());
         assertTrue(mainCategory2.isLeafCategory());
