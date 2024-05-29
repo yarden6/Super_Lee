@@ -1,11 +1,14 @@
 package domain;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
 
 public class CategoryFacade {
-    private Dictionary<String,Category> categories;
+    private Hashtable<String,Category> categories;
 
-    public Dictionary<String, Category> getCategories() {
+    public Hashtable<String, Category> getCategories() {
         return categories;
     }
+
+
 }

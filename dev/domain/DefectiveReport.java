@@ -11,6 +11,13 @@ public class DefectiveReport extends Report {
 
     }
     public void createReport(List<Product> products){
-        //TODO
+        System.out.println("Defected products:");
+        for (Product p:products) {
+            p.toString();
+            System.out.println("___________________________________________");
+            products.remove(p); //once I showed the defected products no need to show it again todo
+        }
     }
+
+
 }

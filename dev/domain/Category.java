@@ -122,4 +122,8 @@ public class Category {
     public void setDiscountDate(Date discountDate) {
         this.discountDate = discountDate;
     }
+
+    public String toString(){
+        return "Category Name: " + name + '\n';
+    }
 }

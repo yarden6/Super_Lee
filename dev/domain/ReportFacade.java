@@ -1,15 +1,14 @@
 package domain;
 
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.concurrent.RecursiveTask;
 
 public class ReportFacade {
     private CategoryFacade categoryFacade;
-    private Dictionary<Integer, Report> inventoryReports;
-    private Dictionary<Integer, Report> defectiveReports;
+    private Hashtable<Integer, Report> inventoryReports;
+    private Hashtable<Integer, Report> defectiveReports;
     private int reportCounter;
 
     public ReportFacade(CategoryFacade cf){
@@ -19,16 +18,26 @@ public class ReportFacade {
         reportCounter = 1;
     }
 
-    public void makeInventoryReport(){
-        Report r = new InventoryReportByCategory(reportCounter,categoryFacade.getCategories());
+    public void makeInventoryReport(List<String> selectedCategories){
+        Report r = new InventoryReportByCategory(reportCounter,categoryFacade.getCategories(),selectedCategories);
         inventoryReports.put(reportCounter,r);
 
     }
 
     public void makeDefectiveReport(){
-        Report r = new DefectiveReport(reportCounter,categoryFacade.getCategories().get("defective").getProducts());
+        Report r = new DefectiveReport(reportCounter,categoryFacade.getCategories().get("Defective").getProducts());
         defectiveReports.put(reportCounter,r);
     }
+
+    public void publishReportWeekly(){
+        LocalDate current = LocalDate.now();
+        if (current.getDayOfWeek() == DayOfWeek.SUNDAY){
+            makeInventoryReport(new ArrayList<>());
+            makeDefectiveReport();
+
+        }
+    }
+
 
 
 }

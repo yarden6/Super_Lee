@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class Report {
@@ -10,5 +11,14 @@ public class Report {
         this.reportId = reportId;
         this.created = LocalDate.now() ;
     }
+
+    public int getReportId() {
+        return reportId;
+    }
+
+    public LocalDate getCreated() {
+        return created;
+    }
+
 
 }
