@@ -1,8 +1,14 @@
 package domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Report {
-    private int ReportId;
-    private Date created;
+    private int reportId;
+    private LocalDate created;
+
+    public Report(int reportId){
+        this.reportId = reportId;
+        this.created = LocalDate.now() ;
+    }
+
 }
