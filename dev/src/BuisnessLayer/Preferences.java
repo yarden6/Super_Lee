@@ -3,11 +3,14 @@ package BuisnessLayer;
 import java.util.Date;
 
 public class Preferences {
-
-
     boolean[][] shifts;
     Date start;
-    Date end;
+
+    public Preferences(boolean[][] shifts, Date start) {
+        //TODO (check if the array of boolean is the right size)
+        this.start = start;
+        this.shifts = shifts;
+    }
 
     public Date getStart() {
         return start;
@@ -15,14 +18,6 @@ public class Preferences {
 
     public void setStart(Date start) {
         this.start = start;
-    }
-
-    public Date getEnd() {
-        return end;
-    }
-
-    public void setEnd(Date end) {
-        this.end = end;
     }
 
     public boolean[][] getShifts() {

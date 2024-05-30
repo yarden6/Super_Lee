@@ -16,10 +16,12 @@ public class HRManager extends Employee{
 
 
     //Methodes
-    public void hire( ShiftEmployee e)
+    public ShiftEmployee hire(String employeeName, int employeeID, String branch, String bankAccount, boolean isFull)
     {
-        allEmployees.add(e);
-
+        //TODO (HR manager complete all new employee data and create new instance of shift employee
+        //      add the employee to the list)
+        //        allEmployees.add(e);
+        return null;
     }
     public void fire(ShiftEmployee e){
         allEmployees.remove(e);
@@ -29,8 +31,56 @@ public class HRManager extends Employee{
         }
     }
 
+    public void addRoleToEmployee(int employeeID, Role role){
+        ShiftEmployee employee = null;
+        for (ShiftEmployee e : allEmployees){
+            if (e.getEmployeeID()== employeeID){
+                employee = e;
+            }
+        }
+        if (employee != null){
+            employee.addRole(role);
+        }
+        else {
+            //TODO (throw e)
+        }
+    }
 
+    public void changeRoleToEmployee(int employeeID, Role oldRole, Role newRole){
+        ShiftEmployee employee = null;
+        for (ShiftEmployee e : allEmployees){
+            if (e.getEmployeeID()== employeeID){
+                employee = e;
+            }
+        }
+        if (employee != null){
+            employee.changeRole(oldRole, newRole);
+        }
+        else {
+            //TODO (throw e)
+        }
+    }
 
+    public void deleteRoleFromEmployee(int employeeID, Role role){
+        ShiftEmployee employee = null;
+        for (ShiftEmployee e : allEmployees){
+            if (e.getEmployeeID()== employeeID){
+                employee = e;
+            }
+        }
+        if (employee != null){
+            employee.removeRole(role);
+        }
+        else {
+            //TODO (throw e)
+        }
+    }
+
+    public Shift createShift(){
+        //TODO create new instance of shift from all employees preferences and add it to the shift map
+        //Shift s = new Shift(allEmployees, THIS DATE)
+        return new Shift();
+    }
     // getters and setters
     public ArrayList<ShiftEmployee> getAllEmployees() {
         return allEmployees;
