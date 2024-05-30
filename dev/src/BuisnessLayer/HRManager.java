@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class HRManager extends Employee{
     //variables
-    private ArrayList<ShiftEmployee> allEmployees;
+    private Map<Integer,ShiftEmployee> allEmployees;
     private Map<Date,Shift[]> schedule;
     private Map<Integer,ArrayList<Preferences>> historyPref;
 
@@ -23,21 +23,16 @@ public class HRManager extends Employee{
         //        allEmployees.add(e);
         return null;
     }
-    public void fire(ShiftEmployee e){
-        allEmployees.remove(e);
+    public void fire(int id){
+        allEmployees.remove(id);
         for (Shift [] s : schedule.values()){
-            if(s[0].contain(e.getEmployeeID()))
-                s[0].remove(e.getEmployeeID());
+            if(s[0].contain(id))
+                s[0].remove(id);
         }
     }
 
     public void addRoleToEmployee(int employeeID, Role role){
-        ShiftEmployee employee = null;
-        for (ShiftEmployee e : allEmployees){
-            if (e.getEmployeeID()== employeeID){
-                employee = e;
-            }
-        }
+        ShiftEmployee employee = allEmployees.get(employeeID);
         if (employee != null){
             employee.addRole(role);
         }
@@ -47,12 +42,7 @@ public class HRManager extends Employee{
     }
 
     public void changeRoleToEmployee(int employeeID, Role oldRole, Role newRole){
-        ShiftEmployee employee = null;
-        for (ShiftEmployee e : allEmployees){
-            if (e.getEmployeeID()== employeeID){
-                employee = e;
-            }
-        }
+        ShiftEmployee employee = allEmployees.get(employeeID);
         if (employee != null){
             employee.changeRole(oldRole, newRole);
         }
@@ -62,12 +52,7 @@ public class HRManager extends Employee{
     }
 
     public void deleteRoleFromEmployee(int employeeID, Role role){
-        ShiftEmployee employee = null;
-        for (ShiftEmployee e : allEmployees){
-            if (e.getEmployeeID()== employeeID){
-                employee = e;
-            }
-        }
+        ShiftEmployee employee = allEmployees.get(employeeID);
         if (employee != null){
             employee.removeRole(role);
         }
@@ -82,11 +67,11 @@ public class HRManager extends Employee{
         return new Shift();
     }
     // getters and setters
-    public ArrayList<ShiftEmployee> getAllEmployees() {
+    public Map<Integer, ShiftEmployee> getAllEmployees() {
         return allEmployees;
     }
 
-    public void setAllEmployees(ArrayList<ShiftEmployee> allEmployees) {
+    public void setAllEmployees(Map<Integer, ShiftEmployee> allEmployees) {
         this.allEmployees = allEmployees;
     }
 
