@@ -1,37 +1,38 @@
 package BuisnessLayer;
 
-import com.sun.jdi.Value;
+import java.time.LocalTime;
+import java.util.*;
 
-import java.security.Key;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
 
 public class HRManager extends Employee{
     //variables
     private Map<Integer,ShiftEmployee> allEmployees;
-    private Map<Date,Shift[]> schedule;
-    private Map<Integer,ArrayList<Preferences>> historyPref;
-
+    private Map<Date,Shift> morningSchedule;
+    private Map<Date,Shift> eveningSchedule;
 
 
     //Methodes
-    public ShiftEmployee hire(String employeeName, int employeeID, String branch, String bankAccount, boolean isFull)
-    {
-        //TODO (HR manager complete all new employee data and create new instance of shift employee
-        //      add the employee to the list)
-        //        allEmployees.add(e);
-        return null;
+    public ShiftEmployee hire(String employeeName, int employeeID, String branch, String bankAccount,
+                              boolean isFull, int salary,String password) {
+        ShiftEmployee employee = new ShiftEmployee(employeeName, employeeID, branch, bankAccount, isFull, salary,password);
+        allEmployees.put(employeeID, employee);
+        return employee;
     }
-    public void fire(int id){
-        allEmployees.remove(id);
-        for (Shift [] s : schedule.values()){
-            if(s[0].contain(id))
-                s[0].remove(id);
+
+    public ShiftEmployee fire(int id){
+        checkemployee(id);
+        ShiftEmployee employee = allEmployees.remove(id);
+        for (Shift s : morningSchedule.values()){
+                s.remove(id);
         }
+        for (Shift s : eveningSchedule.values()){
+                s.remove(id);
+        }
+        return employee;
     }
 
     public void addRoleToEmployee(int employeeID, Role role){
+        checkemployee(employeeID);
         ShiftEmployee employee = allEmployees.get(employeeID);
         if (employee != null){
             employee.addRole(role);
@@ -42,6 +43,7 @@ public class HRManager extends Employee{
     }
 
     public void changeRoleToEmployee(int employeeID, Role oldRole, Role newRole){
+        checkemployee(employeeID);
         ShiftEmployee employee = allEmployees.get(employeeID);
         if (employee != null){
             employee.changeRole(oldRole, newRole);
@@ -52,6 +54,7 @@ public class HRManager extends Employee{
     }
 
     public void deleteRoleFromEmployee(int employeeID, Role role){
+        checkemployee(employeeID);
         ShiftEmployee employee = allEmployees.get(employeeID);
         if (employee != null){
             employee.removeRole(role);
@@ -61,33 +64,45 @@ public class HRManager extends Employee{
         }
     }
 
-    public Shift createShift(){
-        //TODO create new instance of shift from all employees preferences and add it to the shift map
-        //Shift s = new Shift(allEmployees, THIS DATE)
-        return new Shift();
+    public void createShift( ShiftEmployee shiftManager, Map<Integer,Role> shiftRoles,
+                              Date date, LocalTime startTime, LocalTime endTime, Period period){
+        for(Integer i : shiftRoles.keySet())
+            checkemployee(i);
+        checkemployee(shiftManager.getEmployeeID());
+        if (!allEmployees.containsKey(shiftManager.getEmployeeID()))
+            throw new IllegalArgumentException("shiftManager dont exist");
+        if (shiftManager.getRoles().contains(Role.SHIFTMANAGER))
+            throw new IllegalArgumentException(shiftManager.getEmployeeName() + " isnt a manager");
+        for (Integer i : shiftRoles.keySet())
+            if (!allEmployees.containsKey(i))
+                throw new IllegalArgumentException(i + "isnt a employee");
+        Shift s = new Shift(date,shiftManager,shiftRoles,startTime,endTime,period);
+        if (period == Period.MORNING)
+            morningSchedule.put(date,s);
+        else
+            eveningSchedule.put(date,s);
     }
+    public void updateEmployee(ShiftEmployee employee){
+        checkemployee(employee.getEmployeeID());
+        allEmployees.put(employee.getEmployeeID(), employee);
+    }
+    public void checkemployee(int id){
+        if (allEmployees.containsKey(id))
+            throw new IllegalArgumentException("employee not part of this HR branch");
+    }
+//    public Map<ShiftEmployee,Preferences> GetEmployeesPref(){
+//        Map<ShiftEmployee,Preferences> m = new HashMap<>();
+//        for (ShiftEmployee e : allEmployees.values())
+//            m.put(e,e.getLastPref());
+//        return m;
+//    }
     // getters and setters
     public Map<Integer, ShiftEmployee> getAllEmployees() {
         return allEmployees;
     }
 
-    public void setAllEmployees(Map<Integer, ShiftEmployee> allEmployees) {
-        this.allEmployees = allEmployees;
+    public Map<Date, Shift> getMorningSchedule() {
+        return morningSchedule;
     }
 
-    public Map<Date, Shift[]> getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(Map<Date, Shift[]> schedule) {
-        this.schedule = schedule;
-    }
-
-    public Map<Integer, ArrayList<Preferences>> getHistoryPref() {
-        return historyPref;
-    }
-
-    public void setHistoryPref(Map<Integer, ArrayList<Preferences>> historyPref) {
-        this.historyPref = historyPref;
-    }
 }

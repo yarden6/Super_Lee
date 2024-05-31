@@ -15,6 +15,17 @@ public class Shift {
     LocalTime endTime;
     Period period;
 
+    // constructor
+
+    public Shift(Date date, Employee shiftManager, Map<Integer, Role> shiftRoles, LocalTime startTime, LocalTime endTime, Period period) {
+        this.date = date;
+        this.shiftManager = shiftManager;
+        this.shiftRoles = shiftRoles;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.period = period;
+    }
+
     //methodes
     public boolean contain(Integer id){
        return shiftRoles.containsKey(id);

@@ -8,18 +8,22 @@ public class ShiftEmployee extends Employee {
     private boolean isFullTime;
     private ArrayList<Role> roles;
     private Stack<Preferences> preferences;
-    private boolean madePreferences;
 
-    //constructors
+    // ---------------constructors---------------------
 
 
-//    public ShiftEmployee(String employeeName, int employeeID, String branch, String bankAccount, boolean isFull) {
-//        super(employeeID);
-//    }
+    public ShiftEmployee(String employeeName, int employeeID, String branch, String bankAccount,
+                         boolean isFull, int salary,String password) {
+        super(employeeName, employeeID,branch,bankAccount, salary,password);
+        this.isFullTime = isFull;
+        roles = new ArrayList<>();
+        preferences = new Stack<>();
+    }
 
-    //methods
+    //-----------------methods---------------------------
     public void addRole(Role role){
-        roles.add(role);
+        if (roles.contains(role))
+            throw new IllegalArgumentException(this.getEmployeeName() +" is already " + role);
     }
 
     public void changeRole(Role oldrole, Role newRole){
@@ -28,20 +32,25 @@ public class ShiftEmployee extends Employee {
             addRole(newRole);
         }
         else {
-            //TODO (throw e)
+            throw new IllegalArgumentException(this.getEmployeeName() + " isnt a " + oldrole);
         }
     }
     public void removeRole(Role role){
-        roles.remove(role);
+        if(!roles.remove(role))
+            throw new IllegalArgumentException(this.getEmployeeName() + " isnt a " + role);
     }
 
     public void callPreferences(boolean[][] shifts, Date startDate){
+        if (shifts.length != 7 || shifts[1].length != 2 || startDate == null )
+            throw new IllegalArgumentException("illegal shifts prefrence");
         preferences.add(new Preferences(shifts,startDate));
     }
 
+    public Preferences getLastPref(){
+        return preferences.peek();
+    }
 
-
-    //getters and setters
+    //---------------------getters and setters----------------------------
     public boolean isFullTime() {
         return isFullTime;
     }
@@ -66,11 +75,5 @@ public class ShiftEmployee extends Employee {
         this.preferences = preferences;
     }
 
-    public boolean isMadePreferences() {
-        return madePreferences;
-    }
 
-    public void setMadePreferences(boolean madePreferences) {
-        this.madePreferences = madePreferences;
-    }
 }

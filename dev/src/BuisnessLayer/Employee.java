@@ -3,6 +3,7 @@ package BuisnessLayer;
 import java.util.Date;
 
 public abstract class Employee {
+    //varriables
     private int employeeID;
     private String employeeName;
     private String branch;
@@ -10,10 +11,29 @@ public abstract class Employee {
     private int salary;
     private Date startDate;
     private Date resignationDate;
-    int vacationDays;
+    private int vacationDays;
+    private boolean isLoggedIn;
+    private String password;
+
+    //constructor
 
 
+    public Employee(){
+        this.salary = 0;
+        this.resignationDate = null;
+    }
+    public Employee(String employeeName,int employeeID, String branch, String bankAccount,int salary,String password) {
+        this.employeeID = employeeID;
+        this.employeeName = employeeName;
+        this.branch = branch;
+        this.bankAccount = bankAccount;
+        this.salary = salary;
+        this.resignationDate = null;
+        this.password = password;
+        isLoggedIn=false;
+    }
 
+    //getters and setters
     public int getEmployeeID() {
         return employeeID;
     }
@@ -45,4 +65,14 @@ public abstract class Employee {
     public int getVacationDays() {
         return vacationDays;
     }
+    public boolean isLoggedIn(){return isLoggedIn;}
+    public boolean login(String password){
+        if (this.password.equals(password)){
+            isLoggedIn = true;
+            return true;
+        }
+        return false;
+    }
+    public void logout(){isLoggedIn=false;}
+
 }
