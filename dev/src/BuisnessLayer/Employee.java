@@ -11,6 +11,9 @@ public abstract class Employee {
     private int salary;
     private Date startDate;
     private Date resignationDate;
+
+
+
     private int vacationDays;
     private boolean isLoggedIn;
     private String password;
@@ -74,5 +77,35 @@ public abstract class Employee {
         return false;
     }
     public void logout(){isLoggedIn=false;}
+    public void setResignationDate(Date resignationDate) {
+        this.resignationDate = resignationDate;
+    }
 
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    public void setBankAccount(String bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setVacationDays(int vacationDays) {
+        this.vacationDays = vacationDays;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

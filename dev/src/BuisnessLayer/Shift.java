@@ -36,8 +36,11 @@ public class Shift {
     }
 
 
-
-
+    @Override
+    public String toString() {
+        return "Date: " + date.toString() + "shift manager: " + shiftManager +  " \n" +
+                "start: " + startTime + "end" + endTime ;
+    }
 
     // getters and setters
     public Employee getShiftManager() {
