@@ -2,13 +2,14 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 
 public class Category {
     private String name;
     private Category parentCategory;
-    private List<Category> subCategories; // Holds sub-categories and sub-sub-categories
-    private List<Product> products; // Only for sub-sub-categories
+    private Hashtable<String,Category> subCategories; // Holds sub-categories and sub-sub-categories
+    private Hashtable<Integer,Product> products; // Only for sub-sub-categories (Integer holds the MKT of the product)
     private int discount;
     private Date discountDate;
 
@@ -26,8 +27,8 @@ public class Category {
     public Category(String name, Category parentCategory) {
         this.name = name;
         this.parentCategory = parentCategory;
-        this.subCategories = new ArrayList<>();
-        this.products = new ArrayList<>();
+        this.subCategories = new Hashtable<>();
+        this.products = new Hashtable<>();
         this.discount = 0;
         this.discountDate = null;
 
@@ -38,7 +39,7 @@ public class Category {
     public Category(String name, Category parentCategory, List<Product> products) {
         this.name = name;
         this.parentCategory = parentCategory;
-        this.subCategories = new ArrayList<>();
+        this.subCategories = new Hashtable<>();
         this.products = products;
         this.discount = 0;
         this.discountDate = null;
@@ -53,9 +54,9 @@ public class Category {
     }
 
     // only for sub-sub-category
-    public void addProduct(Product product) {
+    public void addProduct(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount) {
         if (isLeafCategory()) {
-            products.add(product);
+            products.put(MKT, new Product(name, MKT, aisle, producerName, storeAmount, storageAmount,  sellingPrice, deliveryDays, minimumAmount));
         } else {
             System.out.println("Only sub-sub-categories can have products");
         }
@@ -121,6 +122,11 @@ public class Category {
 
     public void setDiscountDate(Date discountDate) {
         this.discountDate = discountDate;
+    }
+
+    public void applyDiscount (int discount, LocalDate discountDate){
+        setDiscount(discount);
+        setDiscountDate(discountDate);
     }
 
     public String toString(){

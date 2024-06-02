@@ -1,6 +1,8 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Product {
@@ -14,6 +16,9 @@ public class Product {
     private  double sellingPrice;
     private int deliveryDays;
     private int minimumAmount;
+    private int discount;
+    private LocalDate discountDate;
+    private int itemsCounter = 1;
 
 
     private List<Item> items;
@@ -29,6 +34,8 @@ public class Product {
         this.sellingPrice = sellingPrice;
         this.deliveryDays = deliveryDays;
         this.minimumAmount = minimumAmount;
+        this.discount = 0;
+        this.discountDate = null;
 
         this.items = new ArrayList<>();
         this.totalAmount = storeAmount + storageAmount;
@@ -46,12 +53,15 @@ public class Product {
         totalAmount++;
     }
 
-    public void addItemToStorage(Item item) {
-        items.add(item);
+    // when we get new items from the supplier - it goes straight to the storage
+    public void addItemToStorage(LocalDate expirationDate, double buyingPrice, double buyingDiscount) {
+        items.add(new Item(itemsCounter, expirationDate, buyingPrice, buyingDiscount));
+        itemsCounter++;
         storageAmount++;
         totalAmount++;
     }
 
+    // when an item is bought from the store
     public void removeItemFromStore(Item item) {
         items.remove(item);
         storeAmount--;
@@ -167,6 +177,14 @@ public class Product {
 
     public int getMinimumAmount() {
         return minimumAmount;
+    }
+
+    public int getDiscount() {
+        return discount;
+    }
+
+    public LocalDate getDiscountDate() {
+        return discountDate;
     }
 
     public void setMinimumAmount(int minimumAmount) {
