@@ -1,15 +1,17 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 public class Item {
     private int itemId;
-    private Date expirationDate;
+    private LocalDate expirationDate;
     private double buyingPrice;
     private double buyingDiscount;
 
     // new item without supplier discount
-    public Item(int itemId , Date expirationDate, double buyingPrice){
+    public Item(int itemId , LocalDate expirationDate, double buyingPrice){
         this.itemId = itemId;
         this.expirationDate = expirationDate;
         this.buyingPrice = buyingPrice;
@@ -17,7 +19,7 @@ public class Item {
     }
 
     // new item + original buying price + buying price after supplier discount
-    public Item(int itemId , Date expirationDate, double buyingPrice, double buyingDiscount){
+    public Item(int itemId , LocalDate expirationDate, double buyingPrice, double buyingDiscount){
         this.itemId = itemId;
         this.expirationDate = expirationDate;
         this.buyingPrice = buyingPrice;
@@ -25,10 +27,10 @@ public class Item {
     }
 
     public boolean isExpired() {
-        return new Date().after(this.expirationDate);
+        return expirationDate.isBefore(LocalDate.now());
     }
 
-    public Date getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
@@ -36,7 +38,7 @@ public class Item {
         return itemId;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

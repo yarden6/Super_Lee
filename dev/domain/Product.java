@@ -206,4 +206,17 @@ public class Product {
                 "Producer Name: " + producerName + '\n' +
                 "Total Amount: " + totalAmount;
     }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
+    }
+
+    public void setDiscountDate(LocalDate discountDate) {
+        this.discountDate = discountDate;
+    }
+
+    public void applyDiscount (int discount, LocalDate discountDate){
+        setDiscount(discount);
+        setDiscountDate(discountDate);
+    }
 }

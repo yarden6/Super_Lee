@@ -1,5 +1,9 @@
 package PresentationLayer;
 
+import domain.CategoryFacade;
+import domain.ReportFacade;
+
+import java.util.Date;
 import java.util.Scanner;
 
 public class InventoryMenu {

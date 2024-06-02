@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
@@ -11,19 +12,27 @@ public class Category {
     private Hashtable<String,Category> subCategories; // Holds sub-categories and sub-sub-categories
     private Hashtable<Integer,Product> products; // Only for sub-sub-categories (Integer holds the MKT of the product)
     private int discount;
-    private Date discountDate;
+    private LocalDate discountDate;
 
-    // new main category
+
+    /**
+     * new main category
+     * @param name
+     */
     public Category(String name) {
         this.name = name;
         this.parentCategory = null;
-        this.subCategories = new ArrayList<>();
-        this.products = new ArrayList<>();
+        this.subCategories = new Hashtable<>();
+        this.products = new Hashtable<>();
         this.discount = 0;
         this.discountDate = null;
     }
 
-    // new sub-category
+    /**
+     * new sub-category
+     * @param name
+     * @param parentCategory
+     */
     public Category(String name, Category parentCategory) {
         this.name = name;
         this.parentCategory = parentCategory;
@@ -35,8 +44,13 @@ public class Category {
         parentCategory.addSubCategory(this);
     }
 
-    // new sub-sub-category
-    public Category(String name, Category parentCategory, List<Product> products) {
+    /**
+     * new sub-sub-category
+     * @param name
+     * @param parentCategory
+     * @param products
+     */
+    public Category(String name, Category parentCategory, Hashtable<Integer, Product> products) {
         this.name = name;
         this.parentCategory = parentCategory;
         this.subCategories = new Hashtable<>();
@@ -49,7 +63,7 @@ public class Category {
 
 
     public void addSubCategory(Category subCategory) {
-        subCategories.add(subCategory);
+        subCategories.put(subCategory.getName(),subCategory);
         subCategory.setParentCategory(this);
     }
 
@@ -92,11 +106,11 @@ public class Category {
         return parentCategory;
     }
 
-    public List<Category> getSubCategories() {
+    public Hashtable<String,Category> getSubCategories() {
         return subCategories;
     }
 
-    public List<Product> getProducts() {
+    public Hashtable<Integer,Product> getProducts() {
         return products;
     }
 
@@ -104,7 +118,7 @@ public class Category {
         return discount;
     }
 
-    public Date getDiscountDate() {
+    public LocalDate getDiscountDate() {
         return discountDate;
     }
 
@@ -120,7 +134,7 @@ public class Category {
         this.discount = discount;
     }
 
-    public void setDiscountDate(Date discountDate) {
+    public void setDiscountDate(LocalDate discountDate) {
         this.discountDate = discountDate;
     }
 
