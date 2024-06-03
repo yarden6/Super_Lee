@@ -1,58 +1,68 @@
 package BuisnessLayer;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
 public class EmployeeFacade {
-    Map<Integer,Employee> employees;
+    Map<Integer,ShiftEmployee> shiftEmployees;
+    Map<Integer,HRManager> HRManagers;
 
-    public Map<Integer,Employee> getEmployees() {
-        return employees;
+    public EmployeeFacade(List<HRManager> hrManagers,List<ShiftEmployee> shiftEmployees){
+        this.shiftEmployees = new HashMap<>();
+        this.HRManagers = new HashMap<>();
+        for(HRManager hr : hrManagers)
+            this.HRManagers.put(hr.getID(),hr);
+        for (ShiftEmployee e : shiftEmployees)
+            this.shiftEmployees.put(e.getID(),e);
     }
 
 
     //Shift Employee methods
     public String makePreferences(int employeeId, boolean[][] shifts, Date startDate) {
-        if (checkLoggedin(employeeId))
+        if (!checkLoggedin(employeeId))
             return "employee not logged in";
-        ((ShiftEmployee) employees.get(employeeId)).callPreferences(shifts,startDate);
+        ((ShiftEmployee) shiftEmployees.get(employeeId)).callPreferences(shifts,startDate);
         return null;
     }
 
     //HRManager methods
-    public String hireEmployee(int HRid,String employeeName, int employeeID, String branch,
+    public String hireEmployee(int HRid,String employeeName, int employeeID,
                              String bankAccount, boolean isFull, int salary,String password) {
-        if(checkLoggedin(HRid))
+        if(!checkLoggedin(HRid))
             return " not logged in";
         HRManager hr = getHRManager(HRid);
-        if (employees.containsKey(employeeID)) {
-            ShiftEmployee employee = (ShiftEmployee) employees.get(employeeID);
+        if (isHR(employeeID))
+            return employeeName + " is already HR manager";
+        if (isShiftEmp(employeeID)) {
+            ShiftEmployee employee =  shiftEmployees.get(employeeID);
             if (employee.getResignationDate() == null)
                 return "employee already exist";
-//                throw new IllegalArgumentException("employee already exist");
             else
                 return reHire(employee, hr);
         } else {
             HRManager hrManager = getHRManager(HRid);
-            ShiftEmployee employee = hrManager.hire(employeeName, employeeID, branch, bankAccount, isFull, salary, password);
-            employees.put(employeeID, employee);
+            ShiftEmployee employee = hrManager.hire(employeeName, employeeID,hrManager.getBranch() ,
+                    bankAccount, isFull, salary, password);
+            shiftEmployees.put(employeeID, employee);
             return null;
         }
     }
 
     private String reHire(ShiftEmployee employee,HRManager hr){
-        hr.getAllEmployees().put(employee.getEmployeeID(),employee);
-        employees.put(employee.getEmployeeID(),employee);
+        hr.getAllEmployees().put(employee.getID(),employee);
+        shiftEmployees.put(employee.getID(),employee);
         return null;
     }
 
     //
     public String fireEmployee(int empId,int HRid){
-        checkLoggedin(HRid);
-        if (employees.containsKey(empId)){
+        if(!checkLoggedin(HRid))
+            return " not logged in";
+        if (shiftEmployees.containsKey(empId)){
             HRManager hrManager= getHRManager(HRid);
             ShiftEmployee employee = hrManager.fire(empId);
-            employees.replace(empId,employee);
+            shiftEmployees.replace(empId,employee);
             return null;
         }
         else {
@@ -62,11 +72,12 @@ public class EmployeeFacade {
     }
 
     public String updateEmployee(ShiftEmployee employee,int HRid){
-        checkLoggedin(HRid);
-        if (!employees.containsKey(employee.getEmployeeID()))
+        if(!checkLoggedin(HRid))
+            return " not logged in";
+        if (!shiftEmployees.containsKey(employee.getID()))
             return "this employee is not exist";
 //            throw new IllegalArgumentException(employee.getEmployeeName() + " doesn't exist");
-        employees.put(employee.getEmployeeID(), employee);
+        shiftEmployees.put(employee.getID(), employee);
         HRManager hr = getHRManager(HRid);
         hr.updateEmployee(employee);
         return null;
@@ -79,8 +90,9 @@ public class EmployeeFacade {
 
 
     public String HRSetShift(int hrID, int shiftManagerID, Map<Integer,String> workersRoles,
-                            Date date, LocalTime startTime, LocalTime endTime, String period){
-        checkLoggedin(hrID);
+                             LocalDate date, LocalTime startTime, LocalTime endTime, String period){
+        if(!checkLoggedin(shiftManagerID))
+            return " not logged in";
         HRManager hr = getHRManager(hrID);
         Map<Integer, Role> employeesRoles = new HashMap<>();
         employeesRoles = stringToRole(workersRoles);
@@ -101,24 +113,24 @@ public class EmployeeFacade {
     }
 
     public String addRoleToEmployee(int HRid,int employeeID, String role){
-        checkLoggedin(HRid);
+        if(!checkLoggedin(HRid))
+            return " not logged in";
         Role role1 = convertStringToRole(role);
-        if (employees.containsKey(employeeID)){
+        if (shiftEmployees.containsKey(employeeID)){
             HRManager hrManager = getHRManager(HRid);
-            hrManager.addRoleToEmployee(employeeID,role1);
-            return null;
+            return hrManager.addRoleToEmployee(employeeID,role1);
         }
         else {
             return employeeID + " doesn't exist";
-//            throw new IllegalArgumentException(employeeID + " doesn't exist");
         }
     }
 
     public String changeRoleToEmployee(int HRid, int employeeID, String currRole, String newRole){
-        checkLoggedin(HRid);
+        if(!checkLoggedin(HRid))
+            return " not logged in";
         Role currRole1 = convertStringToRole(currRole);
         Role newRole1 = convertStringToRole(newRole);
-        if (employees.containsKey(employeeID)){
+        if (shiftEmployees.containsKey(employeeID)){
             HRManager hrManager = getHRManager(HRid);
             hrManager.changeRoleToEmployee(employeeID,currRole1, newRole1);
             return null;
@@ -130,38 +142,36 @@ public class EmployeeFacade {
     }
 
     public String deleteRoleFromEmployee(int HRid,int employeeID, String role){
-        checkLoggedin(HRid);
+        if(!checkLoggedin(HRid))
+            return " not logged in";
         Role role1 = convertStringToRole(role);
-        if (employees.containsKey(employeeID)){
+        if (shiftEmployees.containsKey(employeeID)){
         HRManager hrManager = getHRManager(HRid);
         hrManager.deleteRoleFromEmployee(employeeID,role1);
         return null;
         }
         else {
             return employeeID + " doesn't exist";
-//            throw new IllegalArgumentException(employeeid + " doesn't exist");
         }
     }
 
     public boolean checkLoggedin(int empID){
-        Employee e = employees.get(empID);
+        Employee e = getEmp(empID);
         return e.isLoggedIn();
-//            throw new IllegalArgumentException(e.getEmployeeName() + " isn't logged in");
     }
+
     public Employee login (int id, String password){
-        Employee e = employees.get(id);
-        if( e!=null && e.login(password))
-            return e;
-        return null;
+        Employee e = getEmp(id);
+        if (e != null)
+            e.login(password);
+        return e;
     }
     public String showMyShifts( int empID){
         ShiftEmployee s = getShiftEmployee(empID);
         HRManager hr = getHRManager(s.getHRid());
         return hr.showEmpShift(empID);
     }
-    private HRManager getHRManager(int id) {
-        return (HRManager) employees.get(id);
-    }
+
     private Role convertStringToRole(String roleName) {
         if (roleName == null) {
             throw new IllegalArgumentException("Role name cannot be null");
@@ -183,6 +193,21 @@ public class EmployeeFacade {
         }
     }
     private ShiftEmployee getShiftEmployee(int id){
-        return (ShiftEmployee) employees.get(id);
+        return shiftEmployees.get(id);
+    }
+    private HRManager getHRManager(int id) {
+        return HRManagers.get(id);
+    }
+    private boolean isHR(int id){
+        return  HRManagers.containsKey(id);
+    }
+    private boolean isShiftEmp(int id){
+        return  shiftEmployees.containsKey(id);
+    }
+    private Employee getEmp(int id){
+        Employee e = shiftEmployees.get(id);
+        if (e == null)
+            e = HRManagers.get(id);
+        return e;
     }
 }

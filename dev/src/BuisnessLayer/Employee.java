@@ -1,5 +1,6 @@
 package BuisnessLayer;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public abstract class Employee {
@@ -9,11 +10,8 @@ public abstract class Employee {
     private String branch;
     private String bankAccount;
     private int salary;
-    private Date startDate;
-    private Date resignationDate;
-
-
-
+    private LocalDate startDate;
+    private LocalDate resignationDate;
     private int vacationDays;
     private boolean isLoggedIn;
     private String password;
@@ -34,10 +32,11 @@ public abstract class Employee {
         this.resignationDate = null;
         this.password = password;
         isLoggedIn=false;
+        this.startDate = LocalDate.now();
     }
 
     //getters and setters
-    public int getEmployeeID() {
+    public int getID() {
         return employeeID;
     }
 
@@ -57,11 +56,11 @@ public abstract class Employee {
         return salary;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public Date getResignationDate() {
+    public LocalDate getResignationDate() {
         return resignationDate;
     }
 
@@ -77,7 +76,7 @@ public abstract class Employee {
         return false;
     }
     public void logout(){isLoggedIn=false;}
-    public void setResignationDate(Date resignationDate) {
+    public void setResignationDate(LocalDate resignationDate) {
         this.resignationDate = resignationDate;
     }
 
@@ -97,7 +96,7 @@ public abstract class Employee {
         this.salary = salary;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 

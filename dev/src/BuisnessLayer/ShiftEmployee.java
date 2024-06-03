@@ -20,26 +20,34 @@ public class ShiftEmployee extends Employee {
         roles = new ArrayList<>();
         preferences = new Stack<>();
         this.HRid = HRid;
+
     }
 
     //-----------------methods---------------------------
-    public void addRole(Role role){
+    public String addRole(Role role){
         if (roles.contains(role))
-            throw new IllegalArgumentException(this.getEmployeeName() +" is already " + role);
+            return this.getEmployeeName() +" is already " + role;
+        else
+            roles.add(role);
+        return null;
     }
 
-    public void changeRole(Role oldrole, Role newRole){
+    public String changeRole(Role oldrole, Role newRole){
         if (roles.contains(oldrole)){
             removeRole(oldrole);
             addRole(newRole);
+            return null;
         }
         else {
-            throw new IllegalArgumentException(this.getEmployeeName() + " isnt a " + oldrole);
+            return this.getEmployeeName() + " isnt a " + oldrole;
         }
     }
-    public void removeRole(Role role){
-        if(!roles.remove(role))
-            throw new IllegalArgumentException(this.getEmployeeName() + " isnt a " + role);
+    public String removeRole(Role role){
+        if(!roles.contains(role))
+            return this.getEmployeeName() + " isnt a " + role;
+        else
+            roles.remove(role);
+        return null;
     }
 
     public void callPreferences(boolean[][] shifts, Date startDate){

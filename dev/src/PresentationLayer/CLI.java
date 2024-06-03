@@ -2,13 +2,12 @@ package PresentationLayer;
 
 import BuisnessLayer.Employee;
 import BuisnessLayer.EmployeeFacade;
+import BuisnessLayer.HRManager;
 import BuisnessLayer.ShiftEmployee;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class CLI {
     public static Scanner scanner = new Scanner(System.in);
@@ -16,10 +15,15 @@ public class CLI {
     int id;
     String password;
 
+    public CLI(List<HRManager> hrManagers, List<ShiftEmployee> shiftEmployees){
+        employeeFacade = new EmployeeFacade(hrManagers, shiftEmployees);
+        logInMenu();
 
+    }
     public void logInMenu() {
         System.out.println("Enter ID:");
         id = scanner.nextInt();
+        scanner.nextLine();
         System.out.println("Enter Password:");
         password = scanner.nextLine();
         Employee employee = employeeFacade.login(id, password);
@@ -30,8 +34,6 @@ public class CLI {
             shiftEmployee();
         } else
             hrManager();
-
-
     }
 
     private void hrManager() {
@@ -82,14 +84,17 @@ public class CLI {
         System.out.println("Enter the new Employee details");
         System.out.println("ID:");
         int employeeID = scanner.nextInt();
+        scanner.nextLine();
         System.out.println("Name:");
         String name = scanner.nextLine();
-        System.out.println("Branch:");
-        String branch = scanner.nextLine();
         System.out.println("Bank Account:");
         String bankAccount = scanner.nextLine();
+        int choice = 0;
+        while (choice != 1 && choice!=2){
         System.out.println("Full Job Employee:? 1. YES      2. NO");
-        int choice = scanner.nextInt();
+        choice = scanner.nextInt();
+        scanner.nextLine();
+        }
         boolean isFull = switch (choice) {
             case 1 -> true;
             case 2 -> false;
@@ -97,12 +102,12 @@ public class CLI {
         };
         System.out.println("SALARY:");
         int salary = scanner.nextInt();
+        scanner.nextLine();
         System.out.println("PASSWORD:");
         String employeePassword = scanner.nextLine();
-        String ret = employeeFacade.hireEmployee(id,name, employeeID, branch, bankAccount, isFull, salary, employeePassword);
+        String ret = employeeFacade.hireEmployee(id,name, employeeID, bankAccount, isFull, salary, employeePassword);
         if (ret != null){
             System.out.println(ret);
-            hire();
         }
         hrManager();
     }
@@ -110,6 +115,7 @@ public class CLI {
     private void fire() {
         System.out.println("Enter Employee to fire");
         int employeeID = scanner.nextInt();
+        scanner.nextLine();
         String ret = employeeFacade.fireEmployee(employeeID, id);
         if (ret != null){
             System.out.println(ret);
@@ -119,7 +125,6 @@ public class CLI {
     }
 
     private void setShifts() {
-        //TODO
         String pref = employeeFacade.getPreferences(id);
         System.out.println(pref);
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
@@ -145,14 +150,18 @@ public class CLI {
         System.out.println("Create the " + period + " shift of " + day);
         System.out.println("Enter when the shift starts (hour between 0-23)");
         time = scanner.nextInt();
+        scanner.nextLine();
         start = convertToLocalTime(time);
         System.out.println("Enter when the shift ends (hour between 0-23)");
         time = scanner.nextInt();
+        scanner.nextLine();
         end = convertToLocalTime(time);
         System.out.println("Select number of employees for the shift: ");
         shiftWorkers = scanner.nextInt();
+        scanner.nextLine();
         System.out.println("Select manager ID for the Shift");
         shiftManagerID = scanner.nextInt();
+        scanner.nextLine();
         for (int k = 0; k < shiftWorkers - 1; k++){
             System.out.println("Select Employee ID:");
             employeeID = scanner.nextInt();
@@ -161,6 +170,7 @@ public class CLI {
             System.out.println("2. STOREKEEPER");
             System.out.println("3. DELIVERYGUY");
             role = scanner.nextInt();
+            scanner.nextLine();
             while (2 < role | role < 0){
                 System.out.println("Choose again, no such role");
             }
@@ -170,9 +180,9 @@ public class CLI {
             }
             workersRoles.put(employeeID, roles[role]);
         }
-        String res = employeeFacade.HRSetShift(id,shiftManagerID, workersRoles, new Date(), start,end, period);
+        String res = employeeFacade.HRSetShift(id,shiftManagerID, workersRoles, LocalDate.now(), start,end, period);
         if (res != null){
-            System.out.println("shift cant be place becuse: " + res + ", please create this shift again");
+            System.out.println("shift cant be place because: " + res + ", please create this shift again");
             createSingleShift(day, period);
         }
     }
@@ -194,6 +204,7 @@ public class CLI {
         int choice;
         System.out.println("Enter employee ID:");
         int employeeID = scanner.nextInt();
+        scanner.nextLine();
 
         System.out.println("Choose Role To Change:");
         System.out.println("1. CASHIER");
@@ -231,8 +242,8 @@ public class CLI {
     }
 
     private void changeRole() {
-        String oldRole = "";
-        String newRole = "";
+        String oldRole = null;
+        String newRole = null;
         int choice;
         System.out.println("Enter employee ID:");
         int employeeID = scanner.nextInt();
@@ -301,6 +312,7 @@ public class CLI {
         int choice;
         System.out.println("Enter employee ID:");
         int employeeID = scanner.nextInt();
+        scanner.nextLine();
 
         System.out.println("Choose Role To Change:");
         System.out.println("1. CASHIER");

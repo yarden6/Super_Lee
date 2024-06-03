@@ -1,5 +1,6 @@
 package BuisnessLayer;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.Map;
@@ -10,14 +11,14 @@ public class Shift {
     //variables
     Employee shiftManager;
     Map<Integer,Role> shiftRoles;
-    Date date;
+    LocalDate date;
     LocalTime startTime;
     LocalTime endTime;
     Period period;
 
     // constructor
 
-    public Shift(Date date, Employee shiftManager, Map<Integer, Role> shiftRoles, LocalTime startTime, LocalTime endTime, Period period) {
+    public Shift(LocalDate date, Employee shiftManager, Map<Integer, Role> shiftRoles, LocalTime startTime, LocalTime endTime, Period period) {
         this.date = date;
         this.shiftManager = shiftManager;
         this.shiftRoles = shiftRoles;
@@ -59,11 +60,11 @@ public class Shift {
         this.shiftRoles = shiftRoles;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
