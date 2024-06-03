@@ -12,10 +12,11 @@ public class DefectiveReport extends Report {
 
     }
     public void createReport(Hashtable<Integer, Product> products){
+        System.out.println("___________________________________________");
         System.out.println("Defected products:");
         for (Integer MKT:products.keySet()) {
             Product p = products.get(MKT);
-            p.toString();
+            System.out.println(p.toString());
             System.out.println("___________________________________________");
         }
     }

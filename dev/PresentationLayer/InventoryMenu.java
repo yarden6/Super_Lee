@@ -18,6 +18,7 @@ public class InventoryMenu {
     public InventoryMenu() {
         cf = new CategoryFacade();
         rf = new ReportFacade(cf);
+        cf.loadData();
         startMenu();
     }
 
@@ -207,14 +208,6 @@ public class InventoryMenu {
         System.out.print("Enter producer name: ");
         String producerName = scanner.nextLine();
 
-        System.out.print("Enter store amount: ");
-        int storeAmount = scanner.nextInt();
-        scanner.nextLine();
-
-        System.out.print("Enter storage amount: ");
-        int storageAmount = scanner.nextInt();
-        scanner.nextLine();
-
         System.out.print("Enter selling price: ");
         double sellingPrice = scanner.nextDouble();
         scanner.nextLine();
@@ -361,7 +354,14 @@ public class InventoryMenu {
     }
 
     private void reportDefectiveItem() {
-        // TODO
+        System.out.print("Enter product MKT: ");
+        int MKT = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter Item id: ");
+        int itemID = scanner.nextInt();
+        scanner.nextLine();
+
+        cf.reportDefectiveItem(MKT, itemID);
     }
 
 
