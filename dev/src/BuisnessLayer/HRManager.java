@@ -78,31 +78,46 @@ public class HRManager extends Employee{
         throw new IllegalArgumentException("employee not in the same branch as HR");
     }
 
-    public void createShift( ShiftEmployee shiftManager, Map<Integer,Role> shiftRoles,
+    //TODO: check why lines 89-92 doing exactly same as lines 85-88
+    public String createShift( ShiftEmployee shiftManager, Map<Integer,Role> shiftRoles,
                               Date date, LocalTime startTime, LocalTime endTime, Period period){
         for(Integer i : shiftRoles.keySet())
-            checkEmployee(i);
-        checkEmployee(shiftManager.getEmployeeID());
-        if (!allEmployees.containsKey(shiftManager.getEmployeeID()))
-            throw new IllegalArgumentException("shiftManager dont exist");
-        if (shiftManager.getRoles().contains(Role.SHIFTMANAGER))
-            throw new IllegalArgumentException(shiftManager.getEmployeeName() + " isnt a manager");
-        for (Integer i : shiftRoles.keySet())
-            if (!allEmployees.containsKey(i))
-                throw new IllegalArgumentException(i + "isnt a employee");
+            if (!checkEmployee(i))
+                return "Employee not exist";
+        if (!checkEmployee(shiftManager.getEmployeeID()))
+            return "shift manager not exist ";
+//        if (!allEmployees.containsKey(shiftManager.getEmployeeID()))
+//            return "shiftManager dont exist";
+////            throw new IllegalArgumentException("shiftManager dont exist");
+        if (!shiftManager.getRoles().contains(Role.SHIFTMANAGER))
+            return shiftManager.getEmployeeName() + " isn't a manager";
+//            throw new IllegalArgumentException(shiftManager.getEmployeeName() + " isnt a manager");
+//        for (Integer i : shiftRoles.keySet())
+//            if (!allEmployees.containsKey(i))
+//                throw new IllegalArgumentException(i + "isnt a employee");
+        for (Integer id : shiftRoles.keySet()){
+            Role role = shiftRoles.get(id);
+            ShiftEmployee employee = allEmployees.get(id);
+            if (!employee.getRoles().contains(role))
+                return id + " was set to be " + role + " and dont have qualification for it";
+        }
         Shift s = new Shift(date,shiftManager,shiftRoles,startTime,endTime,period);
         if (period == Period.MORNING)
             morningSchedule.put(date,s);
         else
             eveningSchedule.put(date,s);
+        return null;
     }
     public void updateEmployee(ShiftEmployee employee){
         checkEmployee(employee.getEmployeeID());
         allEmployees.put(employee.getEmployeeID(), employee);
     }
-    public void checkEmployee(int id){
-        if (allEmployees.containsKey(id))
-            throw new IllegalArgumentException("employee not part of this HR branch");
+    public boolean checkEmployee(int id){
+        return allEmployees.containsKey(id);
+//        if (allEmployees.containsKey(id))
+//            return "employee not part of this HR branch";
+////            throw new IllegalArgumentException("employee not part of this HR branch");
+//        return null;
     }
 //    public Map<ShiftEmployee,Preferences> GetEmployeesPref(){
 //        Map<ShiftEmployee,Preferences> m = new HashMap<>();

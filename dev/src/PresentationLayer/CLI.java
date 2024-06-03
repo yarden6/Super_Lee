@@ -124,53 +124,57 @@ public class CLI {
         System.out.println(pref);
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
         String[] period = {"Morning", "Evening"};
-        String[] roles = {"CASHIER", "DELIVERYGUY", "STOREKEEPER"};
-        int shiftWorkers;
-        int employeeID;
-        int role;
-        int time;
-        LocalTime start;
-        LocalTime end;
-        Map<Integer, String> workersRoles = new HashMap<>();
         for (int i = 0; i < days.length; i++){
             for (int j = 0; j < period.length; j++) {
-                System.out.println("Create the " + period[j] + " shift of " + days[i]);
-                System.out.println("Enter when the shift starts (hour between 0-23)");
-                time = scanner.nextInt();
-                start = convertToLocalTime(time);
-                System.out.println("Enter when the shift ends (hour between 0-23)");
-                time = scanner.nextInt();
-                end = convertToLocalTime(time);
-                System.out.println("Select number of employees for the shift: ");
-                shiftWorkers = scanner.nextInt();
-                System.out.println("Select manager ID for the Shift");
-                employeeID = scanner.nextInt();
-                workersRoles.put(employeeID,"SHIFTMANAGER");
-                for (int k = 0; k < shiftWorkers - 1; k++){
-                    System.out.println("Select Employee ID:");
-                    employeeID = scanner.nextInt();
-                    System.out.println("Choose Role:");
-                    System.out.println("1. CASHIER");
-                    System.out.println("2. STOREKEEPER");
-                    System.out.println("3. DELIVERYGUY");
-                    role = scanner.nextInt();
-                    while (2 < role | role < 0){
-                        System.out.println("Choose again, no such role");
-                    }
-                    if (workersRoles.containsKey(employeeID)){
-                        System.out.println("Employee cant be twice in the same shift, please make all the shifts again");
-                    }
-                    workersRoles.put(employeeID, roles[role]);
-                }
-                String res = employeeFacade.HRSetShift(id, workersRoles, new Date(), start,end, period[j]);
-                if (res != null){
-                    System.out.println(res);
-                    setShifts();
-                }
-                workersRoles.clear();
+                createSingleShift(days[i],period[j]);
             }
         }
         hrManager();
+    }
+
+    private void createSingleShift(String day, String period) {
+        int time;
+        int shiftWorkers;
+        LocalTime start;
+        LocalTime end;
+        Map<Integer, String> workersRoles = new HashMap<>();
+        int shiftManagerID;
+        int employeeID;
+        int role;
+        String[] roles = {"CASHIER", "DELIVERYGUY", "STOREKEEPER"};
+        System.out.println("Create the " + period + " shift of " + day);
+        System.out.println("Enter when the shift starts (hour between 0-23)");
+        time = scanner.nextInt();
+        start = convertToLocalTime(time);
+        System.out.println("Enter when the shift ends (hour between 0-23)");
+        time = scanner.nextInt();
+        end = convertToLocalTime(time);
+        System.out.println("Select number of employees for the shift: ");
+        shiftWorkers = scanner.nextInt();
+        System.out.println("Select manager ID for the Shift");
+        shiftManagerID = scanner.nextInt();
+        for (int k = 0; k < shiftWorkers - 1; k++){
+            System.out.println("Select Employee ID:");
+            employeeID = scanner.nextInt();
+            System.out.println("Choose Role:");
+            System.out.println("1. CASHIER");
+            System.out.println("2. STOREKEEPER");
+            System.out.println("3. DELIVERYGUY");
+            role = scanner.nextInt();
+            while (2 < role | role < 0){
+                System.out.println("Choose again, no such role");
+            }
+            if (workersRoles.containsKey(employeeID)){
+                System.out.println("Employee cant be twice in the same shift, please make the shift again");
+                createSingleShift(day, period);
+            }
+            workersRoles.put(employeeID, roles[role]);
+        }
+        String res = employeeFacade.HRSetShift(id,shiftManagerID, workersRoles, new Date(), start,end, period);
+        if (res != null){
+            System.out.println("shift cant be place becuse: " + res + ", please create this shift again");
+            createSingleShift(day, period);
+        }
     }
 
     private static LocalTime convertToLocalTime(int hour) {

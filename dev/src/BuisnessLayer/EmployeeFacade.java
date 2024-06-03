@@ -1,10 +1,7 @@
 package BuisnessLayer;
 
 import java.time.LocalTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class EmployeeFacade {
     Map<Integer,Employee> employees;
@@ -81,13 +78,26 @@ public class EmployeeFacade {
     }
 
 
-    public String HRSetShift(int hrID,Map<Integer,String> workersRoles,
+    public String HRSetShift(int hrID, int shiftManagerID, Map<Integer,String> workersRoles,
                             Date date, LocalTime startTime, LocalTime endTime, String period){
         checkLoggedin(hrID);
         HRManager hr = getHRManager(hrID);
-        //TODO foreach to all map values//// to check if the employee have the role he is assign to//// create shift if everything is good/////
-        //hr.createShift(shiftManager,shiftRoles,date,startTime,endTime,period);
+        Map<Integer, Role> employeesRoles = new HashMap<>();
+        employeesRoles = stringToRole(workersRoles);
+        String res = hr.createShift(getShiftEmployee(shiftManagerID),employeesRoles,date,startTime,endTime,convertStringToPeriod(period));
+        if (res != null)
+            return res;
         return null;
+    }
+
+    private Map<Integer, Role> stringToRole(Map<Integer, String> workersRoles) {
+        Map<Integer, Role> employeesRoles = new HashMap<>();
+        for (Map.Entry<Integer, String> entey: workersRoles.entrySet()){
+            Integer id = entey.getKey();
+            Role role = convertStringToRole(entey.getValue());
+            employeesRoles.put(id, role);
+        }
+        return employeesRoles;
     }
 
     public String addRoleToEmployee(int HRid,int employeeID, String role){
@@ -158,6 +168,16 @@ public class EmployeeFacade {
         }
         try {
             return Role.valueOf(roleName.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid role name: " + roleName);
+        }
+    }
+    private Period convertStringToPeriod(String roleName) {
+        if (roleName == null) {
+            throw new IllegalArgumentException("Role name cannot be null");
+        }
+        try {
+            return Period.valueOf(roleName.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid role name: " + roleName);
         }
