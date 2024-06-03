@@ -1,22 +1,20 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
 
 public class Category {
     private String name;
     private Category parentCategory;
-    private Hashtable<String,Category> subCategories; // Holds sub-categories and sub-sub-categories
-    private Hashtable<Integer,Product> products; // Only for sub-sub-categories (Integer holds the MKT of the product)
-    private int discount;
+    private Hashtable<String, Category> subCategories; // Holds sub-categories and sub-sub-categories
+    private Hashtable<Integer, Product> products; // Only for sub-sub-categories (Integer holds the MKT of the product)
+    private int discountPercentage;
     private LocalDate discountDate;
 
 
     /**
      * new main category
+     *
      * @param name
      */
     public Category(String name) {
@@ -24,12 +22,13 @@ public class Category {
         this.parentCategory = null;
         this.subCategories = new Hashtable<>();
         this.products = new Hashtable<>();
-        this.discount = 0;
+        this.discountPercentage = 0;
         this.discountDate = null;
     }
 
     /**
      * new sub-category
+     *
      * @param name
      * @param parentCategory
      */
@@ -38,7 +37,7 @@ public class Category {
         this.parentCategory = parentCategory;
         this.subCategories = new Hashtable<>();
         this.products = new Hashtable<>();
-        this.discount = 0;
+        this.discountPercentage = 0;
         this.discountDate = null;
 
         parentCategory.addSubCategory(this);
@@ -46,6 +45,7 @@ public class Category {
 
     /**
      * new sub-sub-category
+     *
      * @param name
      * @param parentCategory
      * @param products
@@ -55,7 +55,7 @@ public class Category {
         this.parentCategory = parentCategory;
         this.subCategories = new Hashtable<>();
         this.products = products;
-        this.discount = 0;
+        this.discountPercentage = 0;
         this.discountDate = null;
 
         parentCategory.addSubCategory(this);
@@ -63,14 +63,14 @@ public class Category {
 
 
     public void addSubCategory(Category subCategory) {
-        subCategories.put(subCategory.getName(),subCategory);
+        subCategories.put(subCategory.getName(), subCategory);
         subCategory.setParentCategory(this);
     }
 
     // only for sub-sub-category
-    public void addProduct(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount) {
-        if (isLeafCategory()) {
-            products.put(MKT, new Product(name, MKT, aisle, producerName, storeAmount, storageAmount,  sellingPrice, deliveryDays, minimumAmount));
+    public void addProduct(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount) {
+        if (isLeafCategory() || (this.name == "Defective")) {
+            products.put(MKT, new Product(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount));
         } else {
             System.out.println("Only sub-sub-categories can have products");
         }
@@ -106,16 +106,16 @@ public class Category {
         return parentCategory;
     }
 
-    public Hashtable<String,Category> getSubCategories() {
+    public Hashtable<String, Category> getSubCategories() {
         return subCategories;
     }
 
-    public Hashtable<Integer,Product> getProducts() {
+    public Hashtable<Integer, Product> getProducts() {
         return products;
     }
 
-    public int getDiscount() {
-        return discount;
+    public int getDiscountPercentage() {
+        return discountPercentage;
     }
 
     public LocalDate getDiscountDate() {
@@ -130,20 +130,35 @@ public class Category {
         this.parentCategory = parentCategory;
     }
 
-    public void setDiscount(int discount) {
-        this.discount = discount;
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
     }
 
     public void setDiscountDate(LocalDate discountDate) {
         this.discountDate = discountDate;
     }
 
-    public void applyDiscount (int discount, LocalDate discountDate){
-        setDiscount(discount);
+    public void applyDiscount(int discount, LocalDate discountDate) {
+        setDiscountPercentage(discount);
         setDiscountDate(discountDate);
     }
 
-    public String toString(){
+    public void reportDefectiveItem(int MKT, int id, String name, String producerName) {
+        Product p = getProducts().get(MKT);
+        if (p == null) {
+            products.put(MKT, new Product(name, MKT, producerName));
+        } else
+            p.addDefectItem(); // increase the amount
+    }
+
+    public String toString() {
         return "Category Name: " + name + '\n';
+    }
+
+    public String checkDefective(int mkt) {
+        Product productToReturn = getProducts().get(mkt);
+        if (productToReturn != null)
+            return productToReturn.toString();
+        return "Not exist";
     }
 }

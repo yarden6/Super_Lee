@@ -122,9 +122,11 @@ public class InventoryMenu {
             System.out.println("---PRODUCTS MENU---");
             System.out.println("1. Add product");
             System.out.println("2. View product");
-            System.out.println("3. Update product");
+            System.out.println("3. Restock store");
             System.out.println("4. Apply product discount");
-            System.out.println("5. Exit");
+            System.out.println("5. Update store after purchase");
+            System.out.println("6. Locate defective items (if exists)");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -138,12 +140,18 @@ public class InventoryMenu {
                     viewProduct();
                     break;
                 case 3:
-                    updateProduct();
+                    restockStore();
                     break;
                 case 4:
                     applyProductDiscount();
                     break;
                 case 5:
+                    updateStoreAfterPurchase();
+                    break;
+                case 6:
+                    checkDefective();
+                    break;
+                case 7:
                     return;
                 default:
                     System.out.println("Invalid choice, please try again.");
@@ -156,9 +164,8 @@ public class InventoryMenu {
         while (true) {
             System.out.println("---ITEMS MENU---");
             System.out.println("1. Add items of a specific product");
-            System.out.println("2. View items of a specific product");
-            System.out.println("3. Report a defective item");
-            System.out.println("4. Exit");
+            System.out.println("2. Report a defective item");
+            System.out.println("3. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -166,15 +173,12 @@ public class InventoryMenu {
 
             switch (choice) {
                 case 1:
-                    addItems();
+                    addItems(-1);
                     break;
                 case 2:
-                    viewItems();
-                    break;
-                case 3:
                     reportDefectiveItem();
                     break;
-                case 4:
+                case 3:
                     return;
                 default:
                     System.out.println("Invalid choice, please try again.");
@@ -220,12 +224,12 @@ public class InventoryMenu {
         int minimumAmount = scanner.nextInt();
         scanner.nextLine();
 
-//        System.out.print("Enter 1 to add items of this product or 0 otherwise");
-//        int ans = scanner.nextInt();
-//        if (ans == 1) addItems();
-//        scanner.nextLine();
+        cf.addProduct(categories, name, MKT, aisle, producerName,sellingPrice, deliveryDays, minimumAmount);
 
-        cf.addProduct(categories, name, MKT, aisle, producerName, storeAmount, storageAmount, sellingPrice, deliveryDays, minimumAmount);
+        System.out.print("Enter 1 to add items of this product or 0 otherwise");
+        int ans = scanner.nextInt();
+        if (ans == 1) addItems(MKT);
+        scanner.nextLine();
     }
 
     private void viewProduct() {
@@ -248,36 +252,66 @@ public class InventoryMenu {
         cf.applyProductDiscount(MKT, discount, discountDate);
     }
 
-    private void updateProduct() {
+    private void restockStore() {
         System.out.print("Enter product MKT: ");
         int MKT = scanner.nextInt();
         scanner.nextLine();
+        System.out.print("Enter number of items to move to the store: ");
+        int numItems = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("The items you should transformed by the closest expiration date are: ");
+        System.out.println(cf.restockStore(MKT, numItems));
+    }
 
-        System.out.println("1. Update store amount");
-        System.out.println("2. Update storage amount");
+
+    private void updateStoreAfterPurchase() {
+        System.out.print("Enter product MKT: ");
+        int MKT = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter ID of items that have been purchased: (itemID1,itemId2,...)");
+        String itemsIDs = scanner.nextLine();
+        String ids[] = itemsIDs.split(",");
+        cf.updateStoreAfterPurchase(MKT, ids);
+    }
+
+
+    private void checkDefective() {
+        System.out.print("Enter product MKT: ");
+        int MKT = scanner.nextInt();
+        scanner.nextLine();
+        cf.checkDefective(MKT);
+    }
+
+//    private void updateProduct() {
+//        System.out.print("Enter product MKT: ");
+//        int MKT = scanner.nextInt();
+//        scanner.nextLine();
+//
+//        System.out.println("1. Update store amount");
+//        System.out.println("2. Update storage amount");
 //        System.out.println("3. Update selling price");
 //        System.out.println("4. Update delivery days");
 //        System.out.println("5. Update minimum amount");
 //        System.out.println("6. Update aisle");
-        System.out.println("7. Exit");
-        System.out.print("Enter your choice: ");
-
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-
-        switch (choice) {
-            case 1:
-                System.out.print("Enter new store amount: ");
-                int storeAmount = scanner.nextInt();
-                scanner.nextLine();
-                cf.setProductStoreAmount(MKT, storeAmount);
-                break;
-            case 2:
-                System.out.print("Enter new storage amount: ");
-                int storageAmount = scanner.nextInt();
-                scanner.nextLine();
-                cf.setProductStorageAmount(MKT, storageAmount);
-                break;
+//        System.out.println("7. Exit");
+//        System.out.print("Enter your choice: ");
+//
+//        int choice = scanner.nextInt();
+//        scanner.nextLine();
+//
+//        switch (choice) {
+//            case 1:
+//                System.out.print("Enter new store amount: ");
+//                int storeAmount = scanner.nextInt();
+//                scanner.nextLine();
+//                cf.setProductStoreAmount(MKT, storeAmount);
+//                break;
+//            case 2:
+//                System.out.print("Enter new storage amount: ");
+//                int storageAmount = scanner.nextInt();
+//                scanner.nextLine();
+//                cf.setProductStorageAmount(MKT, storageAmount);
+//                break;
 //            case 3:
 //                System.out.print("Enter new selling price: ");
 //                double sellingPrice = scanner.nextDouble();
@@ -302,19 +336,21 @@ public class InventoryMenu {
 //                scanner.nextLine();
 //                //product.setSellingPrice(sellingPrice);
 //                break;
-            case 7:
-                return;
-            default:
-                System.out.println("Invalid choice, please try again.");
-        }
-    }
+//            case 7:
+//                return;
+//            default:
+//                System.out.println("Invalid choice, please try again.");
+//        }
+//    }
 
 
     // Item
-    private void addItems() {
-        System.out.print("Enter product MKT: ");
-        int MKT = scanner.nextInt();
-        scanner.nextLine();
+    private void addItems(int MKT) {
+        if (MKT != -1) {
+            System.out.print("Enter product MKT: ");
+            MKT = scanner.nextInt();
+            scanner.nextLine();
+        }
 
         System.out.print("Enter identical number of items to add: ");
         int numItems = scanner.nextInt();
@@ -327,30 +363,12 @@ public class InventoryMenu {
         double buyingPrice = scanner.nextDouble();
         scanner.nextLine();
 
-        System.out.print("Enter buying discount: ");
+        System.out.print("Enter buying discount (or buying price if there is no discount):");
         double buyingDiscount = scanner.nextDouble();
         scanner.nextLine();
 
         cf.addItems(MKT,numItems,ExpDate,buyingPrice,buyingDiscount);
 
-    }
-
-    private void viewItems() {
-        System.out.print("Enter product MKT: ");
-        int MKT = scanner.nextInt();
-        scanner.nextLine();
-
-//        Product product = inventorySystem.getProductByMKT(MKT);
-//        if (product == null) {
-//            System.out.println("Product not found.");
-//            return;
-//        }
-//
-//        List<Item> items = product.getItems();
-//        for (Item item : items) {
-//            System.out.println(item);
-//        }
-        // TODO
     }
 
     private void reportDefectiveItem() {

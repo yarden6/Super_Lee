@@ -4,26 +4,26 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+enum Location {
+    Store,
+    Storage,
+    Defective
+}
 public class Item {
     private int itemId;
     private LocalDate expirationDate;
     private double buyingPrice;
     private double buyingDiscount;
+    private Location location;
 
-    // new item without supplier discount
-    public Item(int itemId , LocalDate expirationDate, double buyingPrice){
-        this.itemId = itemId;
-        this.expirationDate = expirationDate;
-        this.buyingPrice = buyingPrice;
-        this.buyingDiscount = buyingPrice; // same price since there is no discount
-    }
 
-    // new item + original buying price + buying price after supplier discount
+
     public Item(int itemId , LocalDate expirationDate, double buyingPrice, double buyingDiscount){
         this.itemId = itemId;
         this.expirationDate = expirationDate;
         this.buyingPrice = buyingPrice;
         this.buyingDiscount = buyingDiscount;
+        location = Location.Storage; // assuming new items are brought straight to the storage
     }
 
     public boolean isExpired() {
@@ -62,5 +62,15 @@ public class Item {
         this.buyingDiscount = buyingDiscount;
     }
 
+    public void setLocationToStore() {
+        this.location = Location.Store;
+    }
 
+    public void setLocationToDefective() {
+        this.location = Location.Defective;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
 }

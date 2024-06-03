@@ -20,8 +20,8 @@ public class CategoryTest {
 
     @BeforeEach
     void setUp() {
-        p1 = new Product("milk 500ml", 123, 1, "Tnuva", 50, 50, 6.5, 3, 20);
-        p2 = new Product("milk 500ml", 456, 1, "Tara", 5, 5, 7.5, 3, 20);
+        p1 = new Product("milk 500ml", 123, 1, "Tnuva", 6.5, 3, 20);
+        p2 = new Product("milk 500ml", 456, 1, "Tara", 7.5, 3, 20);
         List<Product> l1 = new ArrayList<Product>();
         l1.add(p1);
         l1.add(p2);

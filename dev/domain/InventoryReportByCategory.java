@@ -45,6 +45,7 @@ public class InventoryReportByCategory extends Report {
                         }
                     }
 
+                }
             }
         }
     }

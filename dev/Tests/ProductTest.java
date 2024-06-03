@@ -12,8 +12,8 @@ public class ProductTest {
 
     @BeforeEach
     void setUp() {
-        p1 = new Product("milk 3% 500ml", 123, 1, "Tnuva", 50, 50, 6.5, 3, 20);
-        p2 = new Product("milk 3% 500ml", 456, 1, "Tara", 5, 5, 7.5, 3, 20);
+        p1 = new Product("milk 3% 500ml", 123, 1, "Tnuva", 6.5, 3, 20);
+        p2 = new Product("milk 3% 500ml", 456, 1, "Tara", 7.5, 3, 20);
     }
 
     @Test
@@ -22,7 +22,7 @@ public class ProductTest {
         assertTrue(p2.isUnderMinAmount());
     }
     @Test
-    void testSetAmount() {
+    void testSetAmount() { //TODO not a good test
         p1.setStoreAmount(60);
         assertEquals(p1.getTotalAmount(), 110);
     }

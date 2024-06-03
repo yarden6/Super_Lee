@@ -1,9 +1,9 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static java.lang.Integer.MAX_VALUE;
 
 public class Product {
     private String name;
@@ -16,7 +16,7 @@ public class Product {
     private  double sellingPrice;
     private int deliveryDays;
     private int minimumAmount;
-    private int discount;
+    private int discountPercentage;
     private LocalDate discountDate;
     private int itemsCounter = 1;
 
@@ -24,17 +24,17 @@ public class Product {
     private List<Item> items;
 
     // new product without items
-    public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount) {
+    public Product(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount) {
         this.name = name;
         this.MKT = MKT;
         this.aisle = aisle;
         this.producerName = producerName;
-        this.storeAmount = storeAmount;
-        this.storageAmount = storageAmount;
+        this.storeAmount = 0;
+        this.storageAmount = 0;
         this.sellingPrice = sellingPrice;
         this.deliveryDays = deliveryDays;
         this.minimumAmount = minimumAmount;
-        this.discount = 0;
+        this.discountPercentage = 0;
         this.discountDate = null;
 
         this.items = new ArrayList<>();
@@ -47,11 +47,24 @@ public class Product {
         this.items = items;
     }
 
-    public void addItemToStore(Item item) {
-        items.add(item);
-        storeAmount++;
-        totalAmount++;
+    // new defected product
+    public Product(String name, int MKT, String producerName){
+        this.name = name;
+        this.MKT = MKT;
+        this.aisle = 0;
+        this.producerName = producerName;
+        this.storeAmount = 0;
+        this.storageAmount = 0;
+        this.sellingPrice = 0;
+        this.deliveryDays = 0;
+        this.minimumAmount = MAX_VALUE; // so that it won't alert
+        this.discountPercentage = 0;
+        this.discountDate = null;
+
+        this.items = new ArrayList<>();
+        this.totalAmount = 1;
     }
+
 
     // when we get new items from the supplier - it goes straight to the storage
     public void addItemToStorage(LocalDate expirationDate, double buyingPrice, double buyingDiscount) {
@@ -61,18 +74,17 @@ public class Product {
         totalAmount++;
     }
 
-    // when an item is bought from the store
-    public void removeItemFromStore(Item item) {
-        items.remove(item);
-        storeAmount--;
-        totalAmount--;
-        checkMinAmountAlert(); // alert if needed
-    }
 
-    public void addItemFromStorage(Item item) {
-        items.remove(item);
-        storageAmount--;
-        totalAmount--;
+    public void removeItemFromStore(int itemID) {
+        for (Item item : items){
+            if(item.getItemId() == itemID){
+                items.remove(item);
+                storeAmount--;
+                totalAmount--;
+                checkMinAmountAlert(); // alert if needed
+                return;
+            }
+        }
     }
 
     public boolean isUnderMinAmount(){
@@ -178,8 +190,8 @@ public class Product {
         return minimumAmount;
     }
 
-    public int getDiscount() {
-        return discount;
+    public int getDiscountPercentage() {
+        return discountPercentage;
     }
 
     public LocalDate getDiscountDate() {
@@ -194,20 +206,35 @@ public class Product {
         return items;
     }
 
+    public void removeDefectiveItem(int itemID){
+        for (Item item : items){
+            if (item.getItemId() == itemID) {
+                items.remove(item);
+                if (item.getLocation() == Location.Store) {
+                    setStoreAmount(--this.storeAmount);
+                } else {
+                    setStorageAmount(--this.storageAmount);
+                }
+                item.setLocationToDefective();
+                return;
+            }
+        }
+    }
+
     public void setItems(List<Item> items) {
         this.items = items;
     }
 
     @Override
     public String toString() {
-        return "Product Name: " + name + '\n' +
-                "MKT: " + MKT + '\n' +
-                "Producer Name: " + producerName + '\n' +
-                "Total Amount: " + totalAmount;
+        return "      Product Name: " + name + '\n' +
+                "      MKT: " + MKT + '\n' +
+                "      Producer Name: " + producerName + '\n' +
+                "      Total Amount: " + totalAmount + '\n';
     }
 
-    public void setDiscount(int discount) {
-        this.discount = discount;
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
     }
 
     public void setDiscountDate(LocalDate discountDate) {
@@ -215,7 +242,7 @@ public class Product {
     }
 
     public void applyDiscount (int discount, LocalDate discountDate){
-        setDiscount(discount);
+        setDiscountPercentage(discount);
         setDiscountDate(discountDate);
     }
 
