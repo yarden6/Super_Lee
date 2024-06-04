@@ -40,6 +40,8 @@ public class EmployeeFacade {
     }
 
     public String getShifts(int id, LocalDate date){
+        if (!isHR(id) )
+            return "not valid HR";
         ShiftEmployee employee = getShiftEmployee(id);
         HRManager hrManager = getHRManager(employee.getHRid());
         return hrManager.getEmployeeShifts(id, date);
@@ -54,6 +56,8 @@ public class EmployeeFacade {
 
     public String hireEmployee(int HRid,String employeeName, int employeeID,
                              String bankAccount, boolean isFull, int salary,String password,String role) {
+        if (!HRManagers.containsKey(HRid))
+            return "HR manager not exist";
         if(!checkLoggedin(HRid))
             return " not logged in";
         HRManager hr = getHRManager(HRid);
@@ -82,6 +86,8 @@ public class EmployeeFacade {
 
     //
     public String fireEmployee(int empId,int HRid){
+        if (!isHR(HRid) )
+            return "not valid HR";
         if(!checkLoggedin(HRid))
             return " not logged in";
         if (shiftEmployees.containsKey(empId)){
@@ -125,6 +131,8 @@ public class EmployeeFacade {
     }
 
     public String addRoleToEmployee(int HRid,int employeeID, String role){
+        if (!isHR(HRid) )
+            return "not valid HR";
         if(!checkLoggedin(HRid))
             return " not logged in";
         Role role1 = convertStringToRole(role);
@@ -138,6 +146,8 @@ public class EmployeeFacade {
     }
 
     public String changeRoleToEmployee(int HRid, int employeeID, String currRole, String newRole){
+        if (!isHR(HRid) )
+            return "not valid HR";
         if(!checkLoggedin(HRid))
             return " not logged in";
         Role currRole1 = convertStringToRole(currRole);
@@ -152,12 +162,16 @@ public class EmployeeFacade {
     }
 
     public String getAllShifts(int id,LocalDate date){
+        if (!isHR(id) )
+            return "not valid HR";
         if(!checkLoggedin(id))
             return " not logged in";
         HRManager hrManager = getHRManager(id);
         return hrManager.getAllShifts(date);
     }
     public String deleteRoleFromEmployee(int HRid,int employeeID, String role){
+        if (!isHR(HRid) )
+            return "not valid HR";
         if(!checkLoggedin(HRid))
             return " not logged in";
         Role role1 = convertStringToRole(role);

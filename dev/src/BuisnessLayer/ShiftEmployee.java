@@ -2,7 +2,6 @@ package BuisnessLayer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Stack;
 
 public class ShiftEmployee extends Employee {
@@ -85,36 +84,16 @@ public class ShiftEmployee extends Employee {
         return s;
     }
     //---------------------getters and setters----------------------------
-    public boolean isFullTime() {
-        return isFullTime;
-    }
-
-    public void setFullTime(boolean fullTime) {
-        isFullTime = fullTime;
-    }
-
     public ArrayList<Role> getRoles() {
         return roles;
-    }
-
-    public void setRoles(ArrayList<Role> roles) {
-        this.roles = roles;
     }
 
     public Stack<Preferences> getPreferences() {
         return preferences;
     }
 
-    public void setPreferences(Stack<Preferences> preferences) {
-        this.preferences = preferences;
-    }
     public int getHRid() {
         return HRid;
     }
-
-    public void setHRid(int HRid) {
-        this.HRid = HRid;
-    }
-
 
 }
