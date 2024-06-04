@@ -59,21 +59,21 @@ public class CategoryFacade {
         }
     }
 
-    public void addProduct(String[] categoriesName, String name, int MKT, int aisle, String producerName
+    public boolean addProduct(String[] categoriesName, String name, int MKT, int aisle, String producerName
             , double sellingPrice, int deliveryDays, int minimumAmount) {
-
         Category mainCategory = categories.get(categoriesName[0]); // locate the desired category
         if (mainCategory != null) {
+            if (mainCategory.getName() == "Defective") return false;
             Category subCategory = mainCategory.getSubCategories().get(categoriesName[1]);
             if (subCategory != null) {
                 Category subSubCategory = subCategory.getSubCategories().get(categoriesName[2]);
                 if (subSubCategory != null) {
                     subSubCategory.addProduct(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount);
-                    return;
+                    return true;
                 }
             }
         }
-        System.out.println("This category doesn't exist");
+        return false;
     }
 
     public Product getProduct(int MKT) {

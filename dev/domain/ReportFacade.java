@@ -36,7 +36,6 @@ public class ReportFacade {
         if (current.getDayOfWeek() == DayOfWeek.SUNDAY) {
             makeInventoryReport(new String[0]);
             makeDefectiveReport();
-
         }
     }
 

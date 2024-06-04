@@ -25,6 +25,7 @@ public class InventoryMenu {
     // Menu
     public void startMenu() {
         while (true) {
+            System.out.println("");
             System.out.println("---INVENTORY MENU---");
             System.out.println("1. Products Menu");
             System.out.println("2. Reports Menu");
@@ -59,6 +60,7 @@ public class InventoryMenu {
 
     private void categoryMenu() {
         while (true) {
+            System.out.println("");
             System.out.println("---CATEGORY MENU---");
             System.out.println("1. Add category");
             System.out.println("2. Add sub-category");
@@ -93,6 +95,7 @@ public class InventoryMenu {
 
     private void reportsMenu() {
         while (true) {
+            System.out.println("");
             System.out.println("---REPORT MENU---");
             System.out.println("1. View inventory report");
             System.out.println("2. View defective report");
@@ -119,6 +122,7 @@ public class InventoryMenu {
 
     private void productsMenu() {
         while (true) {
+            System.out.println("");
             System.out.println("---PRODUCTS MENU---");
             System.out.println("1. Add product");
             System.out.println("2. View product");
@@ -194,8 +198,8 @@ public class InventoryMenu {
         System.out.print("Enter Category to add the product (Main Category Name,Sub-Category Name,Sub-Sub-Category Name): ");
         String categoriesName = scanner.nextLine();
         String categories[] = categoriesName.split(",");
-        if (categories.length > 3) {
-            System.out.print("Invalid input, please try again. ");
+        if (categories.length != 3) {
+            System.out.println("Invalid input, please try again. ");
             addProduct();
         }
         System.out.print("Enter product name: ");
@@ -224,12 +228,16 @@ public class InventoryMenu {
         int minimumAmount = scanner.nextInt();
         scanner.nextLine();
 
-        cf.addProduct(categories, name, MKT, aisle, producerName,sellingPrice, deliveryDays, minimumAmount);
+        boolean succeed = cf.addProduct(categories, name, MKT, aisle, producerName,sellingPrice, deliveryDays, minimumAmount);
+        if (succeed){
+            System.out.print("Enter 1 to add items of this product or 0 otherwise: ");
+            int ans = scanner.nextInt();
+            if (ans == 1) addItems(MKT); //TODO scanner.nextLine();? check if need to do enter
+        }
+        else {
+            System.out.println("This category doesn't exist");
+        }
 
-        System.out.print("Enter 1 to add items of this product or 0 otherwise");
-        int ans = scanner.nextInt();
-        if (ans == 1) addItems(MKT);
-        scanner.nextLine();
     }
 
     private void viewProduct() {
@@ -248,7 +256,6 @@ public class InventoryMenu {
         scanner.nextLine();
         System.out.print("Enter date for the discount to end (yyyy-mm-dd): ");
         String discountDate = scanner.nextLine();
-        scanner.nextLine();
         cf.applyProductDiscount(MKT, discount, discountDate);
     }
 
@@ -346,7 +353,7 @@ public class InventoryMenu {
 
     // Item
     private void addItems(int MKT) {
-        if (MKT != -1) {
+        if (MKT == -1) {
             System.out.print("Enter product MKT: ");
             MKT = scanner.nextInt();
             scanner.nextLine();
@@ -363,7 +370,7 @@ public class InventoryMenu {
         double buyingPrice = scanner.nextDouble();
         scanner.nextLine();
 
-        System.out.print("Enter buying discount (or buying price if there is no discount):");
+        System.out.print("Enter buying price after discount (or buying price again if there is no discount): ");
         double buyingDiscount = scanner.nextDouble();
         scanner.nextLine();
 
