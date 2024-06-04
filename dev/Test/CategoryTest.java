@@ -1,4 +1,4 @@
-package Tests;
+package Test;
 import domain.Product;
 import domain.Category;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,9 +22,6 @@ public class CategoryTest {
     void setUp() {
         p1 = new Product("milk 500ml", 123, 1, "Tnuva", 6.5, 3, 20);
         p2 = new Product("milk 500ml", 456, 1, "Tara", 7.5, 3, 20);
-        List<Product> l1 = new ArrayList<Product>();
-        l1.add(p1);
-        l1.add(p2);
 
         mainCategory1 = new Category("Dairy products");
         mainCategory2 = new Category("Baking products");
@@ -33,7 +30,7 @@ public class CategoryTest {
         subCategory2 = new Category("Cheese");
         subCategory3 = new Category("Cream");
 
-        //subSubCategory = new Category("500ml", subCategory1, l1); TODO change from list to Hashtable
+        //subSubCategory = new Category("500ml", subCategory1, );
     }
 
     @Test
