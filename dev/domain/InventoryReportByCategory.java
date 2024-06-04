@@ -9,44 +9,49 @@ import java.util.List;
 
 public class InventoryReportByCategory extends Report {
 
-    public InventoryReportByCategory(int reportCounter, Hashtable<String,Category> categories, String[] selectedCategories) {
+
+    public InventoryReportByCategory(int reportCounter) {
         super(reportCounter);
-        createReport(categories , selectedCategories);
     }
 
-
-    public void createReport(Hashtable<String,Category> categories, String[] selectedCategories){
+    public String createReport(Hashtable<String,Category> categories, String[] selectedCategories){
         if (selectedCategories[0]==""){ // if there are no selected categories, print all the categories
             String[] categoryKeysArray = categories.keySet().toArray(new String[0]);
-            chooseCategory(categories,categoryKeysArray);
+            return chooseCategory(categories,categoryKeysArray);
         }
         else
-            chooseCategory(categories,selectedCategories);
+            return chooseCategory(categories,selectedCategories);
     }
 
-    public void chooseCategory(Hashtable<String, Category> categories, String[] selectedCategories) {
+    public String chooseCategory(Hashtable<String, Category> categories, String[] selectedCategories) {
+        StringBuilder report = new StringBuilder();
         for (String name : selectedCategories) {
             if (name != "Defective") {
                 Category selectedParent = categories.get(name); // for the main category
-                System.out.println("Main Category: " + selectedParent.getName());
+                if (selectedParent != null) {
+                    report.append("Main Category: " + selectedParent.getName()+"\n");
 
-                for (String s : selectedParent.getSubCategories().keySet()) { // for the sub category
-                    Category sub = selectedParent.getSubCategories().get(s);
-                    System.out.println("  Sub Category: " + sub.getName());
+                    for (String s : selectedParent.getSubCategories().keySet()) { // for the sub category
+                        Category sub = selectedParent.getSubCategories().get(s);
+                        report.append("  Sub Category: " + sub.getName()+"\n");
 
-                    for (String subSubName : sub.getSubCategories().keySet()) { // for the sub-sub category
-                        Category subSub = sub.getSubCategories().get(subSubName);
-                        System.out.println("    Sub-Sub Category: " + subSub.getName());
-                        if (subSub.getProducts().isEmpty())
-                            System.out.println("     No products");
-                        for (Integer mkt : subSub.getProducts().keySet()) { //for the products
-                            Product p = subSub.getProducts().get(mkt);
-                            System.out.println(p.toString());
+                        for (String subSubName : sub.getSubCategories().keySet()) { // for the sub-sub category
+                            Category subSub = sub.getSubCategories().get(subSubName);
+                            report.append("    Sub-Sub Category: " + subSub.getName()+"\n");
+                            if (subSub.getProducts().isEmpty())
+                                report.append("     No products"+"\n");
+                            for (Integer mkt : subSub.getProducts().keySet()) { //for the products
+                                Product p = subSub.getProducts().get(mkt);
+                                report.append(p.toString()+"\n");
+                            }
                         }
-                    }
 
+                    }
                 }
             }
         }
+        if(report.length() == 0)
+            return "There is no category by this name";
+        return report.toString();
     }
 }

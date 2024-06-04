@@ -6,21 +6,21 @@ import java.util.List;
 
 public class DefectiveReport extends Report {
 
-    public DefectiveReport(int reportCounter, Hashtable<Integer, Product> products) {
+    public DefectiveReport(int reportCounter) {
         super(reportCounter);
-        createReport(products);
 
     }
-    public void createReport(Hashtable<Integer, Product> products){
-        System.out.println("___________________________________________");
-        System.out.println("Defected products:");
+    public String createReport(Hashtable<Integer, Product> products){
+        StringBuilder report = new StringBuilder("___________________________________________"+ "\n");
+        report.append("Defected products:");
         int index = 1;
         for (Integer MKT:products.keySet()) {
-            System.out.println(index++);
+            report.append(String.valueOf(index++)+ "\n");
             Product p = products.get(MKT);
-            System.out.println(p.toString());
-            System.out.println("___________________________________________");
+            report.append(p.toString()+ "\n");
+            report.append("___________________________________________"+"\n");
         }
+        return report.toString();
     }
 
 

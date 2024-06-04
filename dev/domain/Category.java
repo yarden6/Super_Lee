@@ -77,17 +77,6 @@ public class Category {
     }
 
     // only for sub-sub-category
-    public void removeProduct(Product product) {
-        if (products.contains(product)) {
-            products.remove(product);
-        } else {
-            System.out.println("product does not exist");
-        }
-    }
-
-    public void removeSubCategory(Category subCategory) {
-        subCategories.remove(subCategory);
-    }
 
     public boolean isMainCategory() {
         return parentCategory == null;

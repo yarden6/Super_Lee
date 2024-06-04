@@ -18,26 +18,28 @@ public class ReportFacade {
         reportCounter = 1;
     }
 
-    public void makeInventoryReport(String[] selectedCategories) {
-        Report r = new InventoryReportByCategory(reportCounter, categoryFacade.getCategories(), selectedCategories);
+    public String makeInventoryReport(String[] selectedCategories) {
+        InventoryReportByCategory r = new InventoryReportByCategory(reportCounter);
+        String report = r.createReport(categoryFacade.getCategories(), selectedCategories);
         inventoryReports.put(reportCounter, r);
         reportCounter++;
-
+        return report;
     }
 
-    public void makeDefectiveReport() {
-        Report r = new DefectiveReport(reportCounter, categoryFacade.getCategories().get("Defective").getProducts());
+    public String makeDefectiveReport() {
+        DefectiveReport r = new DefectiveReport(reportCounter);
+        String report = r.createReport(categoryFacade.getCategories().get("Defective").getProducts());
         defectiveReports.put(reportCounter, r);
         reportCounter++;
+        return report;
     }
 
-    public void publishReportWeekly() {
+    public String [] publishReportWeekly() {
         LocalDate current = LocalDate.now();
         if (current.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            makeInventoryReport(new String[0]);
-            makeDefectiveReport();
-
+            return new String[] {makeInventoryReport(new String[0]) ,makeDefectiveReport()};
         }
+        return null;
     }
 
 

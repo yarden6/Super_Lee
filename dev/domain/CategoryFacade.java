@@ -17,27 +17,32 @@ public class CategoryFacade {
         return categories;
     }
 
-    public void addCategory(String categoryName) {
-        categories.put(categoryName, new Category(categoryName));
-
+    public boolean addCategory(String categoryName) {
+        if(categoryName != null) {
+            categories.put(categoryName, new Category(categoryName));
+        }
+        return true;
     }
 
-    public void addSubCategory(String parentCategoryName, String subCategoryName) {
+    public boolean addSubCategory(String parentCategoryName, String subCategoryName) {
         Category parentCategory = categories.get(parentCategoryName);
         if (parentCategory != null) {
             Category sub = new Category(subCategoryName, parentCategory);
+            return true;
         }
-
+        return false;
     }
 
-    public void addSubSubCategory(String parentCategoryName, String subCategoryName, String subSubCategoryName) {
+    public boolean addSubSubCategory(String parentCategoryName, String subCategoryName, String subSubCategoryName) {
         Category parentCategory = categories.get(parentCategoryName);
         if (parentCategory != null) {
             Category subCategory = parentCategory.getSubCategories().get(subCategoryName);
             if (subCategory != null) {
                 Category subSubCategory = new Category(subSubCategoryName, subCategory);
+                return true;
             }
         }
+        return false;
     }
 
 
@@ -176,14 +181,14 @@ public class CategoryFacade {
         return getProduct(MKT).restockStore(numItems);
     }
 
-    public void updateStoreAfterPurchase(int MKT, String[] itemIDs) {
+    public boolean updateStoreAfterPurchase(int MKT, String[] itemIDs) {
         Product p = getProduct(MKT);
         if(p != null) {
             for (String id : itemIDs)
-                p.removeItemFromStore(Integer.parseInt(id));
+                if(p.removeItemFromStore(Integer.parseInt(id)))
+                    return true;
         }
-        else
-            System.out.println("There is no such a MKT");
+        return false;
     }
 
     public String checkDefective(int mkt) {

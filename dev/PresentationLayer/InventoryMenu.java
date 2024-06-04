@@ -271,7 +271,12 @@ public class InventoryMenu {
         System.out.print("Enter ID of items that have been purchased: (itemID1,itemId2,...)");
         String itemsIDs = scanner.nextLine();
         String ids[] = itemsIDs.split(",");
-        cf.updateStoreAfterPurchase(MKT, ids);
+        if(!cf.updateStoreAfterPurchase(MKT, ids)){
+            System.out.println("There is no such a MKT");
+        }
+        else
+            System.out.println("Succeed");
+
     }
 
 
@@ -389,7 +394,7 @@ public class InventoryMenu {
         String categoriesName = scanner.nextLine();
         String categories[] = categoriesName.split(",");
         if (categories.length > 3) {
-            System.out.print("Invalid input, please try again. ");
+            System.out.println("Invalid input, please try again. ");
             applyCategoryDiscount();
         }
         System.out.print("Enter discount: ");
@@ -405,10 +410,10 @@ public class InventoryMenu {
         System.out.print("Enter Main Category Name,Sub-Category Name,Sub-Sub-Category Name:");
         String CategoriesName = scanner.nextLine();
         String categories[] = CategoriesName.split(",");
-        if (categories.length != 3)
-            cf.addSubSubCategory(categories[0], categories[1], categories[2]);
+        if (categories.length == 3 && cf.addSubSubCategory(categories[0], categories[1], categories[2]))
+            System.out.println("Succeed");
         else {
-            System.out.print("try again");
+            System.out.println("Try again");
             addSubSubCategory();
         }
 
@@ -418,10 +423,10 @@ public class InventoryMenu {
         System.out.print("Enter Main Category Name,Sub-Category Name: ");
         String CategoriesName = scanner.nextLine();
         String categories[] = CategoriesName.split(",");
-        if (categories.length != 2)
-            cf.addSubCategory(categories[0], categories[1]);
+        if (categories.length == 2 && cf.addSubCategory(categories[0], categories[1]))
+            System.out.println("Succeed");
         else {
-            System.out.print("try again");
+            System.out.println("Try again");
             addSubCategory();
         }
     }
@@ -429,20 +434,21 @@ public class InventoryMenu {
     private void addCategory() {
         System.out.print("Enter Category Name: ");
         String categoryName = scanner.nextLine();
-        cf.addCategory(categoryName);
+        if(cf.addCategory(categoryName))
+            System.out.println("Succeed");
+
     }
 
 
     // Report
     private void defectiveReport() {
-        rf.makeDefectiveReport();
+        System.out.println(rf.makeDefectiveReport());
     }
 
     private void inventoryReport() {
         System.out.print("Enter Main Categories to present in the inventory report (MainCategoryName1,MainCategoryName2,...) : ");
-        // TODO check what happens if no categories are selected
         String categoriesName = scanner.nextLine();
         String categories[] = categoriesName.split(",");
-        rf.makeInventoryReport(categories);
+        System.out.println(rf.makeInventoryReport(categories));
     }
 }

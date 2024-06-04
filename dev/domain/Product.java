@@ -75,16 +75,17 @@ public class Product {
     }
 
 
-    public void removeItemFromStore(int itemID) {
+    public boolean removeItemFromStore(int itemID) {
         for (Item item : items){
             if(item.getItemId() == itemID){
                 items.remove(item);
                 storeAmount--;
                 totalAmount--;
                 checkMinAmountAlert(); // alert if needed
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     public boolean isUnderMinAmount(){
