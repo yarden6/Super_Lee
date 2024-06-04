@@ -28,23 +28,25 @@ public class InventoryReportByCategory extends Report {
         for (String name : selectedCategories) {
             if (name != "Defective") {
                 Category selectedParent = categories.get(name); // for the main category
-                System.out.println("Main Category: " + selectedParent.getName());
+                if (selectedParent != null) {
+                    System.out.println("Main Category: " + selectedParent.getName());
 
-                for (String s : selectedParent.getSubCategories().keySet()) { // for the sub category
-                    Category sub = selectedParent.getSubCategories().get(s);
-                    System.out.println("  Sub Category: " + sub.getName());
+                    for (String s : selectedParent.getSubCategories().keySet()) { // for the sub category
+                        Category sub = selectedParent.getSubCategories().get(s);
+                        System.out.println("  Sub Category: " + sub.getName());
 
-                    for (String subSubName : sub.getSubCategories().keySet()) { // for the sub-sub category
-                        Category subSub = sub.getSubCategories().get(subSubName);
-                        System.out.println("    Sub-Sub Category: " + subSub.getName());
-                        if (subSub.getProducts().isEmpty())
-                            System.out.println("     No products");
-                        for (Integer mkt : subSub.getProducts().keySet()) { //for the products
-                            Product p = subSub.getProducts().get(mkt);
-                            System.out.println(p.toString());
+                        for (String subSubName : sub.getSubCategories().keySet()) { // for the sub-sub category
+                            Category subSub = sub.getSubCategories().get(subSubName);
+                            System.out.println("    Sub-Sub Category: " + subSub.getName());
+                            if (subSub.getProducts().isEmpty())
+                                System.out.println("     No products");
+                            for (Integer mkt : subSub.getProducts().keySet()) { //for the products
+                                Product p = subSub.getProducts().get(mkt);
+                                System.out.println(p.toString());
+                            }
                         }
-                    }
 
+                    }
                 }
             }
         }
