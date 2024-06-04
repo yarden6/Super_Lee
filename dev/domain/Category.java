@@ -69,11 +69,7 @@ public class Category {
 
     // only for sub-sub-category
     public void addProduct(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount) {
-        if (isLeafCategory() || (this.name == "Defective")) {
             products.put(MKT, new Product(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount));
-        } else {
-            System.out.println("Only sub-sub-categories can have products");
-        }
     }
 
     // only for sub-sub-category

@@ -19,8 +19,6 @@ public class Product {
     private int discountPercentage;
     private LocalDate discountDate;
     private int itemsCounter = 1;
-
-
     private List<Item> items;
 
     // new product without items
@@ -228,11 +226,20 @@ public class Product {
 
     @Override
     public String toString() {
-        return "      Product Name: " + name + '\n' +
-                "      MKT: " + MKT + '\n' +
-                "      Producer Name: " + producerName + '\n' +
-                "      Total Amount: " + totalAmount + '\n';
+        StringBuilder response = new StringBuilder();
+        response.append("      Product Name: ").append(name).append('\n')
+                .append("      MKT: ").append(MKT).append('\n')
+                .append("      Producer Name: ").append(producerName).append('\n')
+                .append("      Total Amount: ").append(totalAmount).append('\n')
+                .append("      Selling Price: ").append(sellingPrice).append('\n');
+        if (this.discountPercentage != 0) {
+            response.append("      Discount Percentage: ").append(discountPercentage).append('\n')
+                    .append("      Discount Date: ").append(discountDate.toString()).append('\n')
+                    .append("      Final Selling Price: ").append(sellingPrice * ((100 - discountPercentage) / 100.0)).append('\n');
+        }
+        return response.toString();
     }
+
 
     public void setDiscountPercentage(int discountPercentage) {
         this.discountPercentage = discountPercentage;
