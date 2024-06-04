@@ -1,23 +1,27 @@
 package BuisnessLayer;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Preferences {
     boolean[][] shifts;
-    Date start;
+    LocalDate madeAt;
 
-    public Preferences(boolean[][] shifts, Date start) {
+    public Preferences(boolean[][] shifts, LocalDate start) {
         //TODO (check if the array of boolean is the right size)
-        this.start = start;
+        this.madeAt = start;
         this.shifts = shifts;
     }
-
-    public Date getStart() {
-        return start;
+    public Preferences(){
+        this.madeAt = LocalDate.now();
+        this.shifts = new boolean[6][2];
     }
 
-    public void setStart(Date start) {
-        this.start = start;
+    public LocalDate getMadeAt() {
+        return madeAt;
+    }
+
+    public void setMadeAt(LocalDate madeAt) {
+        this.madeAt = madeAt;
     }
 
     public boolean[][] getShifts() {

@@ -28,8 +28,14 @@ public class Shift {
     }
 
     //methodes
-    public boolean contain(Integer id){
-       return shiftRoles.containsKey(id);
+    public boolean contain(int id){
+       return (shiftRoles.containsKey(id) || id == shiftManager.getID());
+    }
+    public String rolesToString(){
+        String s = "";
+        for (Integer id : shiftRoles.keySet())
+            s+= "id: " + id + ", Role: " + shiftRoles.get(id) + "\n";
+        return s;
     }
 
     public void remove(int employeeID) {
@@ -39,8 +45,20 @@ public class Shift {
 
     @Override
     public String toString() {
-        return "Date: " + date.toString() + "shift manager: " + shiftManager +  " \n" +
-                "start: " + startTime + "end" + endTime ;
+        return "Date: " + date.toString() + " "+ period + "  "
+                + "start: " + startTime +" "
+                + "end: " + endTime + "  "
+                + "shift manager: " + shiftManager.getEmployeeName() + " ";
+//                + getAllEmployees();
+    }
+
+    public String getRole(int id){
+        if (shiftRoles.containsKey(id))
+            return shiftRoles.get(id).toString();
+        else if (shiftManager.getID() == id)
+            return Role.SHIFTMANAGER.toString();
+        else
+        return "";
     }
 
     // getters and setters
@@ -92,5 +110,7 @@ public class Shift {
         this.period = period;
     }
 
-
+    public void addEmployee(ShiftEmployee e, Role role) {
+        shiftRoles.put(e.getID(),role);
+    }
 }

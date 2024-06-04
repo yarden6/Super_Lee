@@ -1,5 +1,6 @@
 package BuisnessLayer;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Stack;
@@ -14,11 +15,13 @@ public class ShiftEmployee extends Employee {
 
 
     public ShiftEmployee(String employeeName, int employeeID, String branch, String bankAccount,
-                         boolean isFull, int salary, String password , int HRid) {
+                         boolean isFull, int salary, String password , int HRid,Role role) {
         super(employeeName, employeeID,branch,bankAccount, salary,password);
         this.isFullTime = isFull;
         roles = new ArrayList<>();
+        roles.add(role);
         preferences = new Stack<>();
+        preferences.add(new Preferences());
         this.HRid = HRid;
 
     }
@@ -50,20 +53,27 @@ public class ShiftEmployee extends Employee {
         return null;
     }
 
-    public void callPreferences(boolean[][] shifts, Date startDate){
-        if (shifts.length != 7 || shifts[1].length != 2 || startDate == null )
-            throw new IllegalArgumentException("illegal shifts prefrence");
+    public String callPreferences(boolean[][] shifts, LocalDate startDate){
+        if (shifts.length != 6 || shifts[1].length != 2 || startDate == null )
+            return "illegal shifts prefrence";
         preferences.add(new Preferences(shifts,startDate));
+        return null;
     }
 
     public String getLastPref(){
+        if (preferences.isEmpty())
+            return "no preferences found \n";
         Preferences p = preferences.peek();
-        String s = "  sun  mon  tue  wen  thu  fri \n";
+        String s = " sun   mon   tue   wen   thu   fri \n";
         boolean [][] shifts = p.getShifts();
-        for (int i = 0; i < shifts.length; i++) {
-            for (int j = 0; j < shifts[i].length; j++) {
-                s = s + " " +shifts[i][j];
+        for (int i = 0; i < shifts[i].length; i++) {
+            for (int j = 0; j < shifts.length; j++) {
+                if (shifts[j][i])
+                    s = s + " " +shifts[j][i] +" ";
+                else
+                    s = s + " " +shifts[j][i];
             }
+            s+= " \n";
         }
         return s;
     }

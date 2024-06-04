@@ -1,24 +1,33 @@
 package PresentationLayer;
 
-import BuisnessLayer.Employee;
-import BuisnessLayer.EmployeeFacade;
-import BuisnessLayer.HRManager;
-import BuisnessLayer.ShiftEmployee;
+import BuisnessLayer.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CLI {
     public static Scanner scanner = new Scanner(System.in);
     EmployeeFacade employeeFacade;
     int id;
     String password;
+    LocalDate now;
+    LocalDate setShiftsTo;
 
     public CLI(List<HRManager> hrManagers, List<ShiftEmployee> shiftEmployees){
         employeeFacade = new EmployeeFacade(hrManagers, shiftEmployees);
+        now = LocalDate.now();
+//        setShiftsTo = now;
+//        System.out.println(now.getDayOfWeek().getValue());
+//        while (setShiftsTo.getDayOfWeek().getValue() != 2 && setShiftsTo.getDayOfWeek().getValue() != 6 ){
+//            setShiftsTo = setShiftsTo.plusDays(1);
+//        }
+//        if (setShiftsTo.getDayOfWeek().getValue() == 6)
+//            setShiftsTo = setShiftsTo.minusDays(4);
         logInMenu();
-
     }
     public void logInMenu() {
         System.out.println("Enter ID:");
@@ -45,6 +54,8 @@ public class CLI {
         System.out.println("5. add Employee Role ");
         System.out.println("6. change Employee Role ");
         System.out.println("7. delete Employee Role ");
+        System.out.println("8. change Employee Data");
+        System.out.println("9. logOut");
 
         int choice = scanner.nextInt();
         scanner.nextLine();
@@ -72,12 +83,78 @@ public class CLI {
                 deleteRole();
                 break;
             case 8:
-                System.out.println("thank for using our system");
-                System.exit(0);
+                changeEmployeeData();
+                break;
+            case 9:
+                employeeFacade.logout(id);
+                logInMenu();
             default:
                 System.out.println("this employee action is not exist");
                 hrManager();
         }
+    }
+
+    private void changeEmployeeData() {
+        int choice = 0;
+        while (choice != 1 && choice != 2 && choice != 3){
+            System.out.println("Select Employee Data to change:");
+            System.out.println("1. Salary");
+            System.out.println("2. Bank Account");
+            System.out.println("3. Vacation Days");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        }
+        switch (choice){
+            case 1:
+                changeSalary();
+                break;
+            case 2:
+                changeBankAccount();
+                break;
+            case 3:
+                changeVacationDays();
+                break;
+            default:
+                System.out.println("Invalid choice, please try again");
+                changeEmployeeData();
+        }
+
+    }
+
+    private void changeVacationDays() {
+        System.out.println("Enter the new Vacation Days:");
+        int vacationDays = scanner.nextInt();
+        scanner.nextLine();
+        String ret = employeeFacade.changeVacationDays(id, vacationDays);
+        if (ret != null){
+            System.out.println(ret);
+            changeVacationDays();
+        }
+        hrManager();
+
+    }
+
+    private void changeBankAccount() {
+        System.out.println("Enter the new Bank Account:");
+        String bankAccount = scanner.nextLine();
+        String ret = employeeFacade.changeBankAccount(id, bankAccount);
+        if (ret != null){
+            System.out.println(ret);
+            changeBankAccount();
+        }
+        hrManager();
+    }
+
+    private void changeSalary() {
+        System.out.println("Enter the new Salary:");
+        int salary = scanner.nextInt();
+        scanner.nextLine();
+        String ret = employeeFacade.changeSalary(id, salary);
+        if (ret != null){
+            System.out.println(ret);
+            changeSalary();
+        }
+        hrManager();
     }
 
     private void hire() {
@@ -105,7 +182,20 @@ public class CLI {
         scanner.nextLine();
         System.out.println("PASSWORD:");
         String employeePassword = scanner.nextLine();
-        String ret = employeeFacade.hireEmployee(id,name, employeeID, bankAccount, isFull, salary, employeePassword);
+        String[] roles = {"CASHIER", "STOREKEEPER", "DELIVERYGUY"};
+        System.out.println("role:");
+        System.out.println("1. CASHIER");
+        System.out.println("2. STOREKEEPER");
+        System.out.println("3. DELIVERYGUY");
+        int role = scanner.nextInt();
+        scanner.nextLine();
+        while (3 < role | role < 1){
+            System.out.println("Choose again, no such role");
+            role = scanner.nextInt();
+            scanner.nextLine();
+        }
+        String stringRole = roles[role - 1];
+        String ret = employeeFacade.hireEmployee(id,name, employeeID, bankAccount, isFull, salary, employeePassword,stringRole);
         if (ret != null){
             System.out.println(ret);
         }
@@ -117,86 +207,192 @@ public class CLI {
         int employeeID = scanner.nextInt();
         scanner.nextLine();
         String ret = employeeFacade.fireEmployee(employeeID, id);
-        if (ret != null){
+        if (!ret.equals("")){
             System.out.println(ret);
-            fire();
         }
         hrManager();
     }
 
     private void setShifts() {
         String pref = employeeFacade.getPreferences(id);
-        System.out.println(pref);
-        String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
-        String[] period = {"Morning", "Evening"};
-        for (int i = 0; i < days.length; i++){
-            for (int j = 0; j < period.length; j++) {
-                createSingleShift(days[i],period[j]);
-            }
+        String stringDate = "";
+        while (!isValidDate(stringDate,"^(0[1-9]|[1-2][0-9]|3[01])-(0[1-9]|1[0-2])-(\\d{4})$")){
+        System.out.println("Enter the date of the shift (in format of dd-mm-yyyy)");
+        stringDate = scanner.nextLine();
         }
+        LocalDate date = convertStringToDate(stringDate);
+        if (date.isBefore(now)){
+            System.out.println("you can't set shifts to the past, choose again");
+            setShifts();
+        }
+        if(date.isAfter(now.plusDays(10))){
+            System.out.println("you can't set shifts to more than 10 days from now, choose again");
+            setShifts();
+        }
+        if (date.getDayOfWeek().getValue() == 7){
+            System.out.println("In our religion we don't work on Shabbat, choose again");
+        }
+                System.out.println(pref);
+                createSingleShift( date);
+            date = date.plusDays(1);
         hrManager();
     }
 
-    private void createSingleShift(String day, String period) {
-        int time;
-        int shiftWorkers;
+    private void createSingleShift(LocalDate date) {
         LocalTime start;
+        LocalTime switchTime;
         LocalTime end;
-        Map<Integer, String> workersRoles = new HashMap<>();
-        int shiftManagerID;
+        Map<Integer, String> morningWorkersRoles = new HashMap<>();
+        Map<Integer, String> eveningWorkersRoles = new HashMap<>();
         int employeeID;
         int role;
-        String[] roles = {"CASHIER", "DELIVERYGUY", "STOREKEEPER"};
-        System.out.println("Create the " + period + " shift of " + day);
-        System.out.println("Enter when the shift starts (hour between 0-23)");
-        time = scanner.nextInt();
-        scanner.nextLine();
-        start = convertToLocalTime(time);
-        System.out.println("Enter when the shift ends (hour between 0-23)");
-        time = scanner.nextInt();
-        scanner.nextLine();
-        end = convertToLocalTime(time);
-        System.out.println("Select number of employees for the shift: ");
-        shiftWorkers = scanner.nextInt();
-        scanner.nextLine();
+        int shiftWorkers;
+        int shiftManagerID;
+        String[] roles = {"CASHIER", "STOREKEEPER", "DELIVERYGUY"};
+        System.out.println("Create the shifts of " + date.getDayOfWeek());
+        LocalTime[] shiftsHour = getHours();
+        start = shiftsHour[0];
+        switchTime = shiftsHour[1];
+        end = shiftsHour[2];
+        System.out.println("Morning Shift of " + date.getDayOfWeek());
+        shiftWorkers = getNumberOfWorkers();
         System.out.println("Select manager ID for the Shift");
-        shiftManagerID = scanner.nextInt();
-        scanner.nextLine();
+        shiftManagerID = checkIfEmplExist();
         for (int k = 0; k < shiftWorkers - 1; k++){
+            employeeID = -1;
             System.out.println("Select Employee ID:");
-            employeeID = scanner.nextInt();
+            while (employeeID == -1) {
+                employeeID = checkIfEmplExist();
+                if (employeeID == shiftManagerID || morningWorkersRoles.containsKey(employeeID)) {
+                    System.out.println("Employee cant be twice in the same shift, choose other employee");
+                    employeeID = -1;
+                }
+            }
             System.out.println("Choose Role:");
             System.out.println("1. CASHIER");
             System.out.println("2. STOREKEEPER");
             System.out.println("3. DELIVERYGUY");
             role = scanner.nextInt();
             scanner.nextLine();
-            while (2 < role | role < 0){
+            while (3 < role | role < 1){
                 System.out.println("Choose again, no such role");
+                role = scanner.nextInt();
+                scanner.nextLine();
             }
-            if (workersRoles.containsKey(employeeID)){
-                System.out.println("Employee cant be twice in the same shift, please make the shift again");
-                createSingleShift(day, period);
-            }
-            workersRoles.put(employeeID, roles[role]);
+            morningWorkersRoles.put(employeeID, roles[role - 1]);
         }
-        String res = employeeFacade.HRSetShift(id,shiftManagerID, workersRoles, LocalDate.now(), start,end, period);
+        String res = employeeFacade.HRSetShift(id,shiftManagerID, morningWorkersRoles, date, start,switchTime,"MORNING");
         if (res != null){
             System.out.println("shift cant be place because: " + res + ", please create this shift again");
-            createSingleShift(day, period);
+            createSingleShift(date);
+        }
+        System.out.println("Create the Evening " + " shift of " + date.getDayOfWeek());
+        shiftWorkers = getNumberOfWorkers();
+        System.out.println("Select manager ID for the Shift");
+        shiftManagerID = checkIfEmplExist();
+        for (int k = 0; k < shiftWorkers - 1; k++){
+            employeeID = -1;
+            System.out.println("Select Employee ID:");
+            while (employeeID == -1) {
+                employeeID = checkIfEmplExist();
+                if (employeeID == shiftManagerID || morningWorkersRoles.containsKey(employeeID)) {
+                    System.out.println("Employee cant be twice in the same shift, choose other employee");
+                    employeeID = -1;
+                }
+            }
+            System.out.println("Choose Role:");
+            System.out.println("1. CASHIER");
+            System.out.println("2. STOREKEEPER");
+            System.out.println("3. DELIVERYGUY");
+            role = scanner.nextInt();
+            scanner.nextLine();
+            while (3 < role | role < 1){
+                System.out.println("Choose again, no such role");
+                role = scanner.nextInt();
+                scanner.nextLine();
+            }
+            eveningWorkersRoles.put(employeeID, roles[role - 1]);
+        }
+        String res2 = employeeFacade.HRSetShift(id,shiftManagerID, eveningWorkersRoles, date, switchTime,end,"EVENING");
+        if (res2 != null){
+            System.out.println("shift cant be place because: " + res2 + ", please create this shift again");
+            createSingleShift(date);
         }
     }
 
-    private static LocalTime convertToLocalTime(int hour) {
-        if (hour < 0 || hour > 23) {
-            throw new IllegalArgumentException("Hour must be between 0 and 23");
+    private int checkIfEmplExist() {
+        int shiftEmployeeID = scanner.nextInt();
+        scanner.nextLine();
+        if (!employeeFacade.shiftEmployeeExist(shiftEmployeeID)) {
+            System.out.println(shiftEmployeeID + " is not exist, choose the correct ID");
+            return checkIfEmplExist();
+        }
+        else if (!employeeFacade.employeeExistInBranch(id, shiftEmployeeID)) {
+            System.out.println(shiftEmployeeID + " is not in the assign to this branch manager, choose the correct ID");
+            return checkIfEmplExist();
+        }
+            return shiftEmployeeID;
+    }
+
+    private int getNumberOfWorkers() {
+        System.out.println("Select number of employees for the shift: ");
+        int shiftWorkers = scanner.nextInt();
+        scanner.nextLine();
+        int branchWorkers = employeeFacade.shiftTotalEmployees(id);
+        if (shiftWorkers > branchWorkers) {
+            System.out.println("you set " + shiftWorkers + " to this shift but there are only " + branchWorkers + " in this branch, choose again");
+            shiftWorkers = getNumberOfWorkers();
+        }
+        if (shiftWorkers < 1) {
+            System.out.println("shift must have at least 1 workers, choose again");
+            shiftWorkers = getNumberOfWorkers();
+        }
+        return shiftWorkers;
+    }
+
+    private LocalTime[] getHours() {
+        int time;
+        System.out.println("Enter when the morning shift starts (hour between 0-23)");
+        time = scanner.nextInt();
+        scanner.nextLine();
+        LocalTime start = convertToLocalTime(time);
+        System.out.println("Enter when switch shift (hour between 0-23)");
+        time = scanner.nextInt();
+        scanner.nextLine();
+        LocalTime switchTime = convertToLocalTime(time);
+        System.out.println("Enter when the evening shift ends (hour between 0-23)");
+        time = scanner.nextInt();
+        scanner.nextLine();
+        LocalTime end = convertToLocalTime(time);
+        if (start.isAfter(end) || start.isAfter(switchTime) || switchTime.isAfter(end)){
+            System.out.println("shift can't end before its start, choose hours again");
+            return getHours();
+        }
+        return new LocalTime[]{start,switchTime,end};
+    }
+
+    private LocalTime convertToLocalTime(int hour) {
+        while (hour < 0 || hour > 23) {
+            System.out.println("Hour must be between 0 and 23");
+            hour = scanner.nextInt();
+            scanner.nextLine();
         }
         return LocalTime.of(hour, 0); // hour: given hour, minute: 0
     }
+    private LocalDate convertStringToDate(String s){//only works for dd-mm-yyyy
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        return LocalDate.parse(s,formatter);
+    }
 
     private void getShifts() {
-        //TODO
-
+        System.out.println("Select shifts from:");
+        String stringDate = "";
+        while (!isValidDate(stringDate,"^(0[1-9]|[1-2][0-9]|3[01])-(0[1-9]|1[0-2])-(\\d{4})$")){
+            System.out.println("Enter the date of this week's sunday (in format of dd-mm-yyyy");
+            stringDate = scanner.nextLine();
+        }
+        System.out.println(employeeFacade.getAllShifts(id,convertStringToDate(stringDate)));
+        hrManager();
     }
 
     private void addRole() {
@@ -205,15 +401,16 @@ public class CLI {
         System.out.println("Enter employee ID:");
         int employeeID = scanner.nextInt();
         scanner.nextLine();
-
-        System.out.println("Choose Role To Change:");
-        System.out.println("1. CASHIER");
-        System.out.println("2. SHIFTMANAGER");
-        System.out.println("3. DELIVERYGUY");
-        System.out.println("4. STOREKEEPER");
-
-        choice = scanner.nextInt();
-        scanner.nextLine();
+        choice = 0;
+        while ( choice!= 1 && choice!=2 && choice!= 3 && choice!=4 ){
+            System.out.println("Choose Role To Add:");
+            System.out.println("1. CASHIER");
+            System.out.println("2. SHIFTMANAGER");
+            System.out.println("3. DELIVERYGUY");
+            System.out.println("4. STOREKEEPER");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        }
 
         switch (choice){
             case 1:
@@ -236,7 +433,6 @@ public class CLI {
         String ret = employeeFacade.addRoleToEmployee(id, employeeID, role);
         if (ret != null){
             System.out.println(ret);
-            addRole();
         }
         hrManager();
     }
@@ -244,18 +440,18 @@ public class CLI {
     private void changeRole() {
         String oldRole = null;
         String newRole = null;
-        int choice;
         System.out.println("Enter employee ID:");
         int employeeID = scanner.nextInt();
-
+        int choice = 0;
+        while ( choice!= 1 && choice!=2 && choice!= 3 && choice!=4 ){
         System.out.println("Choose Role To Change:");
         System.out.println("1. CASHIER");
         System.out.println("2. SHIFTMANAGER");
         System.out.println("3. DELIVERYGUY");
         System.out.println("4. STOREKEEPER");
-
         choice = scanner.nextInt();
         scanner.nextLine();
+        }
 
         switch (choice){
             case 1:
@@ -271,15 +467,16 @@ public class CLI {
                 oldRole = "STOREKEEPER";
                 break;
         }
-
-        System.out.println("Choose New Role:");
-        System.out.println("1. CASHIER");
-        System.out.println("2. SHIFTMANAGER");
-        System.out.println("3. DELIVERYGUY");
-        System.out.println("4. STOREKEEPER");
-
-        choice = scanner.nextInt();
-        scanner.nextLine();
+        choice = 0;
+        while ( choice!= 1 && choice!=2 && choice!= 3 && choice!=4 ){
+            System.out.println("To What Role:");
+            System.out.println("1. CASHIER");
+            System.out.println("2. SHIFTMANAGER");
+            System.out.println("3. DELIVERYGUY");
+            System.out.println("4. STOREKEEPER");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        }
 
         switch (choice){
             case 1:
@@ -298,7 +495,6 @@ public class CLI {
                 System.out.println("Invalid choice, please try again");
                 changeRole();
         }
-
         String ret = employeeFacade.changeRoleToEmployee(id, employeeID, oldRole, newRole);
         if (ret != null){
             System.out.println(ret);
@@ -314,14 +510,16 @@ public class CLI {
         int employeeID = scanner.nextInt();
         scanner.nextLine();
 
-        System.out.println("Choose Role To Change:");
-        System.out.println("1. CASHIER");
-        System.out.println("2. SHIFTMANAGER");
-        System.out.println("3. DELIVERYGUY");
-        System.out.println("4. STOREKEEPER");
-
-        choice = scanner.nextInt();
-        scanner.nextLine();
+        choice = 0;
+        while ( choice!= 1 && choice!=2 && choice!= 3 && choice!=4 ){
+            System.out.println("Choose Role To remove:");
+            System.out.println("1. CASHIER");
+            System.out.println("2. SHIFTMANAGER");
+            System.out.println("3. DELIVERYGUY");
+            System.out.println("4. STOREKEEPER");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        }
 
         switch (choice){
             case 1:
@@ -350,16 +548,17 @@ public class CLI {
     }
 
     private void shiftEmployee() {
-        
-        System.out.println("Select Shift Employee Action");
-        System.out.println("1. Set preferences");
-        System.out.println("2. Get Preferences");
-        System.out.println("3. Get Weekly Shifts");
-        
+        int choice = 0;
+        while (choice > 4 || choice < 1) {
+            System.out.println("Select Shift Employee Action");
+            System.out.println("1. Set preferences");
+            System.out.println("2. Get Preferences");
+            System.out.println("3. Get Weekly Shifts");
+            System.out.println("4. LogOut");
 
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-
+            choice = scanner.nextInt();
+            scanner.nextLine();
+        }
         switch (choice) {
             case 1:
                 setPreferences();
@@ -371,8 +570,8 @@ public class CLI {
                 getShift();
                 break;
             case 4:
-                 System.out.println("thank for using our system");
-                 System.exit(0);
+                employeeFacade.logout(id);
+                logInMenu();
             default:
                  System.out.println("this employee action is not exist");
                  shiftEmployee();
@@ -383,129 +582,35 @@ public class CLI {
 
     private void setPreferences() {
         boolean shifts[][] = new boolean[6][2];
-        int choice;
-        System.out.println("please Choose you shift for this week:(for each day choose 1 for morning, 2 for evening and 3 for both and 4 for none)");
-        System.out.println("Sunday:");
-        choice = scanner.nextInt();
-        scanner.nextLine();
-        switch (choice){
-            case 1:
-                shifts[0][0] = true;
-                shifts[0][1] = false;
-                break;
-            case 2:
-                shifts[0][0] = false;
-                shifts[0][1] = true;
-                break;
-            case 3:
-                shifts[0][0] = true;
-                shifts[0][1] = true;
-                break;
-            default:
-                shifts[0][0] = false;
-                shifts[0][1] = false;
+        String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
+        for (int i = 0; i < 6; i++)
+        {
+            int choice = 0;
+            while (choice < 1 || choice >4) {
+                System.out.println("please Choose you shift for this week:(for each day choose 1 for morning, 2 for evening and 3 for both and 4 for none)");
+                System.out.println(days[i] + ":");
+                choice = scanner.nextInt();
+                scanner.nextLine();
+            }
+            switch (choice){
+                case 1:
+                    shifts[i][0] = true;
+                    shifts[i][1] = false;
+                    break;
+                case 2:
+                    shifts[i][0] = false;
+                    shifts[i][1] = true;
+                    break;
+                case 3:
+                    shifts[i][0] = true;
+                    shifts[i][1] = true;
+                    break;
+                case 4:
+                    shifts[i][0] = false;
+                    shifts[i][1] = false;
+            }
         }
-        System.out.println("Monday:");
-        choice = scanner.nextInt();
-        scanner.nextLine();
-        switch (choice){
-            case 1:
-                shifts[0][0] = true;
-                shifts[0][1] = false;
-                break;
-            case 2:
-                shifts[0][0] = false;
-                shifts[0][1] = true;
-                break;
-            case 3:
-                shifts[0][0] = true;
-                shifts[0][1] = true;
-                break;
-            default:
-                shifts[0][0] = false;
-                shifts[0][1] = false;
-        }
-        System.out.println("Tuesday:");
-        choice = scanner.nextInt();
-        scanner.nextLine();
-        switch (choice){
-            case 1:
-                shifts[0][0] = true;
-                shifts[0][1] = false;
-                break;
-            case 2:
-                shifts[0][0] = false;
-                shifts[0][1] = true;
-                break;
-            case 3:
-                shifts[0][0] = true;
-                shifts[0][1] = true;
-                break;
-            default:
-                shifts[0][0] = false;
-                shifts[0][1] = false;
-        }
-        System.out.println("Wednesday:");
-        choice = scanner.nextInt();
-        scanner.nextLine();
-        switch (choice){
-            case 1:
-                shifts[0][0] = true;
-                shifts[0][1] = false;
-                break;
-            case 2:
-                shifts[0][0] = false;
-                shifts[0][1] = true;
-                break;
-            case 3:
-                shifts[0][0] = true;
-                shifts[0][1] = true;
-                break;
-            default:
-                shifts[0][0] = false;
-                shifts[0][1] = false;
-        }
-        System.out.println("Thursday:");
-        choice = scanner.nextInt();
-        scanner.nextLine();
-        switch (choice){
-            case 1:
-                shifts[0][0] = true;
-                shifts[0][1] = false;
-                break;
-            case 2:
-                shifts[0][0] = false;
-                shifts[0][1] = true;
-                break;
-            case 3:
-                shifts[0][0] = true;
-                shifts[0][1] = true;
-                break;
-            default:
-                shifts[0][0] = false;
-                shifts[0][1] = false;
-        }
-        System.out.println("Friday:");
-        choice = scanner.nextInt();
-        scanner.nextLine();
-        switch (choice){
-            case 1:
-                shifts[0][0] = true;
-                shifts[0][1] = false;
-                break;
-            case 2:
-                shifts[0][0] = false;
-                shifts[0][1] = true;
-                break;
-            case 3:
-                shifts[0][0] = true;
-                shifts[0][1] = true;
-                break;
-            default:
-                shifts[0][0] = false;
-                shifts[0][1] = false;
-        }
-        String ret = employeeFacade.makePreferences(id, shifts, new Date());
+        String ret = employeeFacade.makePreferences(id, shifts, LocalDate.now());
         if (ret != null){
             System.out.println(ret);
             setPreferences();
@@ -515,13 +620,29 @@ public class CLI {
     }
 
     private void getShift() {
-        //TODO
+        System.out.println("Select shifts from:");
+        String stringDate = "";
+        while (!isValidDate(stringDate,"^(0[1-9]|[1-2][0-9]|3[01])-(0[1-9]|1[0-2])-(\\d{4})$")){
+            System.out.println("Enter the date of this week's sunday (in format of dd-mm-yyyy");
+            stringDate = scanner.nextLine();
+        }
+        System.out.println(employeeFacade.getShifts(id,convertStringToDate(stringDate)));
+        shiftEmployee();
     }
 
     private void getPreferences() {
-        //TODO
+        System.out.println(employeeFacade.getLastPref(id));
+        shiftEmployee();
     }
 
+    private static boolean isValidDate(String date, String pattern) {
+        // Compile the regex pattern
+        Pattern compiledPattern = Pattern.compile(pattern);
+        // Create a matcher for the input date
+        Matcher matcher = compiledPattern.matcher(date);
+        // Check if the date matches the pattern
+        return matcher.matches();
+    }
 }
 
 
