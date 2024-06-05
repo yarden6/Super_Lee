@@ -1,7 +1,9 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 public class Category {
     private String name;
@@ -145,5 +147,14 @@ public class Category {
         if (productToReturn != null)
             return productToReturn.toString();
         return "Not exist";
+    }
+    public List<Item> checkExpiration(){
+        List<Item> allItemsFromProducts = new ArrayList<>();
+        for (Product p : products.values()){
+            for (Item item : p.checkExpiration()){
+                allItemsFromProducts.add(item);
+            }
+        }
+        return checkExpiration();
     }
 }

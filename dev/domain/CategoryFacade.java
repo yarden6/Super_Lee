@@ -111,7 +111,7 @@ public class CategoryFacade {
         }
     }
 
-    public void addItems(int MKT, int numberOfItems, String expirationDate, double buyingPrice, double buyingDiscount) {
+    public String addItems(int MKT, int numberOfItems, String expirationDate, double buyingPrice, double buyingDiscount) {
         Product p = getProduct(MKT);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
@@ -120,8 +120,9 @@ public class CategoryFacade {
                 p.addItemToStorage(exprDate, buyingPrice, buyingDiscount);
             }
         } catch (DateTimeException e) {
-            System.out.println("Error parsing date: " + e.getMessage());
+            return ("Error parsing date: " + e.getMessage());
         }
+        return "Something went wrong...";
 
     }
 
@@ -170,6 +171,7 @@ public class CategoryFacade {
         addItems(123, 5, "2025-01-01", 10, 10);
         addItems(123, 5, "2025-01-10", 10, 10);
         addItems(123, 10, "2025-01-20", 10, 5);
+        addItems(123, 1, "2024-06-04", 10, 5);
 
         // Premium Dark Chocolate (1001) items
         addItems(1001, 5, "2025-01-01", 10, 10);

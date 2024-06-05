@@ -65,11 +65,13 @@ public class Product {
 
 
     // when we get new items from the supplier - it goes straight to the storage
-    public void addItemToStorage(LocalDate expirationDate, double buyingPrice, double buyingDiscount) {
-        items.add(new Item(itemsCounter, expirationDate, buyingPrice, buyingDiscount));
+    public Item addItemToStorage(LocalDate expirationDate, double buyingPrice, double buyingDiscount) {
+        Item toAdd = new Item(itemsCounter, expirationDate, buyingPrice, buyingDiscount);
+        items.add(toAdd);
         itemsCounter++;
         storageAmount++;
         totalAmount++;
+        return toAdd;
     }
 
 
@@ -258,15 +260,11 @@ public class Product {
         List<Item> expired = new ArrayList<>();
         for (Item item: items){
             if(item.isExpired()){
-                if (item.getLocation() == Location.Store)
-                    setStoreAmount(--storeAmount);
-                else setStorageAmount(--storageAmount);
-                item.setLocationToDefective();
                 expired.add(item);
                 items.remove(item);
             }
         }
-        return items;
+        return expired;
     }
 
     public List<Item> getItemsSortedByExpirationDate() {

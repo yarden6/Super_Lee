@@ -3,13 +3,18 @@ package PresentationLayer;
 import domain.CategoryFacade;
 import domain.ReportFacade;
 
-import java.util.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class InventoryMenu {
     public static Scanner scanner = new Scanner(System.in);
     public CategoryFacade cf;
     public ReportFacade rf;
+    boolean hasBeenPrintedReports = false;
+    DayOfWeek today = LocalDate.now().getDayOfWeek().minus(1);
 
     public static void main(String[] args) {
         InventoryMenu inventoryMenu = new InventoryMenu();

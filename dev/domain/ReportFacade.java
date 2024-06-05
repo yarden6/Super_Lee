@@ -10,6 +10,7 @@ public class ReportFacade {
     private Hashtable<Integer, Report> inventoryReports;
     private Hashtable<Integer, Report> defectiveReports;
     private int reportCounter;
+    final DayOfWeek dayToPrint = DayOfWeek.SUNDAY; //to avoid magic numbers
 
     public ReportFacade(CategoryFacade cf) {
         this.categoryFacade = cf;
@@ -36,8 +37,8 @@ public class ReportFacade {
 
     public String [] publishReportWeekly() {
         LocalDate current = LocalDate.now();
-        if (current.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            return new String[] {makeInventoryReport(new String[0]) ,makeDefectiveReport()};
+        if (current.getDayOfWeek() == dayToPrint) {
+            return new String[] {makeInventoryReport(new String[]{""}) ,makeDefectiveReport()};
         }
         return null;
     }
