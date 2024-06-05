@@ -1,8 +1,6 @@
 package domain;
 
-import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 
 public class DefectiveReport extends Report {
 

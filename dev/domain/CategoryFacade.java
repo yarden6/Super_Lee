@@ -69,7 +69,7 @@ public class CategoryFacade {
         if (getProduct(MKT) == null) {
             Category mainCategory = categories.get(categoriesName[0]); // locate the desired category
             if (mainCategory != null) {
-                if (mainCategory.getName() == "Defective") return false;
+                if (Objects.equals(mainCategory.getName(), "Defective")) return false;
                 Category subCategory = mainCategory.getSubCategories().get(categoriesName[1]);
                 if (subCategory != null) {
                     Category subSubCategory = subCategory.getSubCategories().get(categoriesName[2]);
@@ -85,7 +85,7 @@ public class CategoryFacade {
 
     public Product getProduct(int MKT) {
         for (Category mainCategory : categories.values()) {//for the main category
-            if (mainCategory.getName() != "Defective") {
+            if (!Objects.equals(mainCategory.getName(), "Defective")) {
                 for (Category subCategory : mainCategory.getSubCategories().values()) { //for the sub category
                     for (Category subSubCategory : subCategory.getSubCategories().values()) { //for the sub-sub category
                         Product productToReturn = subSubCategory.getProducts().get(MKT);
@@ -205,7 +205,7 @@ public class CategoryFacade {
     public HashMap<Integer, List<Item>> checkExpiration() {
         HashMap<Integer, List<Item>> ans = new HashMap<>();
         for (Category mainCategory : categories.values()) {//for the main category
-            if (mainCategory.getName() != "Defective") {
+            if (!Objects.equals(mainCategory.getName(), "Defective")) {
                 for (Category subCategory : mainCategory.getSubCategories().values()) { //for the sub category
                     for (Category subSubCategory : subCategory.getSubCategories().values()) { //for the sub-sub category
                         for (Product product : subSubCategory.getProducts().values()) {
@@ -227,7 +227,7 @@ public class CategoryFacade {
     public String viewExistingCategories() {
         StringBuilder printCategories = new StringBuilder();
         for (Category category : categories.values()){
-            if (category.getName() == "Defective") continue;
+            if (Objects.equals(category.getName(), "Defective")) continue;
             printCategories.append(category.getName() + "\n");
             for (Category subCategory : category.getSubCategories().values()){
                 printCategories.append("   " + subCategory.getName() + "\n");

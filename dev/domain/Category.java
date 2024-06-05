@@ -149,13 +149,4 @@ public class Category {
             return productToReturn.toString();
         return "No defective items from this product";
     }
-    public List<Item> checkExpiration(){
-        List<Item> allItemsFromProducts = new ArrayList<>();
-        for (Product p : products.values()){
-            for (Item item : p.checkExpiration()){
-                allItemsFromProducts.add(item);
-            }
-        }
-        return checkExpiration();
-    }
 }

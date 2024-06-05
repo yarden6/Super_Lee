@@ -34,8 +34,7 @@ public class InventoryMenu {
             publishReportWeekly();
             isNewDay();
 
-            System.out.println("");
-            System.out.println("---INVENTORY MENU---");
+            System.out.println("\n---INVENTORY MENU---");
             System.out.println("1. Products Menu");
             System.out.println("2. Reports Menu");
             System.out.println("3. Categories Menu");
@@ -47,30 +46,21 @@ public class InventoryMenu {
             scanner.nextLine();
 
             switch (choice) {
-                case 1:
-                    productsMenu();
-                    break;
-                case 2:
-                    reportsMenu();
-                    break;
-                case 3:
-                    categoryMenu();
-                    break;
-                case 4:
-                    itemsMenu();
-                    break;
-                case 5:
+                case 1 -> productsMenu();
+                case 2 -> reportsMenu();
+                case 3 -> categoryMenu();
+                case 4 -> itemsMenu();
+                case 5 -> {
                     return;
-                default:
-                    System.out.println("Invalid choice, please try again.");
+                }
+                default -> System.out.println("Invalid choice, please try again.");
             }
         }
     }
 
     private void categoryMenu() {
         while (true) {
-            System.out.println("");
-            System.out.println("---CATEGORY MENU---");
+            System.out.println("\n---CATEGORY MENU---");
             System.out.println("1. Add category");
             System.out.println("2. Add sub-category");
             System.out.println("3. Add sub-sub-category");
@@ -83,25 +73,15 @@ public class InventoryMenu {
             scanner.nextLine();
 
             switch (choice) {
-                case 1:
-                    addCategory();
-                    break;
-                case 2:
-                    addSubCategory();
-                    break;
-                case 3:
-                    addSubSubCategory();
-                    break;
-                case 4:
-                    applyCategoryDiscount();
-                    break;
-                case 5:
-                    viewExistingCategories();
-                    break;
-                case 6:
+                case 1 -> addCategory();
+                case 2 -> addSubCategory();
+                case 3 -> addSubSubCategory();
+                case 4 -> applyCategoryDiscount();
+                case 5 -> viewExistingCategories();
+                case 6 -> {
                     return;
-                default:
-                    System.out.println("Invalid choice, please try again.");
+                }
+                default -> System.out.println("Invalid choice, please try again.");
             }
         }
     }
@@ -109,8 +89,7 @@ public class InventoryMenu {
 
     private void reportsMenu() {
         while (true) {
-            System.out.println("");
-            System.out.println("---REPORT MENU---");
+            System.out.println("\n---REPORT MENU---");
             System.out.println("1. View inventory report");
             System.out.println("2. View defective report");
             System.out.println("3. Exit");
@@ -120,24 +99,19 @@ public class InventoryMenu {
             scanner.nextLine();
 
             switch (choice) {
-                case 1:
-                    inventoryReport();
-                    break;
-                case 2:
-                    defectiveReport();
-                    break;
-                case 3:
+                case 1 -> inventoryReport();
+                case 2 -> defectiveReport();
+                case 3 -> {
                     return;
-                default:
-                    System.out.println("Invalid choice, please try again.");
+                }
+                default -> System.out.println("Invalid choice, please try again.");
             }
         }
     }
 
     private void productsMenu() {
         while (true) {
-            System.out.println("");
-            System.out.println("---PRODUCTS MENU---");
+            System.out.println("\n---PRODUCTS MENU---");
             System.out.println("1. Add product");
             System.out.println("2. View product");
             System.out.println("3. Restock store");
@@ -151,28 +125,16 @@ public class InventoryMenu {
             scanner.nextLine();
 
             switch (choice) {
-                case 1:
-                    addProduct();
-                    break;
-                case 2:
-                    viewProduct();
-                    break;
-                case 3:
-                    restockStore();
-                    break;
-                case 4:
-                    applyProductDiscount();
-                    break;
-                case 5:
-                    updateStoreAfterPurchase();
-                    break;
-                case 6:
-                    checkDefective();
-                    break;
-                case 7:
+                case 1 -> addProduct();
+                case 2 -> viewProduct();
+                case 3 -> restockStore();
+                case 4 -> applyProductDiscount();
+                case 5 -> updateStoreAfterPurchase();
+                case 6 -> checkDefective();
+                case 7 -> {
                     return;
-                default:
-                    System.out.println("Invalid choice, please try again.");
+                }
+                default -> System.out.println("Invalid choice, please try again.");
             }
         }
     }
@@ -180,8 +142,7 @@ public class InventoryMenu {
 
     private void itemsMenu() {
         while (true) {
-            System.out.println("");
-            System.out.println("---ITEMS MENU---");
+            System.out.println("\n---ITEMS MENU---");
             System.out.println("1. Add items of a specific product");
             System.out.println("2. Report a defective item");
             System.out.println("3. Exit");
@@ -191,16 +152,12 @@ public class InventoryMenu {
             scanner.nextLine();
 
             switch (choice) {
-                case 1:
-                    addItems(-1);
-                    break;
-                case 2:
-                    reportDefectiveItem();
-                    break;
-                case 3:
+                case 1 -> addItems(-1);
+                case 2 -> reportDefectiveItem();
+                case 3 -> {
                     return;
-                default:
-                    System.out.println("Invalid choice, please try again.");
+                }
+                default -> System.out.println("Invalid choice, please try again.");
             }
         }
     }
@@ -212,7 +169,7 @@ public class InventoryMenu {
     private void addProduct() {
         System.out.print("Enter Category to add the product (Main Category Name,Sub-Category Name,Sub-Sub-Category Name): ");
         String categoriesName = scanner.nextLine();
-        String categories[] = categoriesName.split(",");
+        String[] categories = categoriesName.split(",");
         if (categories.length != 3) {
             System.out.println("Invalid input, please try again. ");
             addProduct();
@@ -247,7 +204,7 @@ public class InventoryMenu {
         if (succeed) {
             System.out.print("Enter 1 to add items of this product or 0 otherwise: ");
             int ans = scanner.nextInt();
-            if (ans == 1) addItems(MKT); //TODO scanner.nextLine();? check if need to do enter
+            if (ans == 1) addItems(MKT);
         } else {
             System.out.println("This category doesn't exist");
         }
@@ -291,7 +248,7 @@ public class InventoryMenu {
         scanner.nextLine();
         System.out.print("Enter ID of items that have been purchased: (itemID1,itemId2,...)");
         String itemsIDs = scanner.nextLine();
-        String ids[] = itemsIDs.split(",");
+        String[] ids = itemsIDs.split(",");
         if (!cf.updateStoreAfterPurchase(MKT, ids)) {
             System.out.println("There is no such a MKT");
         } else
@@ -412,7 +369,7 @@ public class InventoryMenu {
     private void applyCategoryDiscount() {
         System.out.print("Enter Category to apply a discount (Main Category Name,Sub-Category Name,Sub-Sub-Category Name): ");
         String categoriesName = scanner.nextLine();
-        String categories[] = categoriesName.split(",");
+        String[] categories = categoriesName.split(",");
         if (categories.length > 3) {
             System.out.println("Invalid input, please try again. ");
             applyCategoryDiscount();
@@ -428,7 +385,7 @@ public class InventoryMenu {
     private void addSubSubCategory() {
         System.out.print("Enter Main Category Name,Sub-Category Name,Sub-Sub-Category Name:");
         String CategoriesName = scanner.nextLine();
-        String categories[] = CategoriesName.split(",");
+        String[] categories = CategoriesName.split(",");
         if (categories.length == 3 && cf.addSubSubCategory(categories[0], categories[1], categories[2]))
             System.out.println("Succeed");
         else {
@@ -441,7 +398,7 @@ public class InventoryMenu {
     private void addSubCategory() {
         System.out.print("Enter Main Category Name,Sub-Category Name: ");
         String CategoriesName = scanner.nextLine();
-        String categories[] = CategoriesName.split(",");
+        String[] categories = CategoriesName.split(",");
         if (categories.length == 2 && cf.addSubCategory(categories[0], categories[1]))
             System.out.println("Succeed");
         else {
@@ -472,7 +429,7 @@ public class InventoryMenu {
     private void inventoryReport() {
         System.out.print("Enter Main Categories to present in the inventory report (MainCategoryName1,MainCategoryName2,...) : ");
         String categoriesName = scanner.nextLine();
-        String categories[] = categoriesName.split(",");
+        String[] categories = categoriesName.split(",");
         System.out.println(rf.makeInventoryReport(categories));
     }
 
