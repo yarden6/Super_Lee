@@ -20,9 +20,8 @@ public class ShiftEmployee extends Employee {
         roles = new ArrayList<>();
         roles.add(role);
         preferences = new Stack<>();
-        preferences.add(new Preferences());
+        preferences.add(new Preferences(true));
         this.HRid = HRid;
-
     }
 
     //-----------------methods---------------------------

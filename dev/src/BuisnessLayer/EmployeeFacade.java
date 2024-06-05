@@ -113,8 +113,12 @@ public class EmployeeFacade {
 
     public String HRSetShift(int hrID, int shiftManagerID, Map<Integer,String> workersRoles,
                              LocalDate date, LocalTime startTime, LocalTime endTime, String period){
+        if (!isHR(hrID) )
+            return "not valid HR";
         if(!checkLoggedin(hrID))
             return " not logged in";
+        if (!isShiftEmp(shiftManagerID))
+            return "shift manager not exist";
         HRManager hr = getHRManager(hrID);
         Map<Integer, Role> employeesRoles = stringToRole(workersRoles);
         return hr.createShift(getShiftEmployee(shiftManagerID),employeesRoles,date,startTime,endTime,convertStringToPeriod(period));

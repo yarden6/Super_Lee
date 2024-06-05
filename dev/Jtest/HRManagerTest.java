@@ -6,8 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +20,11 @@ public class HRManagerTest {
     private HRManager hrManager2;
     private ShiftEmployee shiftEmployee1;
     private ShiftEmployee shiftEmployee2;
-    List<HRManager> hrManagers = new ArrayList<>();
-    List<ShiftEmployee> shiftEmployees = new ArrayList<>();
-    EmployeeFacade ef;
+    private ShiftEmployee shiftEmployee3;
+    private ShiftEmployee shiftEmployee4;
+    private List<HRManager> hrManagers = new ArrayList<>();
+    private List<ShiftEmployee> shiftEmployees = new ArrayList<>();
+    private EmployeeFacade ef;
 
     @BeforeEach
     public void setUp() {
@@ -28,13 +32,19 @@ public class HRManagerTest {
         hrManager2 = new HRManager("Itamar", 2, "2","2",10000,"2");
         hrManagers.add(hrManager1);
         hrManagers.add(hrManager2);
-        shiftEmployee1 = new ShiftEmployee("liron", 3, "1", "3",true, 10000, "3", 1, Role.CASHIER);
+        shiftEmployee1 = new ShiftEmployee("jordan", 3, "1", "3",true, 10000, "3", 1, Role.CASHIER);
         shiftEmployee2 = new ShiftEmployee("Yuval", 4, "2", "4",true, 10000, "4", 2, Role.DELIVERYGUY);
         shiftEmployees.add(shiftEmployee1);
         shiftEmployees.add(shiftEmployee2);
+        shiftEmployee3 = new ShiftEmployee("amir", 5, "2", "5",true, 10000, "3", 2, Role.CASHIER);
+        shiftEmployee4 = new ShiftEmployee("bar", 6, "2", "6",true, 10000, "3", 2, Role.SHIFTMANAGER);
+        shiftEmployees.add(shiftEmployee3);
+        shiftEmployees.add(shiftEmployee4);
         ef = new EmployeeFacade(hrManagers, shiftEmployees);
         hrManager1.login("1");
         hrManager2.login("2");
+
+
     }
 
     @Test
@@ -58,7 +68,31 @@ public class HRManagerTest {
 
     @Test
     public void testSetShift(){
-        //TODO do all type of tests for this method
+        Map<Integer,String> shiftRoles = new HashMap<>();
+        shiftRoles.put(4, Role.DELIVERYGUY.toString());
+        shiftRoles.put(5, Role.CASHIER.toString());
+        int fakeId = 30;
+        //test with hrmanager that is not exist
+        assertEquals("not valid HR", ef.HRSetShift(fakeId,shiftEmployee3.getID(),shiftRoles, LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
+        //test with shift manager that is not exist
+        assertEquals("shift manager not exist", ef.HRSetShift(2,fakeId,shiftRoles, LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
+        //test for shift manager that he is not have shift manager role
+        assertEquals(shiftEmployee2.getEmployeeName() + " isn't a shift manager", ef.HRSetShift(2,shiftEmployee2.getID(),shiftRoles,LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
+        //test for shift employee that was assign for role he doesn't have
+        int idToChange = 5;
+        String notHesRole = Role.STOREKEEPER.toString();
+        shiftRoles.replace(idToChange,notHesRole);
+        assertEquals(idToChange + " was set to be " + notHesRole + " and dont have qualification for it" ,ef.HRSetShift(2,shiftEmployee4.getID(),shiftRoles, LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
+        shiftRoles.put(fakeId, Role.CASHIER.toString());
+        shiftRoles.replace(5, Role.CASHIER.toString());
+        //test for shift employee that is not exist
+        assertEquals(fakeId + " not exist", ef.HRSetShift(2,shiftEmployee3.getID(),shiftRoles, LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
+        shiftRoles.remove(fakeId);
+        //test for shift that created good
+        assertNull(ef.HRSetShift(2,shiftEmployee4.getID(),shiftRoles, LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
+
+
+
     }
 
     @Test void testGetShifts(){
