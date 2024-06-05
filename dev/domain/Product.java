@@ -273,14 +273,14 @@ public class Product {
         return sortedItems;
     }
     public String restockStore(int numItems) { // move items from storage to store
-        String itemsId ="items ID: ";
+        StringBuilder itemsId =new StringBuilder("items ID: ");
         if (this.storageAmount < numItems){
             return "There are not enough items from this product at the storage";
         }
         for(Item item : getItemsSortedByExpirationDate()){
             if (numItems != 0 && (item.getLocation() == Location.Storage)){
                 item.setLocationToStore();
-                itemsId.concat(item.getItemId() + ", ");
+                itemsId.append(item.getItemId() + ", ");
             }
         }
         return itemsId.substring(0,itemsId.length()-2);
