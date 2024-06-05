@@ -43,5 +43,7 @@ public class ReportFacade {
         return null;
     }
 
-
+    public DayOfWeek getDayToPrint() {
+        return dayToPrint;
+    }
 }

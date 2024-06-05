@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,7 +27,7 @@ public class ProductTest {
         for(int i = 0; i<25;i++)
             p1.addItemToStorage(expr,3.20,3.00);
         expr = LocalDate.of(2024,12,3);
-        for(int i = 0; i<7;i++)
+        for(int i = 0; i<3;i++)
             p2.addItemToStorage(expr,3.20,3.00);
     }
     @Test
@@ -49,9 +51,15 @@ public class ProductTest {
         assertFalse(p1.isUnderMinAmount());
         assertTrue(p2.isUnderMinAmount());
     }
+
     @Test
-    void testSetAmount() { //TODO not a good test
-        p1.setStoreAmount(60);
-        assertEquals(p1.getTotalAmount(), 110);
+    void testCheckExpiration() {
+        List<Item> expired = new ArrayList<>();
+        assertEquals(p1.checkExpiration(),expired);
+        LocalDate expr = LocalDate.of(2024,06,4);
+        for(int i = 0; i<3;i++) {;
+            expired.add(p1.addItemToStorage(expr, 3.20, 3.00));
+        }
+        assertEquals(p1.checkExpiration(),expired);
     }
 }

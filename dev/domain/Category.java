@@ -134,6 +134,7 @@ public class Category {
         Product p = getProducts().get(MKT);
         if (p == null) {
             products.put(MKT, new Product(name, MKT, producerName));
+
         } else
             p.addDefectItem(); // increase the amount
     }

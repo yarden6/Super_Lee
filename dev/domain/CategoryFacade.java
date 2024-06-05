@@ -50,7 +50,7 @@ public class CategoryFacade {
         Category chosenOne;
         if (categories.length == 1)
             chosenOne = getCategories().get(categories[0]);
-        if (categories.length == 2)
+        else if (categories.length == 2)
             chosenOne = getCategories().get(categories[0]).getSubCategories().get(categories[1]);
         else
             chosenOne = getCategories().get(categories[0]).getSubCategories().get(categories[1]).getSubCategories().get(categories[2]);
@@ -66,15 +66,17 @@ public class CategoryFacade {
 
     public boolean addProduct(String[] categoriesName, String name, int MKT, int aisle, String producerName
             , double sellingPrice, int deliveryDays, int minimumAmount) {
-        Category mainCategory = categories.get(categoriesName[0]); // locate the desired category
-        if (mainCategory != null) {
-            if (mainCategory.getName() == "Defective") return false;
-            Category subCategory = mainCategory.getSubCategories().get(categoriesName[1]);
-            if (subCategory != null) {
-                Category subSubCategory = subCategory.getSubCategories().get(categoriesName[2]);
-                if (subSubCategory != null) {
-                    subSubCategory.addProduct(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount);
-                    return true;
+        if (getProduct(MKT) == null) {
+            Category mainCategory = categories.get(categoriesName[0]); // locate the desired category
+            if (mainCategory != null) {
+                if (mainCategory.getName() == "Defective") return false;
+                Category subCategory = mainCategory.getSubCategories().get(categoriesName[1]);
+                if (subCategory != null) {
+                    Category subSubCategory = subCategory.getSubCategories().get(categoriesName[2]);
+                    if (subSubCategory != null) {
+                        subSubCategory.addProduct(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount);
+                        return true;
+                    }
                 }
             }
         }
@@ -117,7 +119,11 @@ public class CategoryFacade {
         try {
             LocalDate exprDate = LocalDate.parse(expirationDate, formatter);
             for (int i = 0; i < numberOfItems; i++) {
-                p.addItemToStorage(exprDate, buyingPrice, buyingDiscount);
+                if (exprDate.isAfter(LocalDate.now())) {
+                    p.addItemToStorage(exprDate, buyingPrice, buyingDiscount);
+                    return "successfully added";
+                }
+                else return "Item is expired";
             }
         } catch (DateTimeException e) {
             return ("Error parsing date: " + e.getMessage());
@@ -195,5 +201,29 @@ public class CategoryFacade {
 
     public String checkDefective(int mkt) {
         return categories.get("Defective").checkDefective(mkt);
+    }
+
+
+    // iterate all the Items and check their expiration date
+    public HashMap<Integer,List<Item>> checkExpiration() {
+        HashMap<Integer,List<Item>> ans = new HashMap<>();
+        for (Category mainCategory : categories.values()) {//for the main category
+            if (mainCategory.getName() != "Defective") {
+                for (Category subCategory : mainCategory.getSubCategories().values()) { //for the sub category
+                    for (Category subSubCategory : subCategory.getSubCategories().values()) { //for the sub-sub category
+                        for(Product product: subSubCategory.getProducts().values()){
+                            List<Item> expiredItems = product.checkExpiration();
+                            if (!expiredItems.isEmpty()){
+                                ans.put(product.getMKT(), expiredItems);
+                                for (Item item:expiredItems){
+                                    reportDefectiveItem(product.getMKT(), item.getItemId());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
     }
 }

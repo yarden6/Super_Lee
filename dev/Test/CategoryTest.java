@@ -30,7 +30,7 @@ public class CategoryTest {
         subCategory2 = new Category("Cheese");
         subCategory3 = new Category("Cream");
 
-        //subSubCategory = new Category("500ml", subCategory1, );
+        subSubCategory = new Category("500ml", subCategory1);
     }
 
     @Test

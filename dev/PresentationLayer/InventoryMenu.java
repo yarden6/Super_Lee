@@ -1,6 +1,7 @@
 package PresentationLayer;
 
 import domain.CategoryFacade;
+import domain.Item;
 import domain.ReportFacade;
 
 import java.time.DayOfWeek;
@@ -30,6 +31,9 @@ public class InventoryMenu {
     // Menu
     public void startMenu() {
         while (true) {
+            publishReportWeekly();
+            isNewDay();
+
             System.out.println("");
             System.out.println("---INVENTORY MENU---");
             System.out.println("1. Products Menu");
@@ -171,6 +175,7 @@ public class InventoryMenu {
 
     private void itemsMenu() {
         while (true) {
+            System.out.println("");
             System.out.println("---ITEMS MENU---");
             System.out.println("1. Add items of a specific product");
             System.out.println("2. Report a defective item");
@@ -233,13 +238,12 @@ public class InventoryMenu {
         int minimumAmount = scanner.nextInt();
         scanner.nextLine();
 
-        boolean succeed = cf.addProduct(categories, name, MKT, aisle, producerName,sellingPrice, deliveryDays, minimumAmount);
-        if (succeed){
+        boolean succeed = cf.addProduct(categories, name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount);
+        if (succeed) {
             System.out.print("Enter 1 to add items of this product or 0 otherwise: ");
             int ans = scanner.nextInt();
             if (ans == 1) addItems(MKT); //TODO scanner.nextLine();? check if need to do enter
-        }
-        else {
+        } else {
             System.out.println("This category doesn't exist");
         }
 
@@ -283,10 +287,9 @@ public class InventoryMenu {
         System.out.print("Enter ID of items that have been purchased: (itemID1,itemId2,...)");
         String itemsIDs = scanner.nextLine();
         String ids[] = itemsIDs.split(",");
-        if(!cf.updateStoreAfterPurchase(MKT, ids)){
+        if (!cf.updateStoreAfterPurchase(MKT, ids)) {
             System.out.println("There is no such a MKT");
-        }
-        else
+        } else
             System.out.println("Succeed");
 
     }
@@ -384,7 +387,7 @@ public class InventoryMenu {
         double buyingDiscount = scanner.nextDouble();
         scanner.nextLine();
 
-        cf.addItems(MKT,numItems,ExpDate,buyingPrice,buyingDiscount);
+        System.out.println(cf.addItems(MKT, numItems, ExpDate, buyingPrice, buyingDiscount));
 
     }
 
@@ -414,7 +417,6 @@ public class InventoryMenu {
         scanner.nextLine();
         System.out.print("Enter date for the discount to end (yyyy-mm-dd): ");
         String discountDate = scanner.nextLine();
-        scanner.nextLine();
         cf.applyCategoryDiscount(categories, discount, discountDate);
     }
 
@@ -446,7 +448,7 @@ public class InventoryMenu {
     private void addCategory() {
         System.out.print("Enter Category Name: ");
         String categoryName = scanner.nextLine();
-        if(cf.addCategory(categoryName))
+        if (cf.addCategory(categoryName))
             System.out.println("Succeed");
 
     }
@@ -462,5 +464,46 @@ public class InventoryMenu {
         String categoriesName = scanner.nextLine();
         String categories[] = categoriesName.split(",");
         System.out.println(rf.makeInventoryReport(categories));
+    }
+
+    private void publishReportWeekly() {
+        LocalDate current = LocalDate.now();
+        if (!hasBeenPrintedReports) {
+            String[] reports = rf.publishReportWeekly();
+            if (reports != null) {
+                System.out.println("Weekly Inventory Report: ");
+                System.out.println(reports[0]);
+                System.out.println("Weekly Defective Report: ");
+                System.out.println(reports[1]);
+                hasBeenPrintedReports = true;
+            }
+        } else if (hasBeenPrintedReports && current.getDayOfWeek() != DayOfWeek.SUNDAY) {
+            hasBeenPrintedReports = false;
+        }
+    }
+
+
+    private void publishDailyExpirationAlerts() {
+        HashMap<Integer,List<Item>> expiredItems = cf.checkExpiration();
+        if (!expiredItems.isEmpty()) {
+            System.out.println("The system found items that are expired today.");
+            System.out.println("Please remove the next items from the store: ");
+            for (Integer mkt : expiredItems.keySet()) {
+                if (!expiredItems.get(mkt).isEmpty()){
+                    System.out.println("Product MKT: " + mkt);
+                    for (Item itemToRemove : expiredItems.get(mkt)){
+                        System.out.println("   Item ID: " + itemToRemove.getItemId());
+                    }
+                }
+
+            }
+        }
+    }
+
+    private void isNewDay() {
+        if (!today.equals(LocalDate.now().getDayOfWeek())) { // meaning a day had passed
+            publishDailyExpirationAlerts();
+            today = LocalDate.now().getDayOfWeek(); // update current day
+        }
     }
 }

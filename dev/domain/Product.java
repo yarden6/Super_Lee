@@ -94,7 +94,7 @@ public class Product {
 
     public void checkMinAmountAlert(){
         if (isUnderMinAmount())
-            System.out.println("\n-----INVENTORY ALERT!-----\n" + this.toString() + "\nis almost out of stock!");
+            System.out.println("\n-----INVENTORY ALERT!-----\n" + this.toString() + "\n   is almost out of stock!\n");
     }
 
     public void addDefectItem(){
@@ -256,12 +256,12 @@ public class Product {
         setDiscountDate(discountDate);
     }
 
+    // forward a list of expires items that need to be removed and report
     public List<Item> checkExpiration(){
         List<Item> expired = new ArrayList<>();
         for (Item item: items){
             if(item.isExpired()){
                 expired.add(item);
-                items.remove(item);
             }
         }
         return expired;
