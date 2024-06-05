@@ -18,7 +18,7 @@ public class CategoryFacade {
     }
 
     public boolean addCategory(String categoryName) {
-        if(categoryName != null) {
+        if (categoryName != null) {
             categories.put(categoryName, new Category(categoryName));
         }
         return true;
@@ -118,18 +118,15 @@ public class CategoryFacade {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
             LocalDate exprDate = LocalDate.parse(expirationDate, formatter);
-            for (int i = 0; i < numberOfItems; i++) {
-                if (exprDate.isAfter(LocalDate.now())) {
+            if (exprDate.isAfter(LocalDate.now())) {
+                for (int i = 0; i < numberOfItems; i++) {
                     p.addItemToStorage(exprDate, buyingPrice, buyingDiscount);
-                    return "successfully added";
                 }
-                else return "Item is expired";
-            }
+                return "successfully added";
+            } else return "Item is expired";
         } catch (DateTimeException e) {
             return ("Error parsing date: " + e.getMessage());
         }
-        return "Something went wrong...";
-
     }
 
     public void reportDefectiveItem(int MKT, int id) {
@@ -177,7 +174,7 @@ public class CategoryFacade {
         addItems(123, 5, "2025-01-01", 10, 10);
         addItems(123, 5, "2025-01-10", 10, 10);
         addItems(123, 10, "2025-01-20", 10, 5);
-        addItems(123, 1, "2024-06-04", 10, 5);
+        //addItems(123, 1, "2024-06-04", 10, 5);
 
         // Premium Dark Chocolate (1001) items
         addItems(1001, 5, "2025-01-01", 10, 10);
@@ -191,9 +188,9 @@ public class CategoryFacade {
 
     public boolean updateStoreAfterPurchase(int MKT, String[] itemIDs) {
         Product p = getProduct(MKT);
-        if(p != null) {
+        if (p != null) {
             for (String id : itemIDs)
-                if(p.removeItemFromStore(Integer.parseInt(id)))
+                if (p.removeItemFromStore(Integer.parseInt(id)))
                     return true;
         }
         return false;
@@ -205,17 +202,17 @@ public class CategoryFacade {
 
 
     // iterate all the Items and check their expiration date
-    public HashMap<Integer,List<Item>> checkExpiration() {
-        HashMap<Integer,List<Item>> ans = new HashMap<>();
+    public HashMap<Integer, List<Item>> checkExpiration() {
+        HashMap<Integer, List<Item>> ans = new HashMap<>();
         for (Category mainCategory : categories.values()) {//for the main category
             if (mainCategory.getName() != "Defective") {
                 for (Category subCategory : mainCategory.getSubCategories().values()) { //for the sub category
                     for (Category subSubCategory : subCategory.getSubCategories().values()) { //for the sub-sub category
-                        for(Product product: subSubCategory.getProducts().values()){
+                        for (Product product : subSubCategory.getProducts().values()) {
                             List<Item> expiredItems = product.checkExpiration();
-                            if (!expiredItems.isEmpty()){
+                            if (!expiredItems.isEmpty()) {
                                 ans.put(product.getMKT(), expiredItems);
-                                for (Item item:expiredItems){
+                                for (Item item : expiredItems) {
                                     reportDefectiveItem(product.getMKT(), item.getItemId());
                                 }
                             }
@@ -225,5 +222,21 @@ public class CategoryFacade {
             }
         }
         return ans;
+    }
+
+    public String viewExistingCategories() {
+        StringBuilder printCategories = new StringBuilder();
+        for (Category category : categories.values()){
+            if (category.getName() == "Defective") continue;
+            printCategories.append(category.getName() + "\n");
+            for (Category subCategory : category.getSubCategories().values()){
+                printCategories.append("   " + subCategory.getName() + "\n");
+                for (Category subSubCategory : subCategory.getSubCategories().values()){
+                    printCategories.append("      " + subSubCategory.getName() + "\n");
+                }
+            }
+            printCategories.append("\n");
+        }
+        return printCategories.toString();
     }
 }

@@ -147,7 +147,7 @@ public class Category {
         Product productToReturn = getProducts().get(mkt);
         if (productToReturn != null)
             return productToReturn.toString();
-        return "Not exist";
+        return "No defective items from this product";
     }
     public List<Item> checkExpiration(){
         List<Item> allItemsFromProducts = new ArrayList<>();
