@@ -273,14 +273,17 @@ public class Product {
         return sortedItems;
     }
     public String restockStore(int numItems) { // move items from storage to store
-        StringBuilder itemsId =new StringBuilder("items ID: ");
         if (this.storageAmount < numItems){
-            return "There are not enough items from this product at the storage";
+            return ("There are not enough items from this product at the storage\n(Only " + this.storageAmount + " items at the storage)");
         }
+        StringBuilder itemsId =new StringBuilder("The items you should transformed by the closest expiration date are:\n  items ID:  ");
         for(Item item : getItemsSortedByExpirationDate()){
             if (numItems != 0 && (item.getLocation() == Location.Storage)){
                 item.setLocationToStore();
+                this.storeAmount++;
+                this.storageAmount--;
                 itemsId.append(item.getItemId() + ", ");
+                numItems--;
             }
         }
         return itemsId.substring(0,itemsId.length()-2);

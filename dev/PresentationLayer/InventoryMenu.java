@@ -173,7 +173,9 @@ public class InventoryMenu {
         if (categories.length != 3) {
             System.out.println("Invalid input, please try again. ");
             addProduct();
+            return;
         }
+
         System.out.print("Enter product name: ");
         String name = scanner.nextLine();
 
@@ -205,7 +207,8 @@ public class InventoryMenu {
             System.out.print("Enter 1 to add items of this product or 0 otherwise: ");
             int ans = scanner.nextInt();
             if (ans == 1) addItems(MKT);
-        } else {
+        }
+        else {
             System.out.println("This category doesn't exist");
         }
 
@@ -237,7 +240,6 @@ public class InventoryMenu {
         System.out.print("Enter number of items to move to the store: ");
         int numItems = scanner.nextInt();
         scanner.nextLine();
-        System.out.print("The items you should transformed by the closest expiration date are: ");
         System.out.println(cf.restockStore(MKT, numItems));
     }
 
@@ -373,6 +375,7 @@ public class InventoryMenu {
         if (categories.length > 3) {
             System.out.println("Invalid input, please try again. ");
             applyCategoryDiscount();
+            return;
         }
         System.out.print("Enter discount: ");
         int discount = scanner.nextInt();
@@ -391,6 +394,7 @@ public class InventoryMenu {
         else {
             System.out.println("Try again");
             addSubSubCategory();
+            return;
         }
 
     }
@@ -404,6 +408,7 @@ public class InventoryMenu {
         else {
             System.out.println("Try again");
             addSubCategory();
+            return;
         }
     }
 

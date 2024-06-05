@@ -64,6 +64,7 @@ public class Item {
 
     public void setLocationToStore() {
         this.location = Location.Store;
+
     }
 
     public void setLocationToDefective() {
