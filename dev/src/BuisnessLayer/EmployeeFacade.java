@@ -36,8 +36,10 @@ public class EmployeeFacade {
         ShiftEmployee e = getShiftEmployee(id);
         if (e ==null)
             return "employee doesnt exist";
-        return e.getLastPref(0);
+        return "this week preferences : \n" + e.getLastPref(0)
+                +"\nnext week preferences : " + "\n" + e.getLastPref(1);
     }
+
 
     public String getShifts(int id, LocalDate date){
         if (!isHR(id) )

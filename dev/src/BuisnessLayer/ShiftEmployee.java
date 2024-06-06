@@ -21,8 +21,8 @@ public class ShiftEmployee extends Employee {
         roles = new ArrayList<>();
         roles.add(role);
         preferences = new Stack<>();
-        preferences.add(new Preferences());
-        preferences.add(new Preferences(new boolean[6][2], LocalDate.now().getDayOfYear()/7 + 1));
+        preferences.push(new Preferences());
+        preferences.push(new Preferences(new boolean[6][2], LocalDate.now().getDayOfYear()/7 + 1));
         this.HRid = HRid;
     }
 
@@ -58,7 +58,7 @@ public class ShiftEmployee extends Employee {
             return "illegal shifts preference";
         if (preferences.peek().getMadeAtWeek() == startDate)
             preferences.pop();
-        preferences.add(new Preferences(shifts,startDate));
+        preferences.push(new Preferences(shifts,startDate));
         return null;
     }
 

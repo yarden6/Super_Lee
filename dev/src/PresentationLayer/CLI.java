@@ -582,7 +582,7 @@ public class CLI {
     }
 
     private void setPreferences() {
-        boolean shifts[][] = new boolean[6][2];
+        boolean [][] shifts = new boolean[6][2];
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
         for (int i = 0; i < 6; i++)
         {
@@ -632,7 +632,7 @@ public class CLI {
     }
 
     private void getPreferences() {
-        System.out.println(employeeFacade.getLastPref(id));
+        System.out.println(  employeeFacade.getLastPref(id));
         shiftEmployee();
     }
 

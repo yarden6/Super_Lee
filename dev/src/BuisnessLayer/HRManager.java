@@ -23,8 +23,8 @@ public class HRManager extends Employee{
         String s = "" ;
         for (ShiftEmployee e : allEmployees.values()){
             s = s + e.getEmployeeName() + " " + e.getID() + " Roles: " + e.getROles() +
-                    "\n this week shifts : " +"\n" + e.getLastPref(1) +
-                     "next week shifts: " +"\n"+ e.getLastPref(0) +"\n" ;
+                    "\n this week shifts : " +"\n" + e.getLastPref(0) +
+                     "next week shifts: " +"\n"+ e.getLastPref(1) +"\n" ;
         }
         return s;
     }
@@ -62,9 +62,9 @@ public class HRManager extends Employee{
 
     private String setShiftReplacement(Shift s,Role role) {
         int week = s.date.getDayOfYear()/7;
-        int i =0 ;
+        int i =1 ;
         if (week == LocalDate.now().getDayOfYear()/7)
-            i=1;
+            i=0;
         for (ShiftEmployee e : allEmployees.values()){
             if (e.getRoles().contains(role) && e.getPreferences().get(i).getShifts()[s.getDate().getDayOfWeek().getValue()-1][s.getPeriod().ordinal()] &&
                     !s.contain(e.getID())){
