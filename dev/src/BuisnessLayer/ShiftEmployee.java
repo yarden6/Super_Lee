@@ -2,6 +2,7 @@ package BuisnessLayer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Stack;
 
 public class ShiftEmployee extends Employee {
@@ -20,7 +21,8 @@ public class ShiftEmployee extends Employee {
         roles = new ArrayList<>();
         roles.add(role);
         preferences = new Stack<>();
-        preferences.add(new Preferences(true));
+        preferences.add(new Preferences());
+        preferences.add(new Preferences(new boolean[6][2], LocalDate.now().getDayOfYear()/7 + 1));
         this.HRid = HRid;
     }
 
@@ -51,17 +53,19 @@ public class ShiftEmployee extends Employee {
         return null;
     }
 
-    public String callPreferences(boolean[][] shifts, LocalDate startDate){
-        if (shifts.length != 6 || shifts[1].length != 2 || startDate == null )
-            return "illegal shifts prefrence";
+    public String callPreferences(boolean[][] shifts, int startDate){
+        if (shifts.length != 6 || shifts[1].length != 2  )
+            return "illegal shifts preference";
+        if (preferences.peek().getMadeAtWeek() == startDate)
+            preferences.pop();
         preferences.add(new Preferences(shifts,startDate));
         return null;
     }
 
-    public String getLastPref(){
+    public String getLastPref(int index){
         if (preferences.isEmpty())
             return "no preferences found \n";
-        Preferences p = preferences.peek();
+        Preferences p = preferences.get(index);
         String s = " sun   mon   tue   wen   thu   fri \n";
         boolean [][] shifts = p.getShifts();
         for (int i = 0; i < shifts[i].length; i++) {

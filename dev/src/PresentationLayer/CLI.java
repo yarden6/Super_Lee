@@ -207,7 +207,7 @@ public class CLI {
         int employeeID = scanner.nextInt();
         scanner.nextLine();
         String ret = employeeFacade.fireEmployee(employeeID, id);
-        if (!ret.equals("")){
+        if (!ret.isEmpty()){
             System.out.println(ret);
         }
         hrManager();
@@ -225,8 +225,8 @@ public class CLI {
             System.out.println("you can't set shifts to the past, choose again");
             setShifts();
         }
-        if(date.isAfter(now.plusDays(10))){
-            System.out.println("you can't set shifts to more than 10 days from now, choose again");
+        if(date.getDayOfYear()/7 >now.getDayOfYear()/7 + 1 && !(date.getDayOfYear() < 8 && date.getYear()-now.getYear()==1 )){
+            System.out.println("you can only set shift for this week and the next one");
             setShifts();
         }
         if (date.getDayOfWeek().getValue() == 7){
@@ -236,6 +236,7 @@ public class CLI {
                 createSingleShift( date);
             date = date.plusDays(1);
         hrManager();
+
     }
 
     private void createSingleShift(LocalDate date) {
@@ -587,7 +588,7 @@ public class CLI {
         {
             int choice = 0;
             while (choice < 1 || choice >4) {
-                System.out.println("please Choose you shift for this week:(for each day choose 1 for morning, 2 for evening and 3 for both and 4 for none)");
+                System.out.println("please Choose your shifts for this week:(for each day choose 1 for morning, 2 for evening and 3 for both and 4 for none)");
                 System.out.println(days[i] + ":");
                 choice = scanner.nextInt();
                 scanner.nextLine();
@@ -610,7 +611,7 @@ public class CLI {
                     shifts[i][1] = false;
             }
         }
-        String ret = employeeFacade.makePreferences(id, shifts, LocalDate.now());
+        String ret = employeeFacade.makePreferences(id, shifts, (LocalDate.now().getDayOfYear()/7 + 1)%52);
         if (ret != null){
             System.out.println(ret);
             setPreferences();

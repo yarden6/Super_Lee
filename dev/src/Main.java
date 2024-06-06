@@ -15,10 +15,10 @@ public class Main {
         ShiftEmployee itamar = new ShiftEmployee("Itamar", 3, "karmiel","1231231", true, 300, "2", 1, Role.CASHIER);
         ShiftEmployee saar = new ShiftEmployee("Saar", 4, "karmiel","1231231", true, 300, "4", 1, Role.SHIFTMANAGER);
         ShiftEmployee yuval = new ShiftEmployee("Yuval", 5, "karmiel","1231231", true, 300, "4", 1, Role.STOREKEEPER);
-        saar.callPreferences(new boolean[][]{{false,true},{false, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now());
-        amir.callPreferences(new boolean[][]{{true,true},{true, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now());
-        itamar.callPreferences(new boolean[][]{{true,true},{true, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now());
-        yuval.callPreferences(new boolean[][]{{true,true},{true, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now());
+        saar.callPreferences(new boolean[][]{{false,true},{false, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now().getDayOfYear()/7+1);
+        amir.callPreferences(new boolean[][]{{true,true},{true, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now().getDayOfYear()/7+1);
+        itamar.callPreferences(new boolean[][]{{true,true},{true, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now().getDayOfYear()/7+1);
+        yuval.callPreferences(new boolean[][]{{true,true},{true, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now().getDayOfYear()/7+1);
         saar.addRole(Role.SHIFTMANAGER);//ID 4
         saar.addRole(Role.DELIVERYGUY);
         itamar.addRole(Role.CASHIER);//ID 3

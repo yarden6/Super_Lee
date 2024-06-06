@@ -24,7 +24,7 @@ public class EmployeeFacade {
 
 
     //Shift Employee methods
-    public String makePreferences(int employeeId, boolean[][] shifts, LocalDate startDate) {
+    public String makePreferences(int employeeId, boolean[][] shifts, int startDate) {
         if (!checkLoggedin(employeeId))
             return "employee not logged in";
         return shiftEmployees.get(employeeId).callPreferences(shifts,startDate);
@@ -36,7 +36,7 @@ public class EmployeeFacade {
         ShiftEmployee e = getShiftEmployee(id);
         if (e ==null)
             return "employee doesnt exist";
-        return e.getLastPref();
+        return e.getLastPref(0);
     }
 
     public String getShifts(int id, LocalDate date){

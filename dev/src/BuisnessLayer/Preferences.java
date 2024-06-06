@@ -4,19 +4,15 @@ import java.time.LocalDate;
 
 public class Preferences {
     boolean[][] shifts;
-    LocalDate madeAt;
+    int MadeAtWeek;
 
-    public Preferences(boolean[][] shifts, LocalDate start) {
+    public Preferences(boolean[][] shifts, int start) {
         //TODO (check if the array of boolean is the right size)
-        this.madeAt = start;
+        this.MadeAtWeek = start;
         this.shifts = shifts;
     }
     public Preferences(){
-        this.madeAt = LocalDate.now();
-        this.shifts = new boolean[6][2];
-    }
-    public Preferences(boolean setAll){
-        this.madeAt = LocalDate.now();
+        this.MadeAtWeek = LocalDate.now().getDayOfYear()/7;
         this.shifts = new boolean[6][2];
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 2; j++){
@@ -25,12 +21,12 @@ public class Preferences {
         }
     }
 
-    public LocalDate getMadeAt() {
-        return madeAt;
+    public int getMadeAtWeek() {
+        return MadeAtWeek;
     }
 
-    public void setMadeAt(LocalDate madeAt) {
-        this.madeAt = madeAt;
+    public void setMadeAtWeek(int madeAtWeek) {
+        this.MadeAtWeek = madeAtWeek;
     }
 
     public boolean[][] getShifts() {
