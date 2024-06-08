@@ -10,22 +10,22 @@ import java.util.PriorityQueue;
 
 public class Main {
     public static void main(String[] args) {
-        HRManager yosef = new HRManager("Yosef",1,"karmiel", "1231",700,"1");
-        ShiftEmployee amir = new ShiftEmployee("amir", 2, "karmiel","1231231", true, 300, "2", 1, Role.DELIVERYGUY);
-        ShiftEmployee itamar = new ShiftEmployee("Itamar", 3, "karmiel","1231231", true, 300, "2", 1, Role.CASHIER);
-        ShiftEmployee saar = new ShiftEmployee("Saar", 4, "karmiel","1231231", true, 300, "4", 1, Role.SHIFTMANAGER);
-        ShiftEmployee yuval = new ShiftEmployee("Yuval", 5, "karmiel","1231231", true, 300, "4", 1, Role.STOREKEEPER);
-        saar.callPreferences(new boolean[][]{{false,true},{false, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now().getDayOfYear()/7+1);
-        amir.callPreferences(new boolean[][]{{true,true},{true, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now().getDayOfYear()/7+1);
-        itamar.callPreferences(new boolean[][]{{true,true},{true, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now().getDayOfYear()/7+1);
-        yuval.callPreferences(new boolean[][]{{true,true},{true, true},{true,true},{true,true},{true,true},{true,true}}, LocalDate.now().getDayOfYear()/7+1);
-        saar.addRole(Role.SHIFTMANAGER);//ID 4
-        saar.addRole(Role.DELIVERYGUY);
-        itamar.addRole(Role.CASHIER);//ID 3
-        amir.addRole(Role.STOREKEEPER);//ID 2
-        amir.addRole(Role.DELIVERYGUY);
-        yuval.addRole(Role.STOREKEEPER);//ID 5
-        yuval.addRole(Role.CASHIER);
+        startSession();
+    }
+    public static void startSession(){
+        HRManager yosef = new HRManager("Yosef",1,"karmiel",
+                "1",700,"1");
+        ShiftEmployee amir = new ShiftEmployee("amir", 2, "karmiel",
+                "2", true, 300, "2", 1, Role.DELIVERYGUY);
+        ShiftEmployee itamar = new ShiftEmployee("Itamar", 3, "karmiel",
+                "3", true, 300, "3", 1, Role.CASHIER);
+        ShiftEmployee saar = new ShiftEmployee("Saar", 4, "karmiel",//id 4 shiftmanager
+                "4", true, 300, "4", 1, Role.SHIFTMANAGER);
+        ShiftEmployee yuval = new ShiftEmployee("Yuval", 5, "karmiel",
+                "5", true, 300, "5", 1, Role.STOREKEEPER);
+        itamar.addRole(Role.STOREKEEPER);//ID 3 storekeeper,cashier
+        amir.addRole(Role.STOREKEEPER);//ID 2 deliveryguy storekeeper
+        yuval.addRole(Role.CASHIER); // id 5 storekeeper cashier
         List<HRManager> managers = new ArrayList<>();
         List<ShiftEmployee> employees = new ArrayList<>();
         managers.add(yosef);
@@ -34,6 +34,5 @@ public class Main {
         employees.add(saar);
         employees.add(yuval);
         CLI cli = new CLI(managers, employees);
-
     }
 }
