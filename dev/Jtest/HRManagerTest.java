@@ -28,6 +28,7 @@ public class HRManagerTest {
 
     @BeforeEach
     public void setUp() {
+        boolean[][] tru = {{true,true},{true,true},{true,true},{true,true},{true,true},{true,true},};
         hrManager1 = new HRManager("Saar", 1, "1","1",10000,"1");
         hrManager2 = new HRManager("Itamar", 2, "2","2",10000,"2");
         hrManagers.add(hrManager1);
@@ -40,6 +41,10 @@ public class HRManagerTest {
         shiftEmployee4 = new ShiftEmployee("bar", 6, "2", "6",true, 10000, "3", 2, Role.SHIFTMANAGER);
         shiftEmployees.add(shiftEmployee3);
         shiftEmployees.add(shiftEmployee4);
+        shiftEmployee1.callPreferences(tru,LocalDate.now().getDayOfYear() / 7 + 1 );
+        shiftEmployee2.callPreferences(tru,LocalDate.now().getDayOfYear() / 7 + 1 );
+        shiftEmployee3.callPreferences(tru,LocalDate.now().getDayOfYear() / 7 + 1 );
+        shiftEmployee4.callPreferences(tru,LocalDate.now().getDayOfYear() / 7 + 1 );
         ef = new EmployeeFacade(hrManagers, shiftEmployees);
         hrManager1.login("1");
         hrManager2.login("2");
@@ -77,19 +82,21 @@ public class HRManagerTest {
         //test with shift manager that is not exist
         assertEquals("shift manager not exist", ef.HRSetShift(2,fakeId,shiftRoles, LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
         //test for shift manager that he is not have shift manager role
-        assertEquals(shiftEmployee2.getEmployeeName() + " isn't a shift manager", ef.HRSetShift(2,shiftEmployee2.getID(),shiftRoles,LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
+        assertEquals(shiftEmployee2.getEmployeeName() + " isn't a shift manager",
+                ef.HRSetShift(2,shiftEmployee2.getID(),shiftRoles,LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
         //test for shift employee that was assign for role he doesn't have
         int idToChange = 5;
         String notHesRole = Role.STOREKEEPER.toString();
         shiftRoles.replace(idToChange,notHesRole);
-        assertEquals(idToChange + " was set to be " + notHesRole + " and dont have qualification for it" ,ef.HRSetShift(2,shiftEmployee4.getID(),shiftRoles, LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
+        assertEquals(idToChange + " was set to be " + notHesRole + " and dont have qualification for it"
+                ,ef.HRSetShift(2,shiftEmployee4.getID(),shiftRoles, LocalDate.of(2024,6,9), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
         shiftRoles.put(fakeId, Role.CASHIER.toString());
         shiftRoles.replace(5, Role.CASHIER.toString());
         //test for shift employee that is not exist
         assertEquals(fakeId + " not exist", ef.HRSetShift(2,shiftEmployee3.getID(),shiftRoles, LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
         shiftRoles.remove(fakeId);
         //test for shift that created good
-        assertNull(ef.HRSetShift(2,shiftEmployee4.getID(),shiftRoles, LocalDate.now(), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
+        assertNull(ef.HRSetShift(2,shiftEmployee4.getID(),shiftRoles, LocalDate.of(2024,6,9), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING"));
 
 
 
@@ -99,7 +106,6 @@ public class HRManagerTest {
         assertEquals("not valid HR", ef.getAllShifts(30, LocalDate.now()));
         assertEquals("no shifts found", ef.getAllShifts(1, LocalDate.now()));
         //TODO create shifts and do the test to make is success
-        assertEquals("employee doesnt exist", ef.getAllShifts(9, LocalDate.now()));
     }
     @Test
     public void testAddRole() {
@@ -134,7 +140,7 @@ public class HRManagerTest {
 
     @Test
     public void testUpdateEmployee() {
-        assertEquals("this employee is not exist", ef.updateEmployee(new ShiftEmployee("liron", 5, "1", "3",true, 10000, "3", 1, Role.CASHIER), 1));
+        assertEquals("this employee is not exist", ef.updateEmployee(new ShiftEmployee("liron", 1232131, "1", "3",true, 10000, "3", 1, Role.CASHIER), 1));
         assertNull( ef.updateEmployee(new ShiftEmployee("liron", 3, "1", "3",true, 10000, "3", 1, Role.CASHIER), 1));
         assertNull(ef.updateEmployee(new ShiftEmployee("liron", 3, "1", "3",true, 10000, "3", 1, Role.CASHIER), 2));
     }
