@@ -80,7 +80,7 @@ class ReportFacadeTest {
                 "    Sub-Sub Category: 100g\n" +
                 "     No products\n";
         report = rf.makeInventoryReport(new String[]{""});
-        assertEquals(report,expected);
+        assertEquals(expected,report);
 
     }
     @Test
@@ -112,7 +112,7 @@ class ReportFacadeTest {
                 "      Selling Price: 6.5\n" +
                 "\n";
         report = rf.makeInventoryReport(new String[]{"Dairy products"});
-        assertEquals(report,expected);
+        assertEquals(expected,report);
     }
 
 
@@ -130,7 +130,7 @@ class ReportFacadeTest {
         cf.reportDefectiveItem(123, 3);
         cf.reportDefectiveItem(123, 5);
         report = rf.makeDefectiveReport();
-        assertEquals(report,expected);
+        assertEquals(expected,report);
 
 
     }
@@ -158,7 +158,7 @@ class ReportFacadeTest {
         cf.reportDefectiveItem(123, 5);
         cf.reportDefectiveItem(3001,1);
         report = rf.makeDefectiveReport();
-        assertEquals(report,expected);
+        assertEquals(expected,report);
     }
     @Test
     void publishReportWeeklyTest() {
@@ -218,15 +218,15 @@ class ReportFacadeTest {
                 "    Sub-Sub Category: 100g\n" +
                 "     No products\n";
         String def = "___________________________________________\n" +
-                "Defected products:";
+                "Defected products:\n";
         String s [] = new String[] {inv,def};
 
         if(rf.getDayToPrint() != LocalDate.now().getDayOfWeek())
             assertEquals(null,rf.publishReportWeekly());
         else{
             String [] ans = rf.publishReportWeekly();
-            assertEquals(s[0],ans[0]);
-            assertEquals(s[1],ans[1]);
+            assertEquals(ans[0],s[0]);
+            assertEquals(ans[1],s[1]);
         }
 
     }
