@@ -119,7 +119,7 @@ class ReportFacadeTest {
     @Test
     void makeDefectiveReportFor1Product2Items() {
         expected = "___________________________________________\n" +
-                "Defected products:1\n" +
+                "Defected products:\n1\n" +
                 "      Product Name: milk 500ml\n" +
                 "      MKT: 123\n" +
                 "      Producer Name: Tnuva\n" +
@@ -138,7 +138,7 @@ class ReportFacadeTest {
     @Test
     void makeDefectiveReportFor2Product3Items() {
         expected ="___________________________________________\n" +
-                "Defected products:1\n" +
+                "Defected products:\n1\n" +
                 "      Product Name: Herbal Shampoo 750ml\n" +
                 "      MKT: 3001\n" +
                 "      Producer Name: Shampoo Inc.\n" +

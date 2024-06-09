@@ -64,6 +64,6 @@ class CategoryFacadeTest {
 
     @Test
     void checkDefective() {
-        assertEquals(cf.checkDefective(p1.getMKT()), "Not exist");
+        assertEquals("No defective items from this product", cf.checkDefective(p1.getMKT()));
     }
 }
