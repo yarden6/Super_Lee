@@ -46,7 +46,10 @@ public class CategoryFacade {
     }
 
 
-    public void applyCategoryDiscount(String[] categories, int discount, String date) {
+    public String applyCategoryDiscount(String[] categories, int discount, String date) {
+        if(!checkValidCategories(categories)){
+            return "This categories don't exist";
+        }
         Category chosenOne;
         if (categories.length == 1)
             chosenOne = getCategories().get(categories[0]);
@@ -60,8 +63,9 @@ public class CategoryFacade {
             LocalDate discountEndDate = LocalDate.parse(date, formatter);
             chosenOne.applyDiscount(discount, discountEndDate);
         } catch (DateTimeException e) {
-            System.out.println("Error parsing date: " + e.getMessage());
+            return ("Error parsing date: " + e.getMessage());
         }
+        return "Discount was updated";
     }
 
     private boolean checkValidCategories(String[] categoriesString) {

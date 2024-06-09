@@ -391,7 +391,7 @@ public class InventoryMenu {
         scanner.nextLine();
         System.out.print("Enter date for the discount to end (yyyy-mm-dd): ");
         String discountDate = scanner.nextLine();
-        cf.applyCategoryDiscount(categories, discount, discountDate);
+        System.out.println(cf.applyCategoryDiscount(categories, discount, discountDate));
     }
 
     private void addSubSubCategory() {
