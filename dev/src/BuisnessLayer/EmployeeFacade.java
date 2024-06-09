@@ -31,19 +31,21 @@ public class EmployeeFacade {
     }
 
     public String getLastPref(int id){
+        if (!isShiftEmp(id))
+            return "employee not exist";
         if(!checkLoggedin(id))
-            return " not logged in";
+            return "not logged in";
         ShiftEmployee e = getShiftEmployee(id);
-        if (e ==null)
-            return "employee doesnt exist";
         return "this week preferences : \n" + e.getLastPref(0)
                 +"\nnext week preferences : " + "\n" + e.getLastPref(1);
     }
 
 
     public String getShifts(int id, LocalDate date){
-        if (!isHR(id) )
-            return "not valid HR";
+        if (!isShiftEmp(id) )
+            return "Employee not exist";
+        if(!checkLoggedin(id))
+            return "not logged in";
         ShiftEmployee employee = getShiftEmployee(id);
         HRManager hrManager = getHRManager(employee.getHRid());
         return hrManager.getEmployeeShifts(id, date);
@@ -52,6 +54,10 @@ public class EmployeeFacade {
     //HRManager methods
 
     public String getPreferences(int hrID){
+        if (!isHR(hrID) )
+            return "not valid HR";
+        if(!checkLoggedin(hrID))
+            return " not logged in";
         HRManager hr = getHRManager(hrID);
         return hr.getPref();
     }

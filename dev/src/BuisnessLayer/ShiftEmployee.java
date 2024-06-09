@@ -42,12 +42,12 @@ public class ShiftEmployee extends Employee {
             return null;
         }
         else {
-            return this.getEmployeeName() + " isnt a " + oldrole;
+            return this.getEmployeeName() + " is not a " + oldrole;
         }
     }
     public String removeRole(Role role){
         if(!roles.contains(role))
-            return this.getEmployeeName() + " isnt a " + role;
+            return this.getEmployeeName() + " is not a " + role;
         else
             roles.remove(role);
         return null;

@@ -103,10 +103,21 @@ public class HRManagerTest {
     }
 
     @Test void testGetShifts(){
+        Map<Integer,String> shiftRoles = new HashMap<>();
+        String shiftDate= "2024-06-09";
+        String shiftTime = "MORNING";
+        String shiftStart = "08:00";
+        String shiftEnd = "16:00";
+        String role = "DELIVERYGUY";
+        shiftRoles.put(shiftEmployee2.getID(), "DELIVERYGUY");
+        int fakeId = 30;
+        ef.HRSetShift(2,shiftEmployee4.getID(),shiftRoles, LocalDate.of(2024,6,9), LocalTime.of(8,0), LocalTime.of(16,0), "MORNING");
         assertEquals("not valid HR", ef.getAllShifts(30, LocalDate.now()));
-        assertEquals("no shifts found", ef.getAllShifts(1, LocalDate.now()));
-        //TODO create shifts and do the test to make is success
+        assertEquals("no shifts found", ef.getAllShifts(1, LocalDate.of(2024,6,9)));
+        assertEquals("Date: " + shiftDate+ " " + shiftTime + "  start: " + shiftStart + " end: " + shiftEnd + "  shift manager: " + shiftEmployee4.getEmployeeName() + " \n" +
+                    "id: " + shiftEmployee2.getID() + ", Role: " + role +"\n",ef.getAllShifts(2, LocalDate.of(2024,6,9)));
     }
+
     @Test
     public void testAddRole() {
         int fakeId = 30;
@@ -122,7 +133,7 @@ public class HRManagerTest {
         int fakeId = 30;
         String storeKeeper = "STOREKEEPER";
         assertEquals(fakeId + " doesn't exist", ef.deleteRoleFromEmployee(1, 30, "CASHIER"));
-        assertEquals(shiftEmployee1.getEmployeeName() + " isnt a " + storeKeeper , ef.deleteRoleFromEmployee(hrManager1.getID(), shiftEmployee1.getID(), storeKeeper));
+        assertEquals(shiftEmployee1.getEmployeeName() + " is not a " + storeKeeper , ef.deleteRoleFromEmployee(hrManager1.getID(), shiftEmployee1.getID(), storeKeeper));
         assertEquals("not valid HR", ef.deleteRoleFromEmployee(9, 3, "CASHIER"));
         assertNull(ef.deleteRoleFromEmployee(1, 3, "CASHIER"));
     }
@@ -133,7 +144,7 @@ public class HRManagerTest {
         String storeKeeper = "STOREKEEPER";
         String cashier = "CASHIER";
         assertEquals(fakeId + " doesn't exist", ef.changeRoleToEmployee(1, 30, "STOREKEEPER", "CASHIER"));
-        assertEquals(shiftEmployee1.getEmployeeName() + " isnt a " + storeKeeper , ef.changeRoleToEmployee(hrManager1.getID(), shiftEmployee1.getID(), storeKeeper, cashier));
+        assertEquals(shiftEmployee1.getEmployeeName() + " is not a " + storeKeeper , ef.changeRoleToEmployee(hrManager1.getID(), shiftEmployee1.getID(), storeKeeper, cashier));
         assertEquals("not valid HR", ef.changeRoleToEmployee(9, 3, "STOREKEEPER", "CASHIER"));
         assertNull(ef.changeRoleToEmployee(1, 3, "CASHIER", "DELIVERYGUY"));
     }

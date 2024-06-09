@@ -173,11 +173,11 @@ public class HRManager extends Employee{
         String s = "";
         for (Map.Entry<LocalDate,Shift> entry : morningSchedule.entrySet()){
             if (entry.getKey().compareTo(date) >= 0 )
-                s+= entry.getValue().toString() + "\n" + entry.getValue().rolesToString() + "\n";
+                s+= entry.getValue().toString() + "\n" + entry.getValue().rolesToString();
         }
         for (Map.Entry<LocalDate,Shift> entry : eveningSchedule.entrySet()){
             if (entry.getKey().compareTo(date) >= 0  )
-                s+= entry.getValue().toString() + "\n" + entry.getValue().rolesToString() + "\n";
+                s+= entry.getValue().toString() + "\n" + entry.getValue().rolesToString();
         }
         if (s.isEmpty()){
             return "no shifts found";

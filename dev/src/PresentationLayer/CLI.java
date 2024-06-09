@@ -632,7 +632,7 @@ public class CLI {
     }
 
     private void getPreferences() {
-        System.out.println(  employeeFacade.getLastPref(id));
+        System.out.println(employeeFacade.getLastPref(id));
         shiftEmployee();
     }
 
