@@ -23,7 +23,7 @@ public class Main {
                 "4", true, 300, "4", 1, Role.SHIFTMANAGER);
         ShiftEmployee yuval = new ShiftEmployee("Yuval", 5, "karmiel",
                 "5", true, 300, "5", 1, Role.STOREKEEPER);
-        itamar.addRole(Role.STOREKEEPER);//ID 3 storekeeper,cashier
+//        itamar.addRole(Role.STOREKEEPER);//ID 3 storekeeper,cashier
         amir.addRole(Role.STOREKEEPER);//ID 2 deliveryguy storekeeper
         yuval.addRole(Role.CASHIER); // id 5 storekeeper cashier
         List<HRManager> managers = new ArrayList<>();

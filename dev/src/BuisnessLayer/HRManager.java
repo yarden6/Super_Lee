@@ -108,16 +108,21 @@ public class HRManager extends Employee{
                 return i + " not exist";
         if (!checkEmployee(shiftManager.getID()))
             return "shift manager not exist ";
+        int week =date.getDayOfYear()/7;
+        int i =1 ;
+        if (week == LocalDate.now().getDayOfYear()/7)
+            i=0;
         if (!shiftManager.getRoles().contains(Role.SHIFTMANAGER))
             return shiftManager.getEmployeeName() + " isn't a shift manager";
-        if (!shiftManager.getPreferences().peek().getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
+        if (!shiftManager.getPreferences().get(i).getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
             return shiftManager.getEmployeeName() + " cant work this shift";
+
         for (Integer id : shiftRoles.keySet()){
             Role role = shiftRoles.get(id);
             ShiftEmployee employee = allEmployees.get(id);
             if (!employee.getRoles().contains(role))
                 return id + " was set to be " + role + " and dont have qualification for it";
-            if (!employee.getPreferences().peek().getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
+            if (!employee.getPreferences().get(i).getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
                 return id + " cant work this shift";
         }
         Shift s = new Shift(date,shiftManager,shiftRoles,startTime,endTime,period);
