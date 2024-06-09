@@ -10,7 +10,7 @@ public class DefectiveReport extends Report {
     }
     public String createReport(Hashtable<Integer, Product> products){
         StringBuilder report = new StringBuilder("___________________________________________"+ "\n");
-        report.append("Defected products:");
+        report.append("Defected products:\n");
         int index = 1;
         for (Integer MKT:products.keySet()) {
             report.append(String.valueOf(index++)+ "\n");

@@ -99,40 +99,53 @@ public class CategoryFacade {
     }
 
     public String viewProduct(int MKT) {
-        return getProduct(MKT).toString();
+        if (getProduct(MKT) != null)
+            return getProduct(MKT).toString();
+        else return "Product does not exist";
     }
 
     public void applyProductDiscount(int MKT, int discount, String date) {
         Product product = getProduct(MKT);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            LocalDate discountEndDate = LocalDate.parse(date, formatter);
-            product.applyDiscount(discount, discountEndDate);
-        } catch (DateTimeException e) {
-            System.out.println("Error parsing date: " + e.getMessage());
-        }
+        if (product != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            try {
+                LocalDate discountEndDate = LocalDate.parse(date, formatter);
+                if (discountEndDate.isAfter(LocalDate.now())) {
+                    product.applyDiscount(discount, discountEndDate);
+                }
+                System.out.println("Date had passed");
+            } catch (DateTimeException e) {
+                System.out.println("Error parsing date: " + e.getMessage());
+            }
+        } else System.out.println("Product does not exist");
     }
 
     public String addItems(int MKT, int numberOfItems, String expirationDate, double buyingPrice, double buyingDiscount) {
         Product p = getProduct(MKT);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            LocalDate exprDate = LocalDate.parse(expirationDate, formatter);
-            if (exprDate.isAfter(LocalDate.now())) {
-                for (int i = 0; i < numberOfItems; i++) {
-                    p.addItemToStorage(exprDate, buyingPrice, buyingDiscount);
-                }
-                return "successfully added";
-            } else return "Item is expired";
-        } catch (DateTimeException e) {
-            return ("Error parsing date: " + e.getMessage());
+        if (p != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            try {
+                LocalDate exprDate = LocalDate.parse(expirationDate, formatter);
+                if (exprDate.isAfter(LocalDate.now())) {
+                    for (int i = 0; i < numberOfItems; i++) {
+                        p.addItemToStorage(exprDate, buyingPrice, buyingDiscount);
+                    }
+                    return "successfully added";
+                } else return "Item is expired";
+            } catch (DateTimeException e) {
+                return ("Error parsing date: " + e.getMessage());
+            }
         }
+        else return "Product does not exist";
     }
 
     public void reportDefectiveItem(int MKT, int id) {
         Product productWithDefect = getProduct(MKT);
-        categories.get("Defective").reportDefectiveItem(MKT, id, productWithDefect.getName(), productWithDefect.getProducerName());// add the count of the item to the defective products
-        productWithDefect.removeDefectiveItem(id); // remove specific item from its product
+        if (productWithDefect != null) {
+            categories.get("Defective").reportDefectiveItem(MKT, id, productWithDefect.getName(), productWithDefect.getProducerName());// add the count of the item to the defective products
+            productWithDefect.removeDefectiveItem(id); // remove specific item from its product
+        }
+        else System.out.println("Product does not exist");
     }
 
     public void loadData() {
@@ -183,7 +196,9 @@ public class CategoryFacade {
     }
 
     public String restockStore(int MKT, int numItems) {
-        return getProduct(MKT).restockStore(numItems);
+        if (getProduct(MKT) != null)
+            return getProduct(MKT).restockStore(numItems);
+        else return "Product does not exist";
     }
 
     public boolean updateStoreAfterPurchase(int MKT, String[] itemIDs) {
@@ -226,12 +241,12 @@ public class CategoryFacade {
 
     public String viewExistingCategories() {
         StringBuilder printCategories = new StringBuilder();
-        for (Category category : categories.values()){
+        for (Category category : categories.values()) {
             if (Objects.equals(category.getName(), "Defective")) continue;
             printCategories.append(category.getName() + "\n");
-            for (Category subCategory : category.getSubCategories().values()){
+            for (Category subCategory : category.getSubCategories().values()) {
                 printCategories.append("   " + subCategory.getName() + "\n");
-                for (Category subSubCategory : subCategory.getSubCategories().values()){
+                for (Category subSubCategory : subCategory.getSubCategories().values()) {
                     printCategories.append("      " + subSubCategory.getName() + "\n");
                 }
             }

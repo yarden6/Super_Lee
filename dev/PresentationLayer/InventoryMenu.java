@@ -54,7 +54,10 @@ public class InventoryMenu {
                 case 4 -> itemsMenu();
                 case 5 -> {
                     if (isLoadData) System.out.println("Data is already loaded");
-                    else cf.loadData();
+                    else {
+                        cf.loadData();
+                        isLoadData = true;
+                    }
                 }
                 case 6 -> {
                     return;
@@ -224,7 +227,7 @@ public class InventoryMenu {
         System.out.print("Enter product MKT: ");
         int MKT = scanner.nextInt();
         scanner.nextLine();
-        System.out.print(cf.viewProduct(MKT));
+        System.out.println(cf.viewProduct(MKT));
     }
 
     private void applyProductDiscount() {
