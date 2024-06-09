@@ -64,6 +64,23 @@ public class CategoryFacade {
         }
     }
 
+    private boolean checkValidCategories(String[] categoriesString) {
+        if (categories.containsKey(categoriesString[0])) {
+            Category main = categories.get(categoriesString[0]);
+            if (categoriesString.length > 1) {
+                if (main.getSubCategories().containsKey(categoriesString[1])) {
+                    Category sub = main.getSubCategories().get(categoriesString[1]);
+                    if (categoriesString.length == 3) {
+                        return (sub.getSubCategories().containsKey(categoriesString[2]));
+                    }
+                    else return true;
+                }
+            }
+            else return true;
+        }
+        return false;
+    }
+
     public boolean addProduct(String[] categoriesName, String name, int MKT, int aisle, String producerName
             , double sellingPrice, int deliveryDays, int minimumAmount) {
         if (getProduct(MKT) == null) {
