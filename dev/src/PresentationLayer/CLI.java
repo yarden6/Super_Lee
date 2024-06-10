@@ -29,7 +29,9 @@ public class CLI {
 //            setShiftsTo = setShiftsTo.minusDays(4);
         logInMenu();
     }
-    public void logInMenu() {
+    public void logInMenu()
+    {
+        System.out.println("LOGIN:");
         System.out.println("Enter ID:");
         id = scanner.nextInt();
         scanner.nextLine();
@@ -49,7 +51,7 @@ public class CLI {
         System.out.println("Select HR Manager Action:");
         System.out.println("1. Hire Employee");
         System.out.println("2. Fire Employee");
-        System.out.println("3. Set weekly Shifts");
+        System.out.println("3. Set daily Shifts");
         System.out.println("4. get all Shifts");
         System.out.println("5. add Employee Role ");
         System.out.println("6. change Employee Role ");
@@ -296,7 +298,7 @@ public class CLI {
             System.out.println("Select Employee ID:");
             while (employeeID == -1) {
                 employeeID = checkIfEmplExist();
-                if (employeeID == shiftManagerID || morningWorkersRoles.containsKey(employeeID)) {
+                if (employeeID == shiftManagerID || eveningWorkersRoles.containsKey(employeeID)) {
                     System.out.println("Employee cant be twice in the same shift, choose other employee");
                     employeeID = -1;
                 }

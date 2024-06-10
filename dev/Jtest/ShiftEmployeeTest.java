@@ -68,7 +68,7 @@ public class ShiftEmployeeTest {
     @Test
     public void testGetShifts() {
         int fakeId = 30;
-        String shiftDate= "2024-06-09";
+        String shiftDate= LocalDate.now().toString();
         String shiftTime = "MORNING";
         String shiftStart = "08:00";
         String shiftEnd = "16:00";
