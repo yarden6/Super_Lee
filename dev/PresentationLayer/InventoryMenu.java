@@ -123,11 +123,12 @@ public class InventoryMenu {
             System.out.println("\n---PRODUCTS MENU---");
             System.out.println("1. Add product");
             System.out.println("2. View product");
-            System.out.println("3. Restock store");
-            System.out.println("4. Apply product discount");
-            System.out.println("5. Update store after purchase");
-            System.out.println("6. Locate defective items (if exists)");
-            System.out.println("7. Exit");
+            System.out.println("3. Change supplier name to the cheapest supplier");
+            System.out.println("4. Restock store");
+            System.out.println("5. Apply product discount");
+            System.out.println("6. Update store after purchase");
+            System.out.println("7. Locate defective items (if exists)");
+            System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -213,7 +214,10 @@ public class InventoryMenu {
         int minimumAmount = scanner.nextInt();
         scanner.nextLine();
 
-        boolean succeed = cf.addProduct(categories, name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount);
+        System.out.print("Enter cheapest supplier name: ");
+        String supplierName = scanner.nextLine();
+
+        boolean succeed = cf.addProduct(categories, name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount,supplierName);
         if (succeed) {
             System.out.print("Enter 1 to add items of this product or 0 otherwise: ");
             int ans = scanner.nextInt();
@@ -378,7 +382,7 @@ public class InventoryMenu {
         int itemID = scanner.nextInt();
         scanner.nextLine();
 
-        cf.reportDefectiveItem(MKT, itemID);
+        System.out.print(cf.reportDefectiveItem(MKT, itemID));
     }
 
 

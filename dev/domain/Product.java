@@ -45,8 +45,8 @@ public class Product {
     }
 
     // new product + it's items list
-    public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount, List<Item> items) {
-        this(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount);
+    public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount, List<Item> items,String supplierName) {
+        this(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount,supplierName);
         this.items = items;
     }
 
@@ -123,6 +123,10 @@ public class Product {
         return MKT;
     }
 
+    public Boolean getMinimum() {
+        return isMinimum;
+    }
+
     public void setMKT(int MKT) {
         this.MKT = MKT;
     }
@@ -133,6 +137,18 @@ public class Product {
 
     public void setAisle(int aisle) {
         this.aisle = aisle;
+    }
+
+    public Boolean getWaitingForSupply() {
+        return waitingForSupply;
+    }
+
+    public void setMinimum(Boolean minimum) {
+        isMinimum = minimum;
+    }
+
+    public void setWaitingForSupply(Boolean waitingForSupply) {
+        this.waitingForSupply = waitingForSupply;
     }
 
     public String getProducerName() {

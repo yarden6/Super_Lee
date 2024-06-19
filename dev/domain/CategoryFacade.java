@@ -160,13 +160,14 @@ public class CategoryFacade {
         else return "Product does not exist";
     }
 
-    public void reportDefectiveItem(int MKT, int id) {
+    public String reportDefectiveItem(int MKT, int id) {
         Product productWithDefect = getProduct(MKT);
         if (productWithDefect != null) {
             categories.get("Defective").reportDefectiveItem(MKT, id, productWithDefect.getName(), productWithDefect.getProducerName());// add the count of the item to the defective products
             productWithDefect.removeDefectiveItem(id); // remove specific item from its product
+            checkMakeOrder(productWithDefect);
         }
-        else System.out.println("Product does not exist");
+        return ("Product does not exist");
     }
 
     public void loadData() {
@@ -222,14 +223,15 @@ public class CategoryFacade {
         else return "Product does not exist";
     }
 
-    public boolean updateStoreAfterPurchase(int MKT, String[] itemIDs) {
+    public String updateStoreAfterPurchase(int MKT, String[] itemIDs) {
         Product p = getProduct(MKT);
         if (p != null) {
             for (String id : itemIDs)
-                if (p.removeItemFromStore(Integer.parseInt(id)))
-                    return true;
+                if (p.removeItemFromStore(Integer.parseInt(id))){
+                    return checkMakeOrder(p);
+                }
         }
-        return false;
+        return "There is no such a MKT";
     }
 
     public String checkDefective(int mkt) {
