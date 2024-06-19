@@ -13,16 +13,19 @@ public class Product {
     private int totalAmount;
     private int storeAmount;
     private int storageAmount;
-    private  double sellingPrice;
+    private double sellingPrice;
     private int deliveryDays;
     private int minimumAmount;
     private int discountPercentage;
     private LocalDate discountDate;
     private int itemsCounter = 1;
     private List<Item> items;
+    private String supplier;
+    private Boolean waitingForSupply; // in case there is an order on the way
+    private Boolean isMinimum; // in case the total amount in under the min amount
 
     // new product without items
-    public Product(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount) {
+    public Product(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount, String supplierName) {
         this.name = name;
         this.MKT = MKT;
         this.aisle = aisle;
@@ -34,7 +37,9 @@ public class Product {
         this.minimumAmount = minimumAmount;
         this.discountPercentage = 0;
         this.discountDate = null;
-
+        this.supplier = supplierName;
+        this.isMinimum = isUnderMinAmount();
+        this.waitingForSupply = false;
         this.items = new ArrayList<>();
         this.totalAmount = storeAmount + storageAmount;
     }
@@ -71,6 +76,10 @@ public class Product {
         itemsCounter++;
         storageAmount++;
         totalAmount++;
+        if (!isUnderMinAmount()){
+            this.isMinimum = false; // total amount > min amount
+            this.waitingForSupply = false; // the new supply arrived
+        }
         return toAdd;
     }
 
@@ -93,8 +102,10 @@ public class Product {
     }
 
     public void checkMinAmountAlert(){
-        if (isUnderMinAmount())
-            System.out.println("\n-----INVENTORY ALERT!-----\n" + this.toString() + "\n   is almost out of stock!\n");
+        if (isUnderMinAmount()) {
+            isMinimum = true;
+        }
+        isMinimum = false;
     }
 
     public void addDefectItem(){
@@ -245,6 +256,14 @@ public class Product {
 
     public void setDiscountPercentage(int discountPercentage) {
         this.discountPercentage = discountPercentage;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    public String getSupplier() {
+        return supplier;
     }
 
     public void setDiscountDate(LocalDate discountDate) {

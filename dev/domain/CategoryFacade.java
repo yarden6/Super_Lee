@@ -86,7 +86,7 @@ public class CategoryFacade {
     }
 
     public boolean addProduct(String[] categoriesName, String name, int MKT, int aisle, String producerName
-            , double sellingPrice, int deliveryDays, int minimumAmount) {
+            , double sellingPrice, int deliveryDays, int minimumAmount, String supplierName) {
         if (getProduct(MKT) == null) {
             Category mainCategory = categories.get(categoriesName[0]); // locate the desired category
             if (mainCategory != null) {
@@ -95,7 +95,7 @@ public class CategoryFacade {
                 if (subCategory != null) {
                     Category subSubCategory = subCategory.getSubCategories().get(categoriesName[2]);
                     if (subSubCategory != null) {
-                        subSubCategory.addProduct(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount);
+                        subSubCategory.addProduct(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount, supplierName);
                         return true;
                     }
                 }
@@ -193,16 +193,16 @@ public class CategoryFacade {
         addSubSubCategory("Shower products", "Conditioner", "750ml");
 
 
-        addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 123, 1, "Tnuva", 6.5, 3, 20);
-        addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 456, 1, "Tara", 7.5, 3, 20);
+        addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 123, 1, "Tnuva", 6.5, 3, 20, "supplierA");
+        addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 456, 1, "Tara", 7.5, 3, 20, "supplierA");
 
-        addProduct(new String[]{"Baking products", "Dark Chocolate", "100g"}, "Premium Dark Chocolate", 1001, 5, "Top Producer", 2.99, 3, 10);
+        addProduct(new String[]{"Baking products", "Dark Chocolate", "100g"}, "Premium Dark Chocolate", 1001, 5, "Top Producer", 2.99, 3, 10, "supplierA");
 
-        addProduct(new String[]{"Dairy products", "Cheese", "100g"}, "Cheddar Cheese 100g", 2002, 7, "Cheese Maker", 3.99, 4, 10);
+        addProduct(new String[]{"Dairy products", "Cheese", "100g"}, "Cheddar Cheese 100g", 2002, 7, "Cheese Maker", 3.99, 4, 10, "supplierA");
 
-        addProduct(new String[]{"Shower products", "Shampoo", "750ml"}, "Herbal Shampoo 750ml", 3001, 8, "Shampoo Inc.", 5.49, 5, 25);
+        addProduct(new String[]{"Shower products", "Shampoo", "750ml"}, "Herbal Shampoo 750ml", 3001, 8, "Shampoo Inc.", 5.49, 5, 25, "supplierA");
 
-        addProduct(new String[]{"Shower products", "Conditioner", "750ml"}, "Silky Conditioner 750ml", 3002, 9, "Conditioner Co.", 4.99, 6, 20);
+        addProduct(new String[]{"Shower products", "Conditioner", "750ml"}, "Silky Conditioner 750ml", 3002, 9, "Conditioner Co.", 4.99, 6, 20, "supplierA");
 
         // milk 500ml (123) items
         addItems(123, 5, "2025-01-01", 10, 10);
@@ -274,5 +274,31 @@ public class CategoryFacade {
             printCategories.append("\n");
         }
         return printCategories.toString();
+    }
+
+    public void setSupplier(int MKT, String supplierName) {
+        if (getProduct(MKT) != null)
+            getProduct(MKT).setSupplier(supplierName);
+        else System.out.println("Product does not exist");
+    }
+
+    public String checkMakeOrder(Product product) {
+        StringBuilder s = new StringBuilder();
+        if (product.getMinimum()){ // if the total amount is under the min amount
+            s.append("\n-----INVENTORY ALERT!-----\n" + product.toString() + "\n   is almost out of stock!\n");
+            if (!product.getWaitingForSupply()){ // if there isn't an order on the way
+                s.append("\n-----ORDER INFORMATION-----\n");
+                s.append("\nProduct name:\n" + product.getName());
+                s.append("\nProduct MKT:\n" + product.getMKT());
+                s.append("\nProduct supplier:\n" + product.getSupplier());
+                s.append("\nAmount:\n" + product.getMinimumAmount()+20);
+                product.setWaitingForSupply(true);
+            }
+            else{
+                s.append("\nThe order is on it's way...\n" + product.getMinimumAmount()+20);
+            }
+             return s.toString();
+        }
+        else return ("Succeed");
     }
 }

@@ -136,17 +136,19 @@ public class InventoryMenu {
             switch (choice) {
                 case 1 -> addProduct();
                 case 2 -> viewProduct();
-                case 3 -> restockStore();
-                case 4 -> applyProductDiscount();
-                case 5 -> updateStoreAfterPurchase();
-                case 6 -> checkDefective();
-                case 7 -> {
+                case 3 -> setSupplier();
+                case 4 -> restockStore();
+                case 5 -> applyProductDiscount();
+                case 6 -> updateStoreAfterPurchase();
+                case 7 -> checkDefective();
+                case 8 -> {
                     return;
                 }
                 default -> System.out.println("Invalid choice, please try again.");
             }
         }
     }
+
 
 
     private void itemsMenu() {
@@ -242,6 +244,14 @@ public class InventoryMenu {
         cf.applyProductDiscount(MKT, discount, discountDate);
     }
 
+    private void setSupplier() {
+        System.out.print("Enter product MKT: ");
+        int MKT = scanner.nextInt();
+        System.out.print("Enter cheapest supplier name: ");
+        String supplierName = scanner.nextLine();
+        cf.setSupplier(MKT, supplierName);
+    }
+
     private void restockStore() {
         System.out.print("Enter product MKT: ");
         int MKT = scanner.nextInt();
@@ -260,11 +270,7 @@ public class InventoryMenu {
         System.out.print("Enter ID of items that have been purchased: (itemID1,itemId2,...)");
         String itemsIDs = scanner.nextLine();
         String[] ids = itemsIDs.split(",");
-        if (!cf.updateStoreAfterPurchase(MKT, ids)) {
-            System.out.println("There is no such a MKT");
-        } else
-            System.out.println("Succeed");
-
+        System.out.println(cf.updateStoreAfterPurchase(MKT, ids));
     }
 
 

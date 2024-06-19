@@ -25,8 +25,8 @@ class CategoryFacadeTest {
         cf.addSubCategory("Dairy products", "Milk");
         cf.addSubSubCategory("Dairy products", "Milk", "500ml");
 
-        cf.addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 123, 1, "Tnuva", 6.5, 3, 20);
-        cf.addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 456, 1, "Tara", 7.5, 3, 20);
+        cf.addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 123, 1, "Tnuva", 6.5, 3, 20, "supplierA");
+        cf.addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 456, 1, "Tara", 7.5, 3, 20, "supplierA");
 
         p1 = cf.getProduct(123);
         cf.addItems(p1.getMKT(), 25, "2024-07-07", 3.2, 3.0);

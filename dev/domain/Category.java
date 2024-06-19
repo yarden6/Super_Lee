@@ -70,8 +70,8 @@ public class Category {
     }
 
     // only for sub-sub-category
-    public void addProduct(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount) {
-            products.put(MKT, new Product(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount));
+    public void addProduct(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount, String supplierName) {
+            products.put(MKT, new Product(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount, supplierName));
     }
 
     // only for sub-sub-category
