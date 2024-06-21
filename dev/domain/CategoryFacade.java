@@ -165,7 +165,7 @@ public class CategoryFacade {
         if (productWithDefect != null) {
             categories.get("Defective").reportDefectiveItem(MKT, id, productWithDefect.getName(), productWithDefect.getProducerName());// add the count of the item to the defective products
             productWithDefect.removeDefectiveItem(id); // remove specific item from its product
-            checkMakeOrder(productWithDefect);
+            return checkMakeOrder(productWithDefect);
         }
         return ("Product does not exist");
     }
@@ -225,6 +225,7 @@ public class CategoryFacade {
 
     public String updateStoreAfterPurchase(int MKT, String[] itemIDs) {
         Product p = getProduct(MKT);
+        boolean check = true;
         if (p != null) {
             for (String id : itemIDs) {
                 p.removeItemFromStore(Integer.parseInt(id));
@@ -298,7 +299,7 @@ public class CategoryFacade {
                 product.setWaitingForSupply(true);
             }
             else{
-                s.append("\nThe order is on it's way...\n" + product.getMinimumAmount()+20);
+                s.append("\n   The order is on it's way...\n");
             }
              return s.toString();
         }

@@ -108,7 +108,7 @@ public class Product {
         if (isUnderMinAmount()) {
             isMinimum = true;
         }
-        isMinimum = false;
+        else isMinimum = false;
     }
 
     public void addDefectItem(){
