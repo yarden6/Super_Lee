@@ -226,10 +226,10 @@ public class CategoryFacade {
     public String updateStoreAfterPurchase(int MKT, String[] itemIDs) {
         Product p = getProduct(MKT);
         if (p != null) {
-            for (String id : itemIDs)
-                if (p.removeItemFromStore(Integer.parseInt(id))){
-                    return checkMakeOrder(p);
-                }
+            for (String id : itemIDs) {
+                p.removeItemFromStore(Integer.parseInt(id));
+            }
+            return checkMakeOrder(p);
         }
         return "There is no such a MKT";
     }
@@ -240,6 +240,7 @@ public class CategoryFacade {
 
 
     // iterate all the Items and check their expiration date
+    // when finding an expired item, add it to the expired list (ans) and report it as defective (which verify the total amount vs the min amount, and make an order if needed)
     public HashMap<Integer, List<Item>> checkExpiration() {
         HashMap<Integer, List<Item>> ans = new HashMap<>();
         for (Category mainCategory : categories.values()) {//for the main category
@@ -290,10 +291,10 @@ public class CategoryFacade {
             s.append("\n-----INVENTORY ALERT!-----\n" + product.toString() + "\n   is almost out of stock!\n");
             if (!product.getWaitingForSupply()){ // if there isn't an order on the way
                 s.append("\n-----ORDER INFORMATION-----\n");
-                s.append("\nProduct name:\n" + product.getName());
-                s.append("\nProduct MKT:\n" + product.getMKT());
-                s.append("\nProduct supplier:\n" + product.getSupplier());
-                s.append("\nAmount:\n" + product.getMinimumAmount()+20);
+                s.append("\nProduct name: " + product.getName());
+                s.append("\nProduct MKT: " + product.getMKT());
+                s.append("\nProduct supplier: " + product.getSupplier());
+                s.append("\nAmount: " + String.valueOf(product.getMinimumAmount()+20));
                 product.setWaitingForSupply(true);
             }
             else{

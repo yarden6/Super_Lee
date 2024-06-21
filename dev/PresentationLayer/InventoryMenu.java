@@ -251,6 +251,7 @@ public class InventoryMenu {
     private void setSupplier() {
         System.out.print("Enter product MKT: ");
         int MKT = scanner.nextInt();
+        scanner.nextLine();
         System.out.print("Enter cheapest supplier name: ");
         String supplierName = scanner.nextLine();
         cf.setSupplier(MKT, supplierName);

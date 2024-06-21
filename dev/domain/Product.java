@@ -88,8 +88,11 @@ public class Product {
         for (Item item : items){
             if(item.getItemId() == itemID){
                 items.remove(item);
-                storeAmount--;
-                totalAmount--;
+                if (item.getLocation() == Location.Store) {
+                    setStoreAmount(--this.storeAmount);
+                } else {
+                    setStorageAmount(--this.storageAmount);
+                }
                 checkMinAmountAlert(); // alert if needed
                 return true;
             }
