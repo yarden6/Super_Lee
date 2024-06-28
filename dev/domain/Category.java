@@ -13,6 +13,9 @@ public class Category {
     private int discountPercentage;
     private LocalDate discountDate;
 
+    //just for loading the db TODO
+    private String parentName = "";
+
 
     /**
      * new main category
@@ -63,6 +66,20 @@ public class Category {
         parentCategory.addSubCategory(this);
     }
 
+    /**
+     * a constructor for the db while loading up the system
+     *
+     * @param name
+     */
+    public Category(String name, String parentName, int discountPercentage, LocalDate discountDate) {
+        this.name = name;
+        this.parentCategory = null;
+        this.parentName = parentName;
+        this.subCategories = new Hashtable<>();
+        this.products = new Hashtable<>();
+        this.discountPercentage = discountPercentage;
+        this.discountDate = discountDate;
+    }
 
     public void addSubCategory(Category subCategory) {
         subCategories.put(subCategory.getName(), subCategory);

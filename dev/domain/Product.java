@@ -24,6 +24,11 @@ public class Product {
     private Boolean waitingForSupply; // in case there is an order on the way
     private Boolean isMinimum; // in case the total amount in under the min amount
 
+    //this is for the load data only
+    private String categoryMain = "";
+    private String categorySub = "";
+    private String categorySubSub = "";
+
     // new product without items
     public Product(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount, String supplierName) {
         this.name = name;
@@ -42,6 +47,31 @@ public class Product {
         this.waitingForSupply = false;
         this.items = new ArrayList<>();
         this.totalAmount = storeAmount + storageAmount;
+    }
+
+    /**
+     * this is for the db loading
+     */
+    public Product(int MKT,String categoryMain,String categorySub, String categorySubSub,String name,int aisle,String producerName,int totalAmount,int storeAmount,int storageAmount,double sellingPrice,int deliveryDays,int minimumAmount,int discountPercentage,LocalDate discountDate,String supplier) {
+        this.name = name;
+        this.MKT = MKT;
+        this.aisle = aisle;
+        this.producerName = producerName;
+        this.storeAmount = storeAmount;
+        this.storageAmount = storageAmount;
+        this.sellingPrice = sellingPrice;
+        this.deliveryDays = deliveryDays;
+        this.minimumAmount = minimumAmount;
+        this.discountPercentage = discountPercentage;
+        this.discountDate = discountDate;
+        this.supplier = supplier;
+        this.isMinimum = isUnderMinAmount();
+        this.waitingForSupply = false;
+        this.items = new ArrayList<>();
+        this.totalAmount = totalAmount;
+        this.categoryMain = categoryMain;
+        this.categorySub = categorySub;
+        this.categorySubSub = categorySubSub;
     }
 
     // new product + it's items list

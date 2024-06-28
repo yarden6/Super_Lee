@@ -7,10 +7,12 @@ import java.util.*;
 
 public class CategoryFacade {
     private Hashtable<String, Category> categories;
+    private Hashtable<Integer, Product> productsOutOfStock;
 
     public CategoryFacade() {
         categories = new Hashtable<>();
         addCategory("Defective");
+        productsOutOfStock = new Hashtable<>();
     }
 
     public Hashtable<String, Category> getCategories() {
@@ -151,6 +153,9 @@ public class CategoryFacade {
                     for (int i = 0; i < numberOfItems; i++) {
                         p.addItemToStorage(exprDate, buyingPrice, buyingDiscount);
                     }
+                    if (!p.isUnderMinAmount() & productsOutOfStock.get(p.getMKT()) !=null){ //checking if after restocking i got to more products then the min amount if so i will delete the product
+                        productsOutOfStock.remove(p.getMKT());
+                    }
                     return "successfully added";
                 } else return "Item is expired";
             } catch (DateTimeException e) {
@@ -218,9 +223,17 @@ public class CategoryFacade {
     }
 
     public String restockStore(int MKT, int numItems) {
-        if (getProduct(MKT) != null)
-            return getProduct(MKT).restockStore(numItems);
+        if (getProduct(MKT) != null) {
+            Product p = getProduct(MKT);
+            String checkOK = p.restockStore(numItems);
+
+            return checkOK;
+        }
         else return "Product does not exist";
+    }
+
+    public Hashtable<Integer, Product> getProductsOutOfStock() {
+        return productsOutOfStock;
     }
 
     public String updateStoreAfterPurchase(int MKT, String[] itemIDs) {
@@ -297,6 +310,7 @@ public class CategoryFacade {
                 s.append("\nProduct supplier: " + product.getSupplier());
                 s.append("\nAmount: " + String.valueOf(product.getMinimumAmount()+20));
                 product.setWaitingForSupply(true);
+                productsOutOfStock.put(product.getMKT(), product); //adding the missing products into a map
             }
             else{
                 s.append("\n   The order is on it's way...\n");
