@@ -15,10 +15,7 @@ public class ProductDao implements Dao<Product> {
 
     }
 
-    @Override
-    public Product read(int id) {
-        return null;
-    }
+
 
     @Override
     public void update(Product product) {

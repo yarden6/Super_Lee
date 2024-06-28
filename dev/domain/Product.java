@@ -111,6 +111,7 @@ public class Product {
         else isMinimum = false;
     }
 
+    // only for a defective product. regular products dont get here
     public void addDefectItem(){
         this.totalAmount++;
     }
@@ -292,6 +293,18 @@ public class Product {
     public void applyDiscount (int discount, LocalDate discountDate){
         setDiscountPercentage(discount);
         setDiscountDate(discountDate);
+    }
+
+    public String getCategoryMain() {
+        return categoryMain;
+    }
+
+    public String getCategorySub() {
+        return categorySub;
+    }
+
+    public String getCategorySubSub() {
+        return categorySubSub;
     }
 
     // forward a list of expires items that need to be removed and report

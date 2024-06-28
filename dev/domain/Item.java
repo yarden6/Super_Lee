@@ -74,4 +74,13 @@ public class Item {
     public Location getLocation() {
         return location;
     }
+
+    public String getLocationName() {
+        if (location.toString() == "Store")
+            return "Store";
+        else if (location.toString() == "Defective")
+            return "Defective";
+        else
+            return "Storage";
+    }
 }

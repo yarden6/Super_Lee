@@ -15,10 +15,6 @@ public class ItemDao implements Dao<Item> {
 
     }
 
-    @Override
-    public Item read(int id) {
-        return null;
-    }
 
     @Override
     public void update(Item item) {
