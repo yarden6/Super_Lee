@@ -10,6 +10,7 @@ import domain.Product;
 import java.util.List;
 
 public class CategoryRepository implements Repository<Category> {
+    private static CategoryRepository instance;
     private Dao<Category> categoryDao;
 
     public CategoryRepository() {

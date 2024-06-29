@@ -63,13 +63,14 @@ public class CategoryDao implements Dao<Category> {
             if (category.getParentCategory() == null) preparedStatement.setString(2, null);
             else preparedStatement.setString(2, category.getParentCategory().getName());
             preparedStatement.setInt(3, category.getDiscountPercentage());
-            preparedStatement.setString(4, category.getDiscountDate().toString());
+            preparedStatement.setString(4, category.getDiscountDateString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void update(Category category) {

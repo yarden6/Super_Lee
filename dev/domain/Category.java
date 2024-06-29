@@ -18,7 +18,7 @@ public class Category {
     private int discountPercentage;
     private LocalDate discountDate;
 
-    //just for loading the db TODO
+    //just for loading the db
     private String parentName = "";
     private CategoryRepository repository = CategoryRepository.getInstance();
     private ProductRepository productRepository = ProductRepository.getInstance();

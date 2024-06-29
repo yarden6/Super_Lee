@@ -20,6 +20,7 @@ public class DBConnection {
     static {
         connection = null;
         try {
+
             Path currentRelativePath = Paths.get("");
             String fullPath = currentRelativePath.toAbsolutePath().toString();
             String url = "jdbc:sqlite:" + fullPath + File.separator + DB_NAME;

@@ -21,8 +21,11 @@ public class ItemDao implements Dao<Item> {
     private LocalDate changeToLocalDate(String date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
-            LocalDate dateAsLocal = LocalDate.parse(date, formatter);
-            return dateAsLocal;
+            if (date != null) {
+                LocalDate dateAsLocal = LocalDate.parse(date, formatter);
+                return dateAsLocal;
+            }
+            return null;
         } catch (DateTimeException e) {
             return null;
         }

@@ -32,8 +32,8 @@ public class Product {
     private String categoryMain = "";
     private String categorySub = "";
     private String categorySubSub = "";
-    private ProductRepository repository = new ProductRepository();
-    private ItemRepository itemRepository = new ItemRepository();
+    private ProductRepository repository = ProductRepository.getInstance();
+    private ItemRepository itemRepository = ItemRepository.getInstance();
 
     // new product without items
     public Product(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount, String supplierName) {

@@ -18,7 +18,7 @@ public class Item {
     private double buyingDiscount;
     private Location location;
 
-    private ItemRepository repository = new ItemRepository();
+    private ItemRepository repository = ItemRepository.getInstance();
     private int productMKT = -1;
 
 

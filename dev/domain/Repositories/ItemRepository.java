@@ -10,8 +10,17 @@ import java.util.List;
 
 public class ItemRepository implements Repository<Item>{
     private Dao<Item> itemDao;
+    private static ItemRepository instance;
+
     public ItemRepository() {
         this.itemDao = new ItemDao();
+    }
+
+    public static synchronized ItemRepository getInstance() {
+        if (instance == null) {
+            instance = new ItemRepository();
+        }
+        return instance;
     }
 
     @Override

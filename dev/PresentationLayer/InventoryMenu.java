@@ -16,7 +16,6 @@ public class InventoryMenu {
     public ReportFacade rf;
     boolean hasBeenPrintedReports = false;
 
-    boolean isLoadData = false;
     DayOfWeek today = LocalDate.now().getDayOfWeek().minus(1);
 
     public static void main(String[] args) {
@@ -26,22 +25,22 @@ public class InventoryMenu {
     public InventoryMenu() {
         cf = new CategoryFacade();
         rf = new ReportFacade(cf);
+        cf.loadData();
         startMenu();
     }
 
     // Menu
     public void startMenu() {
         while (true) {
+
             publishReportWeekly();
             isNewDay();
-
             System.out.println("\n---INVENTORY MENU---");
             System.out.println("1. Products Menu");
             System.out.println("2. Reports Menu");
             System.out.println("3. Categories Menu");
             System.out.println("4. Items Menu");
-            System.out.println("5. Load Data");
-            System.out.println("6. Exit");
+            System.out.println("5. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -53,13 +52,6 @@ public class InventoryMenu {
                 case 3 -> categoryMenu();
                 case 4 -> itemsMenu();
                 case 5 -> {
-                    if (isLoadData) System.out.println("Data is already loaded");
-                    else {
-                        cf.loadData();
-                        isLoadData = true;
-                    }
-                }
-                case 6 -> {
                     return;
                 }
                 default -> System.out.println("Invalid choice, please try again.");
