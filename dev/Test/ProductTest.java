@@ -1,7 +1,10 @@
 package Test;
 
-import domain.Item;
-import domain.Product;
+import DataLayer.DBConnection;
+import domain.*;
+import domain.Repositories.CategoryRepository;
+import domain.Repositories.ProductRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,54 +15,70 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ProductTest {
-    private Product p1;
-    private Product p2;
+    private ProductRepository productRepo;
 
-    String expectedMsg;
-    String functionMsg;
+    @BeforeAll
+    public static void setUpClass() {
+        DBConnection.connect("SuperLeeTest.db");
+    }
 
     @BeforeEach
-    void setUp() {
-//        p1 = new Product("milk 3% 500ml", 123, 1, "Tnuva", 6.5, 3, 20, "supplierA");
-//        p2 = new Product("milk 3% 500ml", 456, 1, "Tara", 7.5, 3, 5, "supplierA");
+    public void setUp() {
+        productRepo = ProductRepository.getInstance();
+        CategoryFacade cf = new CategoryFacade();
+        cf.loadData();
+    }
+
+    @Test
+    public void testAddProduct() {
+        Product product = new Product("Mint Shampoo 750ml", 111, 5, "Head&Shoulder", 11.5, 30, 20, "aaa", "Shower products","Shampoo", "750ml");
+        List<Product> products = productRepo.findAll();
+        assertTrue(products.stream().anyMatch(p -> p.getName().equals("Mint Shampoo 750ml")));
+
+        productRepo.delete(product);
+    }
+
+    @Test
+    public void testDeleteProduct() {
+        Product product = new Product("Mint Shampoo 750ml", 111, 5, "Head&Shoulder", 11.5, 30, 20, "aaa", "Shower products","Shampoo", "750ml");
+
+        productRepo.delete(product);
+        List<Product> products = productRepo.findAll();
+        assertFalse(products.stream().anyMatch(p -> p.getMKT() == 222));
+    }
+
+    @Test
+    public void testFindAll() {
+        List<Product> products = productRepo.findAll();
+        assertEquals(7, products.size());
+    }
+
+    @Test
+    public void testDeleteNonExistentProduct() {
+        Product product = new Product("NonExistent", 111, 5, "Head&Shoulder", 11.5, 30, 20, "aaa", "Shower products","Shampoo", "750ml");
+
+        assertDoesNotThrow(() -> productRepo.delete(product));
+
+        List<Product> products = productRepo.findAll();
+        assertFalse(products.stream().anyMatch(p -> p.getName().equals("NonExistent")));
+    }
+
+//    @Test
+//    public void testUpdateProduct() {
+//        Product product = new Product("Laptop", 222, "aaa");
 //
-//        LocalDate expr = LocalDate.of(2025,06,20);
-//        for(int i = 0; i<25;i++)
-//            p1.addItemToStorage(expr,3.20,3.00);
-//        expr = LocalDate.of(2024,12,3);
-//        for(int i = 0; i<3;i++)
-//            p2.addItemToStorage(expr,3.20,3.00);
-    }
-    @Test
-    /**
-     * the product is more than the min amount
-     */
-    void testCheckMinAmountAlert1(){
-//        functionMsg = ;
-//        assertEquals(p1.checkMinAmountAlert(),expectedMsg);
-    }
-    /**
-     * the product is less than the min amount
-     */
-    @Test
-    void testCheckMinAmountAlert2(){
-        assertEquals(functionMsg,expectedMsg);
-
-    }
-    @Test
-    void testIsUnderMinAmount() {
-        assertFalse(p1.isUnderMinAmount());
-        assertTrue(p2.isUnderMinAmount());
-    }
-
-    @Test
-    void testCheckExpiration() {
-        List<Item> expired = new ArrayList<>();
-        assertEquals(p1.checkExpiration(),expired);
-        LocalDate expr = LocalDate.of(2024,06,4);
-        for(int i = 0; i<3;i++) {;
-            expired.add(p1.addItemToStorage(expr, 3.20, 3.00));
-        }
-        assertEquals(p1.checkExpiration(),expired);
-    }
+//        product.set
+//        // Update the product's price
+//        product.setSupplier(1099.99);
+//        productRepo.update(product);
+//
+//        // Retrieve the updated product from the repository
+//        Product updatedProduct = productRepo.findById(product.getId());
+//
+//        // Assert that the product's price has been updated
+//        assertEquals(1099.99, updatedProduct.getPrice());
+//
+//        // Clean up: delete the product after the test
+//        productRepo.delete(updatedProduct);
+//    }
 }

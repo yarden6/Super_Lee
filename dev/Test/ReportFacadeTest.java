@@ -13,14 +13,14 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReportFacadeTest {
-    static CategoryFacade cf = new CategoryFacade();
-    ReportFacade rf = new ReportFacade(cf);
+    CategoryFacade cf;
+    ReportFacade rf;
     String report;
     String expected;
     private CategoryRepository categoryRepo;
 
-    @BeforeAll
-    public static void setUpClass() {
+    @BeforeEach
+    public void setUpClass() {
         DBConnection.connect("SuperLeeTest.db");
         cf.loadData();
     }

@@ -1,6 +1,7 @@
 package DataLayer;
 import DataLayer.DBConnection;
 import domain.Category;
+import domain.Item;
 
 import java.sql.*;
 import java.time.DateTimeException;
@@ -79,7 +80,8 @@ public class CategoryDao implements Dao<Category> {
             preparedStatement.setInt(1, category.getDiscountPercentage());
             preparedStatement.setString(2, category.getDiscountDateString());
             preparedStatement.setString(3, category.getName());
-            preparedStatement.setString(4, category.getParentCategory().getName());
+            if (category.getParentCategory() == null) preparedStatement.setString(4, null);
+            else preparedStatement.setString(4, category.getParentCategory().getName());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

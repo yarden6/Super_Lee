@@ -84,14 +84,6 @@ public class Product {
         this.categorySub = categorySub;
         this.categorySubSub = categorySubSub;
     }
-//
-//    // new product + it's items list
-//    public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount, List<Item> items,String supplierName) {
-//        this(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount,supplierName);
-//        this.items = items;
-//
-//        repository.add(this);
-//    }
 
     // new defected product
     public Product(String name, int MKT, String producerName){

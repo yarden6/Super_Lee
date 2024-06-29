@@ -194,7 +194,6 @@ public class CategoryFacade {
             else{
                 categories.put(category.getName(),category); //saving the main category
             }
-
         }
         for(Category category: allCategories) {
             if(category.isLeafCategory() || category.getName() == "Defective") //TODO LEAF
