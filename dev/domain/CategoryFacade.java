@@ -15,7 +15,6 @@ public class CategoryFacade {
 
     public CategoryFacade() {
         categories = new Hashtable<>();
-        addCategory("Defective");
         productsOutOfStock = new Hashtable<>();
     }
 
@@ -186,7 +185,8 @@ public class CategoryFacade {
             if(!parentCategory.equals("")){
                 Category parent = allCategories.stream().filter(c -> c.getName().equals(parentCategory)).findAny().get();
                 category.setParentCategory(parent); //updating the parent to the category
-                parent.addSubCategory(category); //updating the category for the subs of the parent
+               //updating the category for the subs of the parent
+                parent.getSubCategories().put(category.getName(), category);
             }
             else{
                 categories.put(category.getName(),category); //saving the main category

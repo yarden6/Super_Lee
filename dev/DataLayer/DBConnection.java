@@ -22,10 +22,8 @@ public class DBConnection {
         try {
             Path currentRelativePath = Paths.get("");
             String fullPath = currentRelativePath.toAbsolutePath().toString();
-            //String url = "jdbc:sqlite:" + fullPath + "/" + DB_NAME;
             String url = "jdbc:sqlite:" + fullPath + File.separator + DB_NAME;
             connection = DriverManager.getConnection(url);
-            //C:\Users\ירדן\IdeaProjects\ADSS_Group_AI\SuperLee.db
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to the database", e);
         }

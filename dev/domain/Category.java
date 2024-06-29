@@ -20,8 +20,8 @@ public class Category {
 
     //just for loading the db TODO
     private String parentName = "";
-    private CategoryRepository repository = new CategoryRepository();
-    private ProductRepository productRepository = new ProductRepository();
+    private CategoryRepository repository = CategoryRepository.getInstance();
+    private ProductRepository productRepository = ProductRepository.getInstance();
 
 
     /**
@@ -151,6 +151,11 @@ public class Category {
 
     public LocalDate getDiscountDate() {
         return discountDate;
+    }
+
+    public String getDiscountDateString() {
+        if (discountDate != null) return discountDate.toString();
+        else return null;
     }
 
     public void setParentCategory(Category parentCategory) {

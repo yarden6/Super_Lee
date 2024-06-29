@@ -10,9 +10,17 @@ import java.util.List;
 
 public class ProductRepository implements Repository<Product>{
     private Dao<Product> productDao;
+    private static ProductRepository instance;
 
     public ProductRepository() {
         this.productDao = new ProductDao();
+    }
+
+    public static synchronized ProductRepository getInstance() {
+        if (instance == null) {
+            instance = new ProductRepository();
+        }
+        return instance;
     }
     @Override
     public void add(Product product) {

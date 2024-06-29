@@ -16,6 +16,13 @@ public class CategoryRepository implements Repository<Category> {
         this.categoryDao = new CategoryDao();
     }
 
+    public static synchronized CategoryRepository getInstance() {
+        if (instance == null) {
+            instance = new CategoryRepository();
+        }
+        return instance;
+    }
+
     @Override
     public void add(Category category) {
         categoryDao.create(category);

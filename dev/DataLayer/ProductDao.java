@@ -63,7 +63,7 @@ public class ProductDao implements Dao<Product> {
 
     @Override
     public void create(Product product) {
-        String query = "INSERT INTO Product (MKT, name, aisle,producerName,totalAmount,storeAmount,storageAmount,sellingPrice,deliveryDays,minimumAmount,discountPercentage,discountDate,supplier,mainCat, subCat,subSubCat) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?,?,?,?)";
+        String query = "INSERT INTO Product (MKT, name, aisle,producerName,totalAmount,storeAmount,storageAmount,sellingPrice,deliveryDays,minimumAmount,discountPercentage,discountDate,supplier,mainCat, subCat,subSubCat) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?,?,?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, product.getMKT());
@@ -77,7 +77,7 @@ public class ProductDao implements Dao<Product> {
             preparedStatement.setInt(9, product.getDeliveryDays());
             preparedStatement.setInt(10, product.getMinimumAmount());
             preparedStatement.setInt(11, product.getDiscountPercentage());
-            preparedStatement.setString(12, product.getDiscountDate().toString());
+            preparedStatement.setString(12, product.getDiscountDateString());
             preparedStatement.setString(13, product.getSupplier());
             preparedStatement.setString(14, product.getCategoryMain());
             preparedStatement.setString(15, product.getCategorySub());
@@ -117,7 +117,7 @@ public class ProductDao implements Dao<Product> {
             preparedStatement.setInt(7, product.getDeliveryDays());
             preparedStatement.setInt(8, product.getMinimumAmount());
             preparedStatement.setInt(9, product.getDiscountPercentage());
-            preparedStatement.setString(10, product.getDiscountDate().toString());
+            preparedStatement.setString(10, product.getDiscountDateString());
             preparedStatement.setString(11, product.getSupplier());
             preparedStatement.setString(12, product.getName());
             preparedStatement.setString(13, product.getCategoryMain());

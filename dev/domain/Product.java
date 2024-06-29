@@ -104,6 +104,8 @@ public class Product {
         this.discountPercentage = 0;
         this.discountDate = null;
 
+        this.categoryMain = "Defective"; //TODO
+
         this.items = new ArrayList<>();
         this.totalAmount = 1;
 
@@ -263,6 +265,10 @@ public class Product {
 
     public LocalDate getDiscountDate() {
         return discountDate;
+    }
+    public String getDiscountDateString() {
+        if (discountDate != null) return discountDate.toString();
+        else return null;
     }
 
     public List<Item> getItems() {
