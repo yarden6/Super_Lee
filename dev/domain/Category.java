@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Category {
     private String name;
@@ -92,6 +94,17 @@ public class Category {
         this.discountDate = discountDate;
     }
 
+    public void loadData() {
+        List<Product> allProducts = productRepository.findAll();
+        this.products = allProducts.stream()
+                .filter(product -> product.getCategorySubSub().equals(this.name) && product.getCategorySub().equals(this.parentName))
+                .collect(Collectors.toMap(Product::getMKT, p -> p, (p1, p2) -> p1, Hashtable::new));
+        for(Product product: products.values()){
+            product.loadData();
+
+        }
+    }
+
     public void addSubCategory(Category subCategory) {
         subCategories.put(subCategory.getName(), subCategory);
         subCategory.setParentCategory(this);
@@ -112,6 +125,9 @@ public class Category {
         return subCategories.isEmpty();
     }
 
+    public String getParentName() {
+        return parentName;
+    }
 
     public String getName() {
         return name;

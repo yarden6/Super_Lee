@@ -1,5 +1,7 @@
 package domain;
 
+import domain.Repositories.ItemRepository;
+
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +18,7 @@ public class Item {
     private double buyingDiscount;
     private Location location;
 
-
+    private ItemRepository repository = new ItemRepository();
     private int productMKT = -1;
 
 
@@ -26,6 +28,7 @@ public class Item {
         this.buyingPrice = buyingPrice;
         this.buyingDiscount = buyingDiscount;
         location = Location.Storage; // assuming new items are brought straight to the storage
+        repository.add(this);
     }
 
     /**
@@ -51,6 +54,7 @@ public class Item {
         this.productMKT = productMKT;
     }
 
+
     public boolean isExpired() {
         return expirationDate.isBefore(LocalDate.now());
     }
@@ -67,13 +71,6 @@ public class Item {
         return productMKT;
     }
 
-    public void setExpirationDate(LocalDate expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
-    }
 
     public double getBuyingPrice() {
         return buyingPrice;
@@ -83,13 +80,6 @@ public class Item {
         return buyingDiscount;
     }
 
-    public void setBuyingPrice(double buyingPrice) {
-        this.buyingPrice = buyingPrice;
-    }
-
-    public void setBuyingDiscount(double buyingDiscount) {
-        this.buyingDiscount = buyingDiscount;
-    }
 
     public void setLocationToStore() {
         this.location = Location.Store;

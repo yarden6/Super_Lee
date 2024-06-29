@@ -5,6 +5,7 @@ import domain.Repositories.ProductRepository;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Integer.MAX_VALUE;
 
@@ -109,6 +110,13 @@ public class Product {
         repository.add(this);
     }
 
+    public void loadData() {
+        List<Item> allItems = itemRepository.findAll();
+        this.items = allItems.stream()
+                .filter(item -> item.getProductMKT() == this.MKT)
+                .collect(Collectors.toList());
+
+    }
 
     // when we get new items from the supplier - it goes straight to the storage
     public Item addItemToStorage(LocalDate expirationDate, double buyingPrice, double buyingDiscount) {

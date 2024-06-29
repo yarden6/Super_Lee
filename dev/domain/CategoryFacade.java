@@ -1,5 +1,8 @@
 package domain;
 
+import domain.Repositories.CategoryRepository;
+
+import java.security.PrivateKey;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -8,6 +11,7 @@ import java.util.*;
 public class CategoryFacade {
     private Hashtable<String, Category> categories;
     private Hashtable<Integer, Product> productsOutOfStock;
+    private CategoryRepository categoryRepository;
 
     public CategoryFacade() {
         categories = new Hashtable<>();
@@ -176,50 +180,64 @@ public class CategoryFacade {
     }
 
     public void loadData() {
-        addCategory("Dairy products");
-        addCategory("Baking products");
-        addCategory("Shower products");
-
-        addSubCategory("Dairy products", "Milk");
-        addSubCategory("Dairy products", "Cheese");
-        addSubCategory("Dairy products", "Cream");
-        addSubCategory("Baking products", "Dark Chocolate");
-        addSubCategory("Baking products", "Milk Chocolate");
-        addSubCategory("Shower products", "Shampoo");
-        addSubCategory("Shower products", "Conditioner");
-
-        addSubSubCategory("Dairy products", "Milk", "500ml");
-        addSubSubCategory("Dairy products", "Milk", "1000ml");
-        addSubSubCategory("Dairy products", "Cheese", "100g");
-
-        addSubSubCategory("Baking products", "Dark Chocolate", "100g");
-        addSubSubCategory("Baking products", "Milk Chocolate", "100g");
-
-        addSubSubCategory("Shower products", "Shampoo", "750ml");
-        addSubSubCategory("Shower products", "Conditioner", "750ml");
-
-
-        addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 123, 1, "Tnuva", 6.5, 3, 20, "supplierA");
-        addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 456, 1, "Tara", 7.5, 3, 20, "supplierA");
-
-        addProduct(new String[]{"Baking products", "Dark Chocolate", "100g"}, "Premium Dark Chocolate", 1001, 5, "Top Producer", 2.99, 3, 10, "supplierA");
-
-        addProduct(new String[]{"Dairy products", "Cheese", "100g"}, "Cheddar Cheese 100g", 2002, 7, "Cheese Maker", 3.99, 4, 10, "supplierA");
-
-        addProduct(new String[]{"Shower products", "Shampoo", "750ml"}, "Herbal Shampoo 750ml", 3001, 8, "Shampoo Inc.", 5.49, 5, 25, "supplierA");
-
-        addProduct(new String[]{"Shower products", "Conditioner", "750ml"}, "Silky Conditioner 750ml", 3002, 9, "Conditioner Co.", 4.99, 6, 20, "supplierA");
-
-        // milk 500ml (123) items
-        addItems(123, 5, "2025-01-01", 10, 10);
-        addItems(123, 5, "2025-01-10", 10, 10);
-        addItems(123, 10, "2025-01-20", 10, 5);
-        //addItems(123, 1, "2024-06-04", 10, 5);
-
-        // Premium Dark Chocolate (1001) items
-        addItems(1001, 5, "2025-01-01", 10, 10);
-        addItems(1001, 5, "2025-01-10", 10, 10);
-        addItems(1001, 10, "2025-01-20", 10, 5);
+        List<Category> allCategories = categoryRepository.findAll();
+        for(Category category: allCategories){
+            String parentCategory = category.getParentName();
+            if(!parentCategory.equals("")){
+                Category parent = allCategories.stream().filter(c -> c.getName().equals(parentCategory)).findAny().get();
+                category.setParentCategory(parent); //updating the parent to the category
+                parent.addSubCategory(category); //updating the category for the subs of the parent
+            }
+            else{
+                categories.put(category.getName(),category); //saving the main category
+            }
+            if(category.isLeafCategory() || category.getName() == "Defective")
+                category.loadData();
+        }
+//        addCategory("Dairy products");
+//        addCategory("Baking products");
+//        addCategory("Shower products");
+//
+//        addSubCategory("Dairy products", "Milk");
+//        addSubCategory("Dairy products", "Cheese");
+//        addSubCategory("Dairy products", "Cream");
+//        addSubCategory("Baking products", "Dark Chocolate");
+//        addSubCategory("Baking products", "Milk Chocolate");
+//        addSubCategory("Shower products", "Shampoo");
+//        addSubCategory("Shower products", "Conditioner");
+//
+//        addSubSubCategory("Dairy products", "Milk", "500ml");
+//        addSubSubCategory("Dairy products", "Milk", "1000ml");
+//        addSubSubCategory("Dairy products", "Cheese", "100g");
+//
+//        addSubSubCategory("Baking products", "Dark Chocolate", "100g");
+//        addSubSubCategory("Baking products", "Milk Chocolate", "100g");
+//
+//        addSubSubCategory("Shower products", "Shampoo", "750ml");
+//        addSubSubCategory("Shower products", "Conditioner", "750ml");
+//
+//
+ //       addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 123, 1, "Tnuva", 6.5, 3, 20, "supplierA");
+//        addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 456, 1, "Tara", 7.5, 3, 20, "supplierA");
+//
+//        addProduct(new String[]{"Baking products", "Dark Chocolate", "100g"}, "Premium Dark Chocolate", 1001, 5, "Top Producer", 2.99, 3, 10, "supplierA");
+//
+//        addProduct(new String[]{"Dairy products", "Cheese", "100g"}, "Cheddar Cheese 100g", 2002, 7, "Cheese Maker", 3.99, 4, 10, "supplierA");
+//
+//        addProduct(new String[]{"Shower products", "Shampoo", "750ml"}, "Herbal Shampoo 750ml", 3001, 8, "Shampoo Inc.", 5.49, 5, 25, "supplierA");
+//
+//        addProduct(new String[]{"Shower products", "Conditioner", "750ml"}, "Silky Conditioner 750ml", 3002, 9, "Conditioner Co.", 4.99, 6, 20, "supplierA");
+//
+//        // milk 500ml (123) items
+ //       addItems(123, 5, "2025-01-01", 10, 10);
+//        addItems(123, 5, "2025-01-10", 10, 10);
+//        addItems(123, 10, "2025-01-20", 10, 5);
+//        //addItems(123, 1, "2024-06-04", 10, 5);
+//
+//        // Premium Dark Chocolate (1001) items
+//        addItems(1001, 5, "2025-01-01", 10, 10);
+//        addItems(1001, 5, "2025-01-10", 10, 10);
+//        addItems(1001, 10, "2025-01-20", 10, 5);
     }
 
     public String restockStore(int MKT, int numItems) {

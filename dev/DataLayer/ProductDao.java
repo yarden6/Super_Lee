@@ -14,7 +14,7 @@ import java.util.List;
 public class ProductDao implements Dao<Product> {
     private Connection connection;
 
-    private ProductDao(){
+    public ProductDao(){
         this.connection = DBConnection.getConnection();
     }
     private LocalDate changeToLocalDate(String date){
