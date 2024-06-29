@@ -108,8 +108,6 @@ public class Category {
     public void addSubCategory(Category subCategory) {
         subCategories.put(subCategory.getName(), subCategory);
         subCategory.setParentCategory(this);
-
-        repository.add(this);
     }
 
     // only for sub-sub-category

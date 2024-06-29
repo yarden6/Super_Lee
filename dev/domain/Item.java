@@ -28,6 +28,7 @@ public class Item {
         this.buyingPrice = buyingPrice;
         this.buyingDiscount = buyingDiscount;
         location = Location.Storage; // assuming new items are brought straight to the storage
+        this.productMKT = MKT;
         repository.add(this);
     }
 

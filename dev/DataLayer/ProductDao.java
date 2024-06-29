@@ -108,8 +108,8 @@ public class ProductDao implements Dao<Product> {
                 "minimumAmount = ?, " +
                 "discountPercentage = ?, " +
                 "discountDate = ?, " +
-                "supplier = ?, " +
-                "WHERE name = ? AND mainCat = ? AND subCat = ? AND subSubCat = ?";
+                "supplier = ? " +
+                "WHERE MKT = ? AND mainCat = ? AND subCat = ? AND subSubCat = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, product.getAisle());
             preparedStatement.setString(2, product.getProducerName());

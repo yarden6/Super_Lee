@@ -1,5 +1,6 @@
 package PresentationLayer;
 
+import DataLayer.DBConnection;
 import domain.CategoryFacade;
 import domain.Item;
 import domain.ReportFacade;
@@ -23,6 +24,7 @@ public class InventoryMenu {
     }
 
     public InventoryMenu() {
+        DBConnection.connect("SuperLee.db");
         cf = new CategoryFacade();
         rf = new ReportFacade(cf);
         cf.loadData();
@@ -218,7 +220,7 @@ public class InventoryMenu {
             if (ans == 1) addItems(MKT);
         }
         else {
-            System.out.println("This category doesn't exist");
+            System.out.println("Failed to add");
         }
 
     }

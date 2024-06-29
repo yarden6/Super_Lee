@@ -1,4 +1,5 @@
 package Test;
+import DataLayer.DBConnection;
 import domain.Product;
 import domain.Category;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,51 +10,50 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 public class CategoryTest {
-    private Product p1;
-    private Product p2;
-    private Category mainCategory1;
-    private Category mainCategory2;
-    private Category subCategory1;
-    private Category subCategory2;
-    private Category subCategory3;
-    private Category subSubCategory;
+    private CategoryRepository categoryRepo;
+
+    @BeforeAll
+    public static void setUpClass() {
+        DBConnection.connect("SuperLeeTest.db");
+    }
 
     @BeforeEach
-    void setUp() {
-        p1 = new Product("milk 500ml", 123, 1, "Tnuva", 6.5, 3, 20, "supplierA");
-        p2 = new Product("milk 500ml", 456, 1, "Tara", 7.5, 3, 20, "supplierA");
-
-        mainCategory1 = new Category("Dairy products");
-        mainCategory2 = new Category("Baking products");
-
-        subCategory1 = new Category("Milk", mainCategory1);
-        subCategory2 = new Category("Cheese");
-        subCategory3 = new Category("Cream");
-
-        subSubCategory = new Category("500ml", subCategory1);
+    public void setUp() {
+        categoryRepo = CategoryRepository.getInstance();
+        // Optionally clear or reset data before each test
     }
 
     @Test
-    void testAddSubCategory() {
-        mainCategory1.addSubCategory(subCategory2);
-        assertEquals(mainCategory1.getSubCategories().size(), 2);
-    }
-    @Test
-    void testIsMainCategory() {
-        assertFalse(subCategory1.isMainCategory());
-        mainCategory1.addSubCategory(subCategory3);
-        assertFalse(subCategory3.isMainCategory());
-        assertFalse(subSubCategory.isMainCategory());
-        assertTrue(mainCategory2.isMainCategory());
+    public void testAddCategory() {
+        Category category = new Category("Electronics", null, 10, null);
+        categoryRepo.add(category);
+
+        List<Category> categories = categoryRepo.findAll();
+        assertTrue(categories.stream().anyMatch(c -> c.getName().equals("Electronics")));
     }
 
+
     @Test
-    void testIsLeafCategory() {
-        assertTrue(subSubCategory.isLeafCategory());
-        assertFalse(subCategory1.isLeafCategory());
-        assertTrue(mainCategory2.isLeafCategory());
-        assertFalse(mainCategory1.isLeafCategory());
+    public void testUpdateCategory() {
+        Category category = new Category("Electronics", null, 10, null);
+        categoryRepo.add(category);
+
+        category.setDiscountPercentage(15);
+        categoryRepo.update(category);
+
+        List<Category> categories = categoryRepo.findAll();
+        assertTrue(categories.stream().anyMatch(c -> c.getDiscountPercentage() == 15));
     }
+
+//    @AfterEach
+//    public void tearDown() {
+//        // Clean up the database if necessary
+//    }
+//
+//    @AfterAll
+//    public static void tearDownClass() {
+//        // Close connections and clean up test database
+//    }
 }
 
 

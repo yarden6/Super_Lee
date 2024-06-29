@@ -17,18 +17,19 @@ public class DBConnection {
     private DBConnection() {
 
     }
-    static {
-        connection = null;
-        try {
 
+    public static void connect(String DB_NAME) {
+        try {
             Path currentRelativePath = Paths.get("");
             String fullPath = currentRelativePath.toAbsolutePath().toString();
             String url = "jdbc:sqlite:" + fullPath + File.separator + DB_NAME;
-            connection = DriverManager.getConnection(url);
+           connection = DriverManager.getConnection(url);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to the database", e);
         }
     }
+
+
 
     public static Connection getConnection() {
         return connection;

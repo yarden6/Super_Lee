@@ -66,7 +66,10 @@ public class CategoryFacade {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
             LocalDate discountEndDate = LocalDate.parse(date, formatter);
-            chosenOne.applyDiscount(discount, discountEndDate);
+            if (discountEndDate.isAfter(LocalDate.now())) {
+                chosenOne.applyDiscount(discount, discountEndDate);
+            }
+            else return "Date had passed";
         } catch (DateTimeException e) {
             return ("Error parsing date: " + e.getMessage());
         }
@@ -139,7 +142,7 @@ public class CategoryFacade {
                 if (discountEndDate.isAfter(LocalDate.now())) {
                     product.applyDiscount(discount, discountEndDate);
                 }
-                System.out.println("Date had passed");
+                else System.out.println("Date had passed");
             } catch (DateTimeException e) {
                 System.out.println("Error parsing date: " + e.getMessage());
             }
@@ -218,7 +221,9 @@ public class CategoryFacade {
         boolean check = true;
         if (p != null) {
             for (String id : itemIDs) {
-                p.removeItemFromStore(Integer.parseInt(id));
+                if (!p.removeItemFromStore(Integer.parseInt(id))){
+                    response.append("itemID "+id +" doesn't exist\n");
+                }
             }
             return checkMakeOrder(p);
         }

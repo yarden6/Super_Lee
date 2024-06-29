@@ -2,7 +2,9 @@ package Test;
 
 import domain.CategoryFacade;
 import domain.ReportFacade;
+import domain.Repositories.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

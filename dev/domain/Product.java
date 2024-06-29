@@ -53,6 +53,9 @@ public class Product {
         this.waitingForSupply = false;
         this.items = new ArrayList<>();
         this.totalAmount = storeAmount + storageAmount;
+        this.categoryMain = main;
+        this.categorySub = sub;
+        this.categorySubSub = subsub;
 
         repository.add(this);
     }

@@ -20,15 +20,15 @@ public class ProductTest {
 
     @BeforeEach
     void setUp() {
-        p1 = new Product("milk 3% 500ml", 123, 1, "Tnuva", 6.5, 3, 20, "supplierA");
-        p2 = new Product("milk 3% 500ml", 456, 1, "Tara", 7.5, 3, 5, "supplierA");
-
-        LocalDate expr = LocalDate.of(2025,06,20);
-        for(int i = 0; i<25;i++)
-            p1.addItemToStorage(expr,3.20,3.00);
-        expr = LocalDate.of(2024,12,3);
-        for(int i = 0; i<3;i++)
-            p2.addItemToStorage(expr,3.20,3.00);
+//        p1 = new Product("milk 3% 500ml", 123, 1, "Tnuva", 6.5, 3, 20, "supplierA");
+//        p2 = new Product("milk 3% 500ml", 456, 1, "Tara", 7.5, 3, 5, "supplierA");
+//
+//        LocalDate expr = LocalDate.of(2025,06,20);
+//        for(int i = 0; i<25;i++)
+//            p1.addItemToStorage(expr,3.20,3.00);
+//        expr = LocalDate.of(2024,12,3);
+//        for(int i = 0; i<3;i++)
+//            p2.addItemToStorage(expr,3.20,3.00);
     }
     @Test
     /**
