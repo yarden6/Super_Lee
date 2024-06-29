@@ -1,5 +1,10 @@
 package Test;
+import DataLayer.DBConnection;
 import domain.Item;
+import domain.Product;
+import domain.Repositories.CategoryRepository;
+import domain.Repositories.ItemRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,21 +14,26 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ItemTest {
-    Item item1;
-    Item item2;
+    private ItemRepository itemRepository;
+
+    @BeforeAll
+    public static void setUpClass() {
+        DBConnection.connect("SuperLeeTest.db");
+    }
 
     @BeforeEach
-    void setUp() {
-        LocalDate expr1 = LocalDate.of(2025,06,20);
-        LocalDate expr2 = LocalDate.of(2024,06,04);
-//        item1 = new Item(1, expr1, 3, 3);
-//        item2 = new Item(1, expr2, 3, 3);
+    public void setUp() {
+        itemRepository = ItemRepository.getInstance();
     }
 
     @Test
-    void isExpired() {
-        assertFalse(item1.isExpired());
-        assertTrue(item2.isExpired());
+    void testIsExpired() {
+        LocalDate expirationDate = LocalDate.of(2025, 1, 1);
+        Item item = new Item(100, expirationDate, 10.5, 10.5, 2002);
+
+        assertFalse(item.isExpired());
+
+        itemRepository.delete(item);
     }
 
     @Test

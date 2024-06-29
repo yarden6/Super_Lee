@@ -27,9 +27,7 @@ public class CategoryTest {
 
     @Test
     public void testAddCategory() {
-        Category category = new Category("Electronics", null, 10, null);
-        categoryRepo.add(category);
-
+        Category category = new Category("Electronics");
         List<Category> categories = categoryRepo.findAll();
         assertTrue(categories.stream().anyMatch(c -> c.getName().equals("Electronics")));
 

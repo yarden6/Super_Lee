@@ -133,5 +133,18 @@ public class ProductDao implements Dao<Product> {
         }
     }
 
+    @Override
+    public void delete(Product product) {
+        String query = "DELETE FROM Product WHERE MKT = ? AND mainCat = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, product.getMKT());
+            preparedStatement.setString(2, product.getCategoryMain());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 
 }

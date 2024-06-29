@@ -42,4 +42,12 @@ public class CategoryRepository implements Repository<Category> {
     public List<Category> findAll() {
         return categoryDao.getAll();
     }
+    public void delete(Category category) {
+        try {
+            categoryDao.delete(category);
+        } catch (Exception e) {
+            System.err.println("Error updating item: " + e.getMessage());
+        }
+    }
+
 }

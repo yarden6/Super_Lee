@@ -42,14 +42,13 @@ public class CategoryDao implements Dao<Category> {
         return categories;
     }
 
-    private LocalDate changeToLocalDate(String date){
+    private LocalDate changeToLocalDate(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
             if (date != null) {
                 LocalDate dateAsLocal = LocalDate.parse(date, formatter);
                 return dateAsLocal;
-            }
-            else return null;
+            } else return null;
 
         } catch (DateTimeException e) {
             return null;
@@ -89,23 +88,23 @@ public class CategoryDao implements Dao<Category> {
         }
 
     }
+    @Override
+    public void delete(Category category) {
+        String query = "DELETE FROM Category WHERE name = ? AND (parentCategory = ? OR (parentCategory IS NULL AND ? IS NULL))";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, category.getName());
+            if (category.getParentCategory() == null) {
+                preparedStatement.setString(2, null);
+                preparedStatement.setString(3, null);
+            } else {
+                preparedStatement.setString(2, category.getParentCategory().getName());
+                preparedStatement.setString(3, category.getParentCategory().getName());
+            }
 
-//    public Category read(String categoryName, String parentCategoryName) throws SQLException {
-//        Category category = null;
-//        try (PreparedStatement stmt = connection.prepareStatement(SELECT_CATEGORY_BY_NAME)) {
-//            stmt.setString(1, categoryName);
-//            stmt.setString(2, parentCategoryName);
-//
-//            try (ResultSet rs = stmt.executeQuery()) {
-//                if (rs.next()) {
-//                    category = new Category();
-//                    category.setCategoryName(rs.getString("category_name"));
-//                    category.setParentCategoryName(rs.getString("parent_category_name"));
-//                    category.setDiscount(rs.getDouble("discount"));
-//                    // Set other properties as needed
-//                }
-//            }
-//        }
-//        return category;
-//    }
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }

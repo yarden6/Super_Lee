@@ -87,6 +87,7 @@ public class ItemDao implements Dao<Item> {
         }
     }
 
+    @Override
     //delete only happen when a purchase has made
     public void delete(Item item) {
         String query = "DELETE FROM Item WHERE itemId = ? AND productMKT = ?";

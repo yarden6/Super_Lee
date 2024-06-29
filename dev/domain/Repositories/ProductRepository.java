@@ -40,4 +40,11 @@ public class ProductRepository implements Repository<Product>{
     public List<Product> findAll() {
         return productDao.getAll();
     }
+    public void delete(Product product) {
+        try {
+            productDao.delete(product);
+        } catch (Exception e) {
+            System.err.println("Error updating item: " + e.getMessage());
+        }
+    }
 }
