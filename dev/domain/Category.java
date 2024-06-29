@@ -1,5 +1,8 @@
 package domain;
 
+import domain.Repositories.CategoryRepository;
+import domain.Repositories.ProductRepository;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -15,6 +18,8 @@ public class Category {
 
     //just for loading the db TODO
     private String parentName = "";
+    private CategoryRepository repository = new CategoryRepository();
+    private ProductRepository productRepository = new ProductRepository();
 
 
     /**
@@ -29,6 +34,8 @@ public class Category {
         this.products = new Hashtable<>();
         this.discountPercentage = 0;
         this.discountDate = null;
+
+        repository.add(this);
     }
 
     /**
@@ -46,6 +53,8 @@ public class Category {
         this.discountDate = null;
 
         parentCategory.addSubCategory(this);
+
+        repository.add(this);
     }
 
     /**
@@ -64,6 +73,8 @@ public class Category {
         this.discountDate = null;
 
         parentCategory.addSubCategory(this);
+
+        repository.add(this);
     }
 
     /**
@@ -84,14 +95,14 @@ public class Category {
     public void addSubCategory(Category subCategory) {
         subCategories.put(subCategory.getName(), subCategory);
         subCategory.setParentCategory(this);
+
+        repository.add(this);
     }
 
     // only for sub-sub-category
     public void addProduct(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount, String supplierName) {
-            products.put(MKT, new Product(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount, supplierName));
+        products.put(MKT, new Product(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount, supplierName));
     }
-
-    // only for sub-sub-category
 
     public boolean isMainCategory() {
         return parentCategory == null;
@@ -126,12 +137,9 @@ public class Category {
         return discountDate;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setParentCategory(Category parentCategory) {
         this.parentCategory = parentCategory;
+        repository.update(this);
     }
 
     public void setDiscountPercentage(int discountPercentage) {
@@ -145,6 +153,7 @@ public class Category {
     public void applyDiscount(int discount, LocalDate discountDate) {
         setDiscountPercentage(discount);
         setDiscountDate(discountDate);
+        repository.update(this);
     }
 
     public void reportDefectiveItem(int MKT, int id, String name, String producerName) {

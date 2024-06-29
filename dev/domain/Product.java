@@ -1,5 +1,8 @@
 package domain;
 
+import domain.Repositories.ItemRepository;
+import domain.Repositories.ProductRepository;
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -28,6 +31,8 @@ public class Product {
     private String categoryMain = "";
     private String categorySub = "";
     private String categorySubSub = "";
+    private ProductRepository repository = new ProductRepository();
+    private ItemRepository itemRepository = new ItemRepository();
 
     // new product without items
     public Product(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount, String supplierName) {
@@ -47,6 +52,8 @@ public class Product {
         this.waitingForSupply = false;
         this.items = new ArrayList<>();
         this.totalAmount = storeAmount + storageAmount;
+
+        repository.add(this);
     }
 
     /**
@@ -78,6 +85,8 @@ public class Product {
     public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount, List<Item> items,String supplierName) {
         this(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount,supplierName);
         this.items = items;
+
+        repository.add(this);
     }
 
     // new defected product
@@ -96,6 +105,8 @@ public class Product {
 
         this.items = new ArrayList<>();
         this.totalAmount = 1;
+
+        repository.add(this);
     }
 
 
@@ -110,6 +121,7 @@ public class Product {
             this.isMinimum = false; // total amount > min amount
             this.waitingForSupply = false; // the new supply arrived
         }
+        repository.update(this);
         return toAdd;
     }
 
@@ -144,13 +156,10 @@ public class Product {
     // only for a defective product. regular products dont get here
     public void addDefectItem(){
         this.totalAmount++;
+        repository.update(this);
     }
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getMKT() {
@@ -161,24 +170,12 @@ public class Product {
         return isMinimum;
     }
 
-    public void setMKT(int MKT) {
-        this.MKT = MKT;
-    }
-
     public int getAisle() {
         return aisle;
     }
 
-    public void setAisle(int aisle) {
-        this.aisle = aisle;
-    }
-
     public Boolean getWaitingForSupply() {
         return waitingForSupply;
-    }
-
-    public void setMinimum(Boolean minimum) {
-        isMinimum = minimum;
     }
 
     public void setWaitingForSupply(Boolean waitingForSupply) {
@@ -191,6 +188,7 @@ public class Product {
 
     public void setProducerName(String producerName) {
         this.producerName = producerName;
+        repository.update(this);
     }
 
     public int getTotalAmount() {
@@ -206,6 +204,7 @@ public class Product {
             this.storeAmount = storeAmount;
             this.totalAmount = this.storageAmount + this.storeAmount;
             checkMinAmountAlert();
+            repository.update(this);
         }
         else{
             System.out.println("invalid new amount");
@@ -221,6 +220,7 @@ public class Product {
             this.storageAmount = storageAmount;
             this.totalAmount = this.storageAmount + this.storeAmount;
             checkMinAmountAlert();
+            repository.update(this);
         }
         else{
             System.out.println("invalid new amount");
@@ -234,6 +234,7 @@ public class Product {
     public void setSellingPrice(double sellingPrice) {
         if (sellingPrice > 0){
             this.sellingPrice = sellingPrice;
+            repository.update(this);
         }
         else {
             System.out.println("Invalid Price");
@@ -242,10 +243,6 @@ public class Product {
 
     public int getDeliveryDays() {
         return deliveryDays;
-    }
-
-    public void setDeliveryDays(int deliveryDays) {
-        this.deliveryDays = deliveryDays;
     }
 
     public int getMinimumAmount() {
@@ -258,10 +255,6 @@ public class Product {
 
     public LocalDate getDiscountDate() {
         return discountDate;
-    }
-
-    public void setMinimumAmount(int minimumAmount) {
-        this.minimumAmount = minimumAmount;
     }
 
     public List<Item> getItems() {
@@ -281,10 +274,6 @@ public class Product {
                 return;
             }
         }
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
     }
 
     @Override
@@ -310,6 +299,7 @@ public class Product {
 
     public void setSupplier(String supplier) {
         this.supplier = supplier;
+        repository.update(this);
     }
 
     public String getSupplier() {
@@ -323,6 +313,7 @@ public class Product {
     public void applyDiscount (int discount, LocalDate discountDate){
         setDiscountPercentage(discount);
         setDiscountDate(discountDate);
+        repository.update(this);
     }
 
     public String getCategoryMain() {
@@ -367,6 +358,7 @@ public class Product {
                 numItems--;
             }
         }
+        repository.update(this);
         return itemsId.substring(0,itemsId.length()-2);
     }
 }

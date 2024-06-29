@@ -93,11 +93,12 @@ public class Item {
 
     public void setLocationToStore() {
         this.location = Location.Store;
-
+        repository.update(this);
     }
 
     public void setLocationToDefective() {
         this.location = Location.Defective;
+        repository.update(this);
     }
 
     public Location getLocation() {
