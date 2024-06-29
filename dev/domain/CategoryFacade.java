@@ -103,7 +103,7 @@ public class CategoryFacade {
                 if (subCategory != null) {
                     Category subSubCategory = subCategory.getSubCategories().get(categoriesName[2]);
                     if (subSubCategory != null) {
-                        subSubCategory.addProduct(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount, supplierName);
+                        subSubCategory.addProduct(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount, supplierName,categoriesName[0],categoriesName[1],categoriesName[2]);
                         return true;
                     }
                 }
@@ -205,9 +205,7 @@ public class CategoryFacade {
     public String restockStore(int MKT, int numItems) {
         if (getProduct(MKT) != null) {
             Product p = getProduct(MKT);
-            String checkOK = p.restockStore(numItems);
-
-            return checkOK;
+            return p.restockStore(numItems);
         }
         else return "Product does not exist";
     }
@@ -217,6 +215,7 @@ public class CategoryFacade {
     }
 
     public String updateStoreAfterPurchase(int MKT, String[] itemIDs) {
+        StringBuilder response = new StringBuilder();
         Product p = getProduct(MKT);
         boolean check = true;
         if (p != null) {
@@ -225,7 +224,8 @@ public class CategoryFacade {
                     response.append("itemID "+id +" doesn't exist\n");
                 }
             }
-            return checkMakeOrder(p);
+
+            return response.append(checkMakeOrder(p)).toString();
         }
         return "There is no such a MKT";
     }

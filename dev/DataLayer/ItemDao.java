@@ -86,4 +86,17 @@ public class ItemDao implements Dao<Item> {
             System.out.println(e.getMessage());
         }
     }
+
+    //delete only happen when a purchase has made
+    public void delete(Item item) {
+        String query = "DELETE FROM Item WHERE itemId = ? AND productMKT = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, item.getItemId());
+            preparedStatement.setInt(2, item.getProductMKT());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

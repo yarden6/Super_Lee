@@ -36,7 +36,7 @@ public class Product {
     private ItemRepository itemRepository = ItemRepository.getInstance();
 
     // new product without items
-    public Product(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount, String supplierName) {
+    public Product(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount, String supplierName,String main, String sub, String subsub) {
         this.name = name;
         this.MKT = MKT;
         this.aisle = aisle;
@@ -84,14 +84,14 @@ public class Product {
         this.categorySub = categorySub;
         this.categorySubSub = categorySubSub;
     }
-
-    // new product + it's items list
-    public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount, List<Item> items,String supplierName) {
-        this(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount,supplierName);
-        this.items = items;
-
-        repository.add(this);
-    }
+//
+//    // new product + it's items list
+//    public Product(String name, int MKT, int aisle, String producerName, int storeAmount, int storageAmount, double sellingPrice, int deliveryDays, int minimumAmount, List<Item> items,String supplierName) {
+//        this(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount,supplierName);
+//        this.items = items;
+//
+//        repository.add(this);
+//    }
 
     // new defected product
     public Product(String name, int MKT, String producerName){
@@ -120,12 +120,15 @@ public class Product {
         this.items = allItems.stream()
                 .filter(item -> item.getProductMKT() == this.MKT)
                 .collect(Collectors.toList());
+        for(Item i : items){
+            itemsCounter = Math.max(itemsCounter, i.getItemId()+1);
+        }
 
     }
 
     // when we get new items from the supplier - it goes straight to the storage
     public Item addItemToStorage(LocalDate expirationDate, double buyingPrice, double buyingDiscount) {
-        Item toAdd = new Item(itemsCounter, expirationDate, buyingPrice, buyingDiscount);
+        Item toAdd = new Item(itemsCounter, expirationDate, buyingPrice, buyingDiscount, this.MKT);
         items.add(toAdd);
         itemsCounter++;
         storageAmount++;
@@ -143,6 +146,7 @@ public class Product {
         for (Item item : items){
             if(item.getItemId() == itemID){
                 items.remove(item);
+                itemRepository.delete(item);
                 if (item.getLocation() == Location.Store) {
                     setStoreAmount(--this.storeAmount);
                 } else {

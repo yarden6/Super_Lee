@@ -22,7 +22,7 @@ public class Item {
     private int productMKT = -1;
 
 
-    public Item(int itemId , LocalDate expirationDate, double buyingPrice, double buyingDiscount){
+    public Item(int itemId , LocalDate expirationDate, double buyingPrice, double buyingDiscount, int MKT){
         this.itemId = itemId;
         this.expirationDate = expirationDate;
         this.buyingPrice = buyingPrice;

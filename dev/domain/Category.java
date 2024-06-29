@@ -96,9 +96,16 @@ public class Category {
 
     public void loadData() {
         List<Product> allProducts = productRepository.findAll();
-        this.products = allProducts.stream()
-                .filter(product -> product.getCategorySubSub().equals(this.name) && product.getCategorySub().equals(this.parentName))
-                .collect(Collectors.toMap(Product::getMKT, p -> p, (p1, p2) -> p1, Hashtable::new));
+        if(this.name.equals("Defective")){
+            this.products = allProducts.stream()
+                    .filter(product -> product.getCategoryMain().equals(this.name))
+                    .collect(Collectors.toMap(Product::getMKT, p -> p, (p1, p2) -> p1, Hashtable::new));
+        }
+        else {
+            this.products = allProducts.stream()
+                    .filter(product -> product.getCategorySubSub().equals(this.name) && product.getCategorySub().equals(this.parentName))
+                    .collect(Collectors.toMap(Product::getMKT, p -> p, (p1, p2) -> p1, Hashtable::new));
+        }
         for(Product product: products.values()){
             product.loadData();
 
@@ -111,8 +118,8 @@ public class Category {
     }
 
     // only for sub-sub-category
-    public void addProduct(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount, String supplierName) {
-        products.put(MKT, new Product(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount, supplierName));
+    public void addProduct(String name, int MKT, int aisle, String producerName, double sellingPrice, int deliveryDays, int minimumAmount, String supplierName,String main, String sub, String subsub) {
+        products.put(MKT, new Product(name, MKT, aisle, producerName, sellingPrice, deliveryDays, minimumAmount, supplierName, main, sub, subsub));
     }
 
     public boolean isMainCategory() {

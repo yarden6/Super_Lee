@@ -122,7 +122,7 @@ public class ProductDao implements Dao<Product> {
             preparedStatement.setInt(9, product.getDiscountPercentage());
             preparedStatement.setString(10, product.getDiscountDateString());
             preparedStatement.setString(11, product.getSupplier());
-            preparedStatement.setString(12, product.getName());
+            preparedStatement.setInt(12, product.getMKT());
             preparedStatement.setString(13, product.getCategoryMain());
             preparedStatement.setString(14, product.getCategorySub());
             preparedStatement.setString(15, product.getCategorySubSub());
@@ -132,4 +132,6 @@ public class ProductDao implements Dao<Product> {
             System.out.println(e.getMessage());
         }
     }
+
+
 }

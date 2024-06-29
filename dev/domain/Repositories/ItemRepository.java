@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ItemRepository implements Repository<Item>{
-    private Dao<Item> itemDao;
+    private ItemDao itemDao;
     private static ItemRepository instance;
 
     public ItemRepository() {
@@ -40,5 +40,13 @@ public class ItemRepository implements Repository<Item>{
     @Override
     public List<Item> findAll() {
         return itemDao.getAll();
+    }
+
+    public void delete(Item item) {
+        try {
+            itemDao.delete(item);
+        } catch (Exception e) {
+            System.err.println("Error updating item: " + e.getMessage());
+        }
     }
 }

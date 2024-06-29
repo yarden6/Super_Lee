@@ -1,8 +1,11 @@
 package Test;
 
+import DataLayer.DBConnection;
 import domain.Category;
 import domain.CategoryFacade;
 import domain.Product;
+import domain.Repositories.CategoryRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,19 +20,16 @@ class CategoryFacadeTest {
     private Product p1;
     private Product p2;
 
+    private CategoryRepository categoryRepo;
+    @BeforeAll
+    public static void setUpClass() {
+        DBConnection.connect("SuperLeeTest.db");
+    }
+
     @BeforeEach
-    void setUp() {
-        cf = new CategoryFacade();
-        cf.addCategory("Dairy products");
-        category1 = cf.getCategories().get("Dairy products");
-        cf.addSubCategory("Dairy products", "Milk");
-        cf.addSubSubCategory("Dairy products", "Milk", "500ml");
-
-        cf.addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 123, 1, "Tnuva", 6.5, 3, 20, "supplierA");
-        cf.addProduct(new String[]{"Dairy products", "Milk", "500ml"}, "milk 500ml", 456, 1, "Tara", 7.5, 3, 20, "supplierA");
-
-        p1 = cf.getProduct(123);
-        cf.addItems(p1.getMKT(), 25, "2024-07-07", 3.2, 3.0);
+    public void setUp() {
+        categoryRepo = CategoryRepository.getInstance();
+        // Optionally clear or reset data before each test
     }
 
     @Test

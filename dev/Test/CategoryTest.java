@@ -2,6 +2,8 @@ package Test;
 import DataLayer.DBConnection;
 import domain.Product;
 import domain.Category;
+import domain.Repositories.CategoryRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

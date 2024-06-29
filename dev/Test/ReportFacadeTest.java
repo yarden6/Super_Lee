@@ -1,5 +1,6 @@
 package Test;
 
+import DataLayer.DBConnection;
 import domain.CategoryFacade;
 import domain.ReportFacade;
 import domain.Repositories.CategoryRepository;
@@ -12,17 +13,24 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReportFacadeTest {
-    CategoryFacade cf;
-    ReportFacade rf;
+    static CategoryFacade cf = new CategoryFacade();
+    ReportFacade rf = new ReportFacade(cf);
     String report;
     String expected;
+    private CategoryRepository categoryRepo;
+
+    @BeforeAll
+    public static void setUpClass() {
+        DBConnection.connect("SuperLeeTest.db");
+        cf.loadData();
+    }
 
     @BeforeEach
-    void setUp() {
-        cf = new CategoryFacade();
-        cf.loadData();
-        rf = new ReportFacade(cf);
+    public void setUp() {
+        categoryRepo = CategoryRepository.getInstance();
+        // Optionally clear or reset data before each test
     }
+
 
     @Test
     void testMakeInventoryReportAllCategories() {

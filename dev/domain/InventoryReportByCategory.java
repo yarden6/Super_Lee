@@ -26,7 +26,7 @@ public class InventoryReportByCategory extends Report {
     public String chooseCategory(Hashtable<String, Category> categories, String[] selectedCategories) {
         StringBuilder report = new StringBuilder();
         for (String name : selectedCategories) {
-            if (name != "Defective") {
+            if (!name.equals("Defective")) {
                 Category selectedParent = categories.get(name); // for the main category
                 if (selectedParent != null) {
                     report.append("Main Category: " + selectedParent.getName()+"\n");
