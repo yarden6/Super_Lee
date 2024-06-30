@@ -28,4 +28,5 @@ The following external libraries are used in this project:
 - slf4j-api-1.7.32
 - slf4j-simple-1.7.32
 - sqlite-jdbc-3.46.0.0
+- sqlite-jdbc-3.46.0.0-sources.jar
 - JUnit 5.8.1
