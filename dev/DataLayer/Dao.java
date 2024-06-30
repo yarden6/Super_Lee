@@ -16,7 +16,4 @@ public interface Dao <T>{
     void delete (T t);
 
 
-
-    //void delete(T t) throws SQLException;
-
 }
