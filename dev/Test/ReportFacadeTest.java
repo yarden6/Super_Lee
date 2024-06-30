@@ -239,14 +239,22 @@ class ReportFacadeTest {
                 "      Product Name: Premium Dark Chocolate\n" +
                 "      MKT: 1001\n" +
                 "      Producer Name: Top Producer\n" +
-                "      Total Amount: 20\n" +
+                "      Total Amount: 10\n" +
                 "      Selling Price: 2.99\n" +
                 "\n" +
                 "  Sub Category: Milk Chocolate\n" +
                 "    Sub-Sub Category: 100g\n" +
                 "     No products\n";
         String def = "___________________________________________\n" +
-                "Defected products:\n";
+                "Defected products:\n" +
+                "1\n" +
+                "      Product Name: milk 500ml\n" +
+                "      MKT: 123\n" +
+                "      Producer Name: Tnuva\n" +
+                "      Total Amount: 1\n" +
+                "      Selling Price: 0.0\n" +
+                "\n" +
+                "___________________________________________"+"\n";
         String s [] = new String[] {inv,def};
 
         if(rf.getDayToPrint() != LocalDate.now().getDayOfWeek())
