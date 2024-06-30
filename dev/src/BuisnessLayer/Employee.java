@@ -11,6 +11,9 @@ public abstract class Employee {
     private int salary;
     private LocalDate startDate;
     private LocalDate resignationDate;
+
+
+
     private int vacationDays;
     private boolean isLoggedIn;
     private String password;
@@ -73,5 +76,7 @@ public abstract class Employee {
     public void setVacationDays(int vacationDays) {
         this.vacationDays = vacationDays;
     }
-
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
 }

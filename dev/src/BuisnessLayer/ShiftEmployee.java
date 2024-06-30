@@ -10,12 +10,13 @@ public class ShiftEmployee extends Employee {
     private ArrayList<Role> roles;
     private Stack<Preferences> preferences;
     private int HRid;
+    private Vehicle license;
 
     // ---------------constructors---------------------
 
 
     public ShiftEmployee(String employeeName, int employeeID, String branch, String bankAccount,
-                         boolean isFull, int salary, String password , int HRid,Role role) {
+                         boolean isFull, int salary, String password , int HRid,Role role,Vehicle license) {
         super(employeeName, employeeID,branch,bankAccount, salary,password);
         this.isFullTime = isFull;
         roles = new ArrayList<>();
@@ -24,6 +25,7 @@ public class ShiftEmployee extends Employee {
         preferences.push(new Preferences());
         preferences.push(new Preferences(new boolean[6][2], LocalDate.now().getDayOfYear()/7 + 1));
         this.HRid = HRid;
+        this.license = license;
     }
 
     //-----------------methods---------------------------

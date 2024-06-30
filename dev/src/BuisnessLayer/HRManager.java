@@ -30,9 +30,9 @@ public class HRManager extends Employee{
     }
 
     public ShiftEmployee hire(String employeeName, int employeeID, String branch, String bankAccount,
-                              boolean isFull, int salary,String password,Role role){
+                              boolean isFull, int salary,String password,Role role,Vehicle licencse){
         ShiftEmployee employee = new ShiftEmployee(employeeName, employeeID, branch, bankAccount, isFull, salary,password
-                ,this.getID(),role);
+                ,this.getID(),role,licencse);
         allEmployees.put(employeeID, employee);
         return employee;
     }

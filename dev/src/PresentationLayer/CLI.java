@@ -197,7 +197,20 @@ public class CLI {
             scanner.nextLine();
         }
         String stringRole = roles[role - 1];
-        String ret = employeeFacade.hireEmployee(id,name, employeeID, bankAccount, isFull, salary, employeePassword,stringRole);
+        String[] vehicles = {"A", "B", "C"};
+        System.out.println("select driver license:");
+        System.out.println("1. A");
+        System.out.println("2. B");
+        System.out.println("3. C");
+        int license = scanner.nextInt();
+        scanner.nextLine();
+        while (3 < license | license < 1){
+            System.out.println("Choose again, invalid choice");
+            license = scanner.nextInt();
+            scanner.nextLine();
+        }
+        String stringLicense = vehicles[license - 1];
+        String ret = employeeFacade.hireEmployee(id,name, employeeID, bankAccount, isFull, salary, employeePassword,stringRole,stringLicense);
         if (ret != null){
             System.out.println(ret);
         }
@@ -284,10 +297,15 @@ public class CLI {
             }
             morningWorkersRoles.put(employeeID, roles[role - 1]);
         }
-        String res = employeeFacade.HRSetShift(id,shiftManagerID, morningWorkersRoles, date, start,switchTime,"MORNING");
+        String res = employeeFacade.CheckForDeliveries(date,start,switchTime,true,morningWorkersRoles);
         if (res != null){
             System.out.println("shift cant be place because: " + res + ", please create this shift again");
-            createSingleShift(date);
+            hrManager();
+        }
+        res = employeeFacade.HRSetShift(id,shiftManagerID, morningWorkersRoles, date, start,switchTime,"MORNING");
+        if (res != null){
+            System.out.println("shift cant be place because: " + res + ", please create this shift again");
+            hrManager();
         }
         System.out.println("Create the Evening " + " shift of " + date.getDayOfWeek());
         shiftWorkers = getNumberOfWorkers();
@@ -316,10 +334,15 @@ public class CLI {
             }
             eveningWorkersRoles.put(employeeID, roles[role - 1]);
         }
-        String res2 = employeeFacade.HRSetShift(id,shiftManagerID, eveningWorkersRoles, date, switchTime,end,"EVENING");
-        if (res2 != null){
-            System.out.println("shift cant be place because: " + res2 + ", please create this shift again");
-            createSingleShift(date);
+        res = employeeFacade.CheckForDeliveries(date,switchTime,end,false,eveningWorkersRoles);
+        if (res != null){
+            System.out.println("shift cant be place because: " + res + ", please create this shift again");
+            hrManager();
+        }
+        res = employeeFacade.HRSetShift(id,shiftManagerID, eveningWorkersRoles, date, switchTime,end,"EVENING");
+        if (res != null){
+            System.out.println("shift cant be place because: " + res + ", please create this shift again");
+            hrManager();
         }
     }
 

@@ -7,6 +7,7 @@ import java.util.*;
 public class EmployeeFacade {
     Map<Integer,ShiftEmployee> shiftEmployees;
     Map<Integer,HRManager> HRManagers;
+    private LinkedList<Delivery> deliveries;
 
     public EmployeeFacade(List<HRManager> hrManagers,List<ShiftEmployee> shiftEmployees){
         this.shiftEmployees = new HashMap<>();
@@ -63,7 +64,7 @@ public class EmployeeFacade {
     }
 
     public String hireEmployee(int HRid,String employeeName, int employeeID,
-                             String bankAccount, boolean isFull, int salary,String password,String role) {
+                             String bankAccount, boolean isFull, int salary,String password,String role,String license) {
         if (!HRManagers.containsKey(HRid))
             return "HR manager not exist";
         if(!checkLoggedin(HRid))
@@ -80,13 +81,15 @@ public class EmployeeFacade {
         } else {
             HRManager hrManager = getHRManager(HRid);
             ShiftEmployee employee = hrManager.hire(employeeName, employeeID,hrManager.getBranch() ,
-                    bankAccount, isFull, salary, password,convertStringToRole(role));
+                    bankAccount, isFull, salary, password,convertStringToRole(role),convertStringToVehicle(license));
             shiftEmployees.put(employeeID, employee);
             return null;
         }
     }
 
     private String reHire(ShiftEmployee employee,HRManager hr){
+        employee.setResignationDate(null);
+        employee.setStartDate(LocalDate.now());
         hr.getAllEmployees().put(employee.getID(),employee);
         shiftEmployees.put(employee.getID(),employee);
         return null;
@@ -227,6 +230,16 @@ public class EmployeeFacade {
             throw new IllegalArgumentException("Invalid role name: " + roleName);
         }
     }
+    private Vehicle convertStringToVehicle(String license){
+        if (license == null) {
+            throw new IllegalArgumentException("Role name cannot be null");
+        }
+        try {
+            return Vehicle.valueOf(license.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid role name: " + license);
+        }
+    }
     private Period convertStringToPeriod(String roleName) {
         if (roleName == null) {
             throw new IllegalArgumentException("Role name cannot be null");
@@ -293,5 +306,32 @@ public class EmployeeFacade {
             return "employee not exist";
         e.setBankAccount(bankAccount);
         return null;
+    }
+    public String CheckForDeliveries(LocalDate date , LocalTime start,LocalTime end, boolean morning,Map<Integer,String> shiftRoles){
+        for (Delivery d : deliveries){
+            if(d.getDate().isEqual(date)){
+                if (d.getDate().isBefore(LocalDate.now()))
+                    deliveries.remove(d);
+                if (d.getDate().isEqual(date)) {
+                    if (morning) {
+                        if(start.isBefore(d.getHour()))
+                            return "there is a delivery at " +d.getHour() + " this day";
+                    } else {
+                        if (end.isAfter(d.getHour()))
+                            return "there is a delivery at " +d.getHour() + " this day";
+                    }
+                    if (start.compareTo(d.getHour())<=0 && end.compareTo(d.getHour())>=0 &&
+                            (!shiftRoles.containsValue(Role.DELIVERYGUY.name()) || !shiftRoles.containsValue(Role.STOREKEEPER.name())))
+                        return "there are no DeliveryGuy or StoreKeeper in the shift, and there is a delivery";
+                }
+            }
+        }
+        return null;
+    }
+    public String getAllDeliveries(){
+        String s =  "";
+        for (Delivery d : deliveries)
+            s = s + d.toString() + "\n";
+        return s;
     }
 }
