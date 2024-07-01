@@ -101,4 +101,11 @@ public class ShiftEmployee extends Employee {
         return HRid;
     }
 
+    public Vehicle getLicense() {
+        return license;
+    }
+
+    public void setLicense(Vehicle license) {
+        this.license = license;
+    }
 }

@@ -323,7 +323,14 @@ public class EmployeeFacade {
                     if (start.compareTo(d.getHour())<=0 && end.compareTo(d.getHour())>=0){
                         if(!shiftRoles.containsValue(Role.DELIVERYGUY.name()) || !shiftRoles.containsValue(Role.STOREKEEPER.name()))
                             return "there are no DeliveryGuy or StoreKeeper in the shift, and there is a delivery";
-                        for (Entry<Integer,String> e : shift)
+                        int i = 0;
+                        for (Map.Entry<Integer,String> e : shiftRoles.entrySet()){
+                            if (e.getValue()==Role.DELIVERYGUY.name())
+                                i=e.getKey();
+                        }
+                        ShiftEmployee driver = getShiftEmployee(i);
+                        if(driver.getLicense().name().compareTo(d.getVehicle().toString()) <0)
+                            return "driver license dose not qualify to make the delivery";
                     }
                 }
             }
