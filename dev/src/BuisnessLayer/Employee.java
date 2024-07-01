@@ -11,9 +11,6 @@ public abstract class Employee {
     private int salary;
     private LocalDate startDate;
     private LocalDate resignationDate;
-
-
-
     private int vacationDays;
     private boolean isLoggedIn;
     private String password;

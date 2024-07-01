@@ -320,9 +320,11 @@ public class EmployeeFacade {
                         if (end.isAfter(d.getHour()))
                             return "there is a delivery at " +d.getHour() + " this day";
                     }
-                    if (start.compareTo(d.getHour())<=0 && end.compareTo(d.getHour())>=0 &&
-                            (!shiftRoles.containsValue(Role.DELIVERYGUY.name()) || !shiftRoles.containsValue(Role.STOREKEEPER.name())))
-                        return "there are no DeliveryGuy or StoreKeeper in the shift, and there is a delivery";
+                    if (start.compareTo(d.getHour())<=0 && end.compareTo(d.getHour())>=0){
+                        if(!shiftRoles.containsValue(Role.DELIVERYGUY.name()) || !shiftRoles.containsValue(Role.STOREKEEPER.name()))
+                            return "there are no DeliveryGuy or StoreKeeper in the shift, and there is a delivery";
+                        for (Entry<Integer,String> e : shift)
+                    }
                 }
             }
         }
