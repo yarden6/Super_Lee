@@ -101,4 +101,13 @@ public class ShiftEmployee extends Employee {
         return HRid;
     }
 
+    public Vehicle getLicense() {
+        return license;
+    }
+
+    public boolean isFullTime() {
+        return isFullTime;
+    }
+
+
 }

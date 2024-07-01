@@ -220,7 +220,7 @@ public class EmployeeFacade {
         return hrManager.getAllEmployees().keySet().size();
     }
 
-    private Role convertStringToRole(String roleName) {
+    private Role  convertStringToRole(String roleName) {
         if (roleName == null) {
             throw new IllegalArgumentException("Role name cannot be null");
         }
