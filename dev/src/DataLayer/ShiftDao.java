@@ -36,10 +36,13 @@ public class ShiftDao implements Dao<Shift>{
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
         return shifts;
+    }
+
+    private Employee getEmployeeById(int shiftManagerId) {
+        //TODO - implement this method to get ShiftManager by ID
+        return null;
     }
 
     public Map<Integer, Role> getShiftRolesByBranchDatePeriod(String branch, LocalDate date, Period period) {

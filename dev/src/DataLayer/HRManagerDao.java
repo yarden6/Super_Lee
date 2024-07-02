@@ -63,8 +63,8 @@ public class HRManagerDao implements Dao<HRManager> {
             statement2.setString(3, hrManager.getBranch());
             statement2.setString(4, hrManager.getBanckAccount());
             statement2.setInt(5, hrManager.getSalary());
-            statement2.setDate(6, hrManager.getStartDate());
-            statement2.setDate(7, hrManager.getResignationDate());
+            statement2.setDate(6, Date.valueOf(hrManager.getStartDate()));
+            statement2.setDate(7, Date.valueOf(hrManager.getResignationDate()));
             statement2.setInt(8, hrManager.getVacationDays());
             statement2.setBoolean(9, hrManager.isLoggedIn());
             statement2.setString(10, hrManager.getPassword());
