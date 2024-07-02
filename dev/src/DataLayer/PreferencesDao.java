@@ -16,12 +16,9 @@ public class PreferencesDao implements Dao<Preferences>{
 
     @Override
     public void create(Preferences preferences) {
-    }
-
-    public void create(Preferences preferences, int id) {
         String query = "INSERT INTO Preferences (employeeID, MadeAtWeek, bool11, bool12, bool21, bool22, bool31, bool32, bool41, bool42, bool51, bool52, bool61, bool62) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id);
+            statement.setInt(1, preferences.getId());
             statement.setInt(2, preferences.getMadeAtWeek());
             boolean[][] shifts = preferences.getShifts();
             for (int i = 0; i < 6; i++) {
@@ -38,9 +35,6 @@ public class PreferencesDao implements Dao<Preferences>{
 
     @Override
     public void update(Preferences preferences) {
-    }
-
-    public void update(Preferences preferences, int id, int week) {
         String query = "UPDATE Preferences SET bool11 = ?, bool12 = ?, bool21 = ?, bool22 = ?, bool31 = ?, bool32 = ?, bool41 = ?, bool42 = ?, bool51 = ?, bool52 = ?, bool61 = ?, bool62 = ? WHERE employeeID = ? AND MadeAtWeek = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             boolean[][] shifts = preferences.getShifts();
@@ -49,12 +43,12 @@ public class PreferencesDao implements Dao<Preferences>{
                     statement.setBoolean((i * 2) + j + 1, shifts[i][j]);
                 }
             }
-            statement.setInt(13, id);
-            statement.setInt(14, week);
+            statement.setInt(13, preferences.getId());
+            statement.setInt(14, preferences.getMadeAtWeek());
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated == 0) {
-                System.out.println("No record found with employeeID " + id + " and MadeAtWeek " + week);
+                System.out.println("No record found with employeeID " + preferences.getId() + " and MadeAtWeek " + preferences.getMadeAtWeek());
             }
         } catch (SQLException e) {
             e.printStackTrace();
