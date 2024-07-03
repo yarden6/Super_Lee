@@ -1,5 +1,7 @@
 package BuisnessLayer;
 
+import BuisnessLayer.Repositories.PreferencesRepository;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +13,7 @@ public class ShiftEmployee extends Employee {
     private Stack<Preferences> preferences;
     private int HRid;
     private Vehicle license;
+    private PreferencesRepository preferencesRepository = PreferencesRepository.getInstance();
 
     // ---------------constructors---------------------
 
@@ -22,8 +25,8 @@ public class ShiftEmployee extends Employee {
         roles = new ArrayList<>();
         roles.add(role);
         preferences = new Stack<>();
-        preferences.push(new Preferences());
-        preferences.push(new Preferences(new boolean[6][2], LocalDate.now().getDayOfYear()/7 + 1));
+        preferences.push(new Preferences(getID()));
+        preferences.push(new Preferences(new boolean[6][2], LocalDate.now().getDayOfYear()/7 + 1, getID()));
         this.HRid = HRid;
         this.license = license;
     }
@@ -58,9 +61,16 @@ public class ShiftEmployee extends Employee {
     public String callPreferences(boolean[][] shifts, int startDate){
         if (shifts.length != 6 || shifts[1].length != 2  )
             return "illegal shifts preference";
-        if (preferences.peek().getMadeAtWeek() == startDate)
+        Preferences newPref = new Preferences(shifts,startDate, getID());
+        if (preferences.peek().getMadeAtWeek() == startDate) {
             preferences.pop();
-        preferences.push(new Preferences(shifts,startDate));
+            preferencesRepository.update(newPref);
+        }
+        else{
+            preferencesRepository.add(newPref);
+        }
+        preferences.push(newPref);
+
         return null;
     }
 
@@ -105,7 +115,9 @@ public class ShiftEmployee extends Employee {
         return license;
     }
 
-    public void setLicense(Vehicle license) {
-        this.license = license;
+    public boolean isFullTime() {
+        return isFullTime;
     }
+
+
 }

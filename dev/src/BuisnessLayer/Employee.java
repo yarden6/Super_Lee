@@ -76,4 +76,24 @@ public abstract class Employee {
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
+
+    public String getBanckAccount() {
+        return bankAccount;
+    }
+
+    public int getSalary() {
+        return salary;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public int getVacationDays() {
+        return vacationDays;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }
