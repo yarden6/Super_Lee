@@ -1,5 +1,7 @@
 package BuisnessLayer;
 
+import BuisnessLayer.Repositories.ShiftEmployeeRepository;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -8,6 +10,7 @@ public class EmployeeFacade {
     Map<Integer,ShiftEmployee> shiftEmployees;
     Map<Integer,HRManager> HRManagers;
     private LinkedList<Delivery> deliveries;
+    ShiftEmployeeRepository shiftEmployeeRepository = ShiftEmployeeRepository.getInstance();
 
     public EmployeeFacade(List<HRManager> hrManagers,List<ShiftEmployee> shiftEmployees){
         this.shiftEmployees = new HashMap<>();
@@ -83,6 +86,7 @@ public class EmployeeFacade {
             ShiftEmployee employee = hrManager.hire(employeeName, employeeID,hrManager.getBranch() ,
                     bankAccount, isFull, salary, password,convertStringToRole(role),convertStringToVehicle(license));
             shiftEmployees.put(employeeID, employee);
+
             return null;
         }
     }
@@ -92,6 +96,9 @@ public class EmployeeFacade {
         employee.setStartDate(LocalDate.now());
         hr.getAllEmployees().put(employee.getID(),employee);
         shiftEmployees.put(employee.getID(),employee);
+        //-----------------------------sql----------
+        shiftEmployeeRepository.update(employee);
+        //-----------------------------sql----------
         return null;
     }
 
@@ -285,6 +292,9 @@ public class EmployeeFacade {
         if (e == null)
             return "employee not exist";
         e.setSalary(salary);
+        //-----------sql----------
+        shiftEmployeeRepository.update(e);
+        //-----------sql----------
         return null;
     }
 
@@ -295,6 +305,9 @@ public class EmployeeFacade {
         if (e == null)
             return "employee not exist";
         e.setVacationDays(vacationDays);
+        //-----------sql----------
+        shiftEmployeeRepository.update(e);
+        //-----------sql----------
         return null;
     }
 
@@ -305,6 +318,9 @@ public class EmployeeFacade {
         if (e == null)
             return "employee not exist";
         e.setBankAccount(bankAccount);
+        //-----------sql----------
+        shiftEmployeeRepository.update(e);
+        //-----------sql----------
         return null;
     }
     public String CheckForDeliveries(LocalDate date , LocalTime start,LocalTime end, boolean morning,Map<Integer,String> shiftRoles){

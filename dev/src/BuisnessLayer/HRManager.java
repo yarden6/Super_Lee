@@ -43,6 +43,9 @@ public class HRManager extends Employee{
         ShiftEmployee employee = new ShiftEmployee(employeeName, employeeID, branch, bankAccount, isFull, salary,password
                 ,this.getID(),role,licencse);
         allEmployees.put(employeeID, employee);
+        //------------sql-------------
+        shiftEmployeeRepository.add(employee);
+        //------------sql-------------
         return employee;
     }
 
@@ -51,6 +54,9 @@ public class HRManager extends Employee{
         if (!checkEmployee(id))
             return id + " not exist";
         ShiftEmployee employee = allEmployees.remove(id);
+        //------------sql-------------
+        shiftEmployeeRepository.delete(allEmployees.get(id));
+        //------------sql-------------
         for (Shift s : morningSchedule.values()){
             if (s.contain(id) && s.date.isAfter(LocalDate.now())) {
                 Role role = s.shiftRoles.get(id);
@@ -137,17 +143,26 @@ public class HRManager extends Employee{
         Shift s = new Shift(date,shiftManager,shiftRoles,startTime,endTime,period);
         if (period == Period.MORNING){
             morningSchedule.put(date,s);
+            //------------sql-------------
             shiftRepository.add(s);
-
+            //------------sql-------------
         }
-        else
+        else{
+
             eveningSchedule.put(date,s);
+            //------------sql-------------
+            shiftRepository.add(s);
+            //------------sql-------------
+        }
         return null;
     }
     public String updateEmployee(ShiftEmployee employee){
         if (!checkEmployee(employee.getID()))
             return "Employee not exist";
         allEmployees.put(employee.getID(), employee);
+        //------------sql-------------
+        shiftEmployeeRepository.update(employee);
+        //------------sql-------------
         return null;
     }
     public boolean checkEmployee(int id){

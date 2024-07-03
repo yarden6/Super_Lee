@@ -1,5 +1,9 @@
 package BuisnessLayer;
 
+import BuisnessLayer.Repositories.ShiftEmployeeRolesRepository;
+import BuisnessLayer.Repositories.ShiftRepository;
+import BuisnessLayer.Repositories.ShiftRolesRepository;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
@@ -15,6 +19,7 @@ public class Shift {
     LocalTime startTime;
     LocalTime endTime;
     Period period;
+    ShiftRolesRepository shiftRolesRepository = ShiftRolesRepository.getInstance();
 
     // constructor
 
@@ -38,9 +43,6 @@ public class Shift {
         return s;
     }
 
-    public void remove(int employeeID) {
-        shiftRoles.remove(employeeID);
-    }
 
 
     @Override
@@ -112,5 +114,14 @@ public class Shift {
 
     public void addEmployee(ShiftEmployee e, Role role) {
         shiftRoles.put(e.getID(),role);
+        //------------sql-------------
+        //shiftRolesRepository.add(new Pair(employeeID,this)); TODO need to change this.
+        //------------sql-------------
+    }
+    public void remove(int employeeID) {
+        shiftRoles.remove(employeeID);
+        //------------sql-------------
+        //shiftRolesRepository.delete(new Pair(employeeID,this)); TODO need to change this.
+        //------------sql-------------
     }
 }

@@ -17,7 +17,6 @@ public class ShiftEmployee extends Employee {
     private Vehicle license;
     private PreferencesRepository preferencesRepository = PreferencesRepository.getInstance();
     ShiftEmployeeRolesRepository shiftEmployeeRolesRepository = ShiftEmployeeRolesRepository.getInstance();
-
     // ---------------constructors---------------------
 
 
@@ -40,7 +39,9 @@ public class ShiftEmployee extends Employee {
             return this.getEmployeeName() +" is already " + role;
         else{
             roles.add(role);
+            //------------sql-------------
             shiftEmployeeRolesRepository.add(new Pair<>(getID(),role));
+            //------------sql-------------
         }
         return null;
     }
@@ -58,8 +59,12 @@ public class ShiftEmployee extends Employee {
     public String removeRole(Role role){
         if(!roles.contains(role))
             return this.getEmployeeName() + " is not a " + role;
-        else
+        else{
             roles.remove(role);
+            //------------sql-------------
+            shiftEmployeeRolesRepository.delete(new Pair<>(getID(),role));
+            //------------sql-------------
+        }
         return null;
     }
 
@@ -69,10 +74,14 @@ public class ShiftEmployee extends Employee {
         Preferences newPref = new Preferences(shifts,startDate, getID());
         if (preferences.peek().getMadeAtWeek() == startDate) {
             preferences.pop();
+            //------------sql-------------
             preferencesRepository.update(newPref);
+            //------------sql-------------
         }
         else{
+            //------------sql-------------
             preferencesRepository.add(newPref);
+            //------------sql-------------
         }
         preferences.push(newPref);
 

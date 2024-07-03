@@ -1,5 +1,7 @@
 package BuisnessLayer;
 
+import BuisnessLayer.Repositories.ShiftEmployeeRepository;
+
 import java.time.LocalDate;
 
 public abstract class Employee {
@@ -14,6 +16,7 @@ public abstract class Employee {
     private int vacationDays;
     private boolean isLoggedIn;
     private String password;
+    private ShiftEmployeeRepository shiftEmployeeRepository = ShiftEmployeeRepository.getInstance();
 
     //constructor
 
