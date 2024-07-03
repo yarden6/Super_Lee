@@ -1,5 +1,10 @@
 package BuisnessLayer;
 
+import BuisnessLayer.Repositories.HRManagerRepository;
+import BuisnessLayer.Repositories.ShiftEmployeeRepository;
+import BuisnessLayer.Repositories.ShiftRepository;
+import BuisnessLayer.Repositories.ShiftRolesRepository;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -10,6 +15,10 @@ public class HRManager extends Employee{
     private Map<Integer,ShiftEmployee> allEmployees;
     private Map<LocalDate,Shift> morningSchedule;
     private Map<LocalDate,Shift> eveningSchedule;
+    private HRManagerRepository hrManagerRepository = HRManagerRepository.getInstance();
+    private ShiftRepository shiftRepository = ShiftRepository.getInstance();
+    private ShiftRolesRepository shiftRolesRepository = ShiftRolesRepository.getInstance();
+    private ShiftEmployeeRepository shiftEmployeeRepository = ShiftEmployeeRepository.getInstance();
 
     public HRManager(String employeeName, int employeeID, String branch, String bankAccount, int salary, String password) {
         super(employeeName, employeeID, branch, bankAccount, salary, password);
@@ -126,8 +135,11 @@ public class HRManager extends Employee{
                 return id + " cant work this shift";
         }
         Shift s = new Shift(date,shiftManager,shiftRoles,startTime,endTime,period);
-        if (period == Period.MORNING)
+        if (period == Period.MORNING){
             morningSchedule.put(date,s);
+            shiftRepository.add(s);
+
+        }
         else
             eveningSchedule.put(date,s);
         return null;

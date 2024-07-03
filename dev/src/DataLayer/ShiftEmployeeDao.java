@@ -90,7 +90,7 @@ public class ShiftEmployeeDao implements  Dao<ShiftEmployee>{
                     }
                 }
 
-                Preferences preference = new Preferences(shifts, madeAtWeek);
+                Preferences preference = new Preferences(shifts, madeAtWeek,employeeId);
                 preferences.add(preference);
             }
         } catch (SQLException e) {

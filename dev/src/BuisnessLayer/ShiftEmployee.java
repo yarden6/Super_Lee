@@ -1,6 +1,8 @@
 package BuisnessLayer;
 
 import BuisnessLayer.Repositories.PreferencesRepository;
+import BuisnessLayer.Repositories.ShiftEmployeeRolesRepository;
+import Library.Pair;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ public class ShiftEmployee extends Employee {
     private int HRid;
     private Vehicle license;
     private PreferencesRepository preferencesRepository = PreferencesRepository.getInstance();
+    ShiftEmployeeRolesRepository shiftEmployeeRolesRepository = ShiftEmployeeRolesRepository.getInstance();
 
     // ---------------constructors---------------------
 
@@ -35,8 +38,10 @@ public class ShiftEmployee extends Employee {
     public String addRole(Role role){
         if (roles.contains(role))
             return this.getEmployeeName() +" is already " + role;
-        else
+        else{
             roles.add(role);
+            shiftEmployeeRolesRepository.add(new Pair<>(getID(),role));
+        }
         return null;
     }
 
