@@ -1,9 +1,8 @@
 package BuisnessLayer;
 
-import BuisnessLayer.Repositories.HRManagerRepository;
-import BuisnessLayer.Repositories.ShiftEmployeeRepository;
-import BuisnessLayer.Repositories.ShiftRepository;
-import BuisnessLayer.Repositories.ShiftRolesRepository;
+import BuisnessLayer.Repositories.*;
+import DataLayer.ShiftRolesDao;
+import Library.Pair;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,9 +18,21 @@ public class HRManager extends Employee{
     private ShiftRepository shiftRepository = ShiftRepository.getInstance();
     private ShiftRolesRepository shiftRolesRepository = ShiftRolesRepository.getInstance();
     private ShiftEmployeeRepository shiftEmployeeRepository = ShiftEmployeeRepository.getInstance();
+    private PreferencesRepository preferencesRepository = PreferencesRepository.getInstance();
+
+    private ShiftEmployeeRolesRepository shiftEmployeeRolesRepository = ShiftEmployeeRolesRepository.getInstance();
 
     public HRManager(String employeeName, int employeeID, String branch, String bankAccount, int salary, String password) {
         super(employeeName, employeeID, branch, bankAccount, salary, password);
+        allEmployees = new HashMap<>();
+        morningSchedule = new HashMap<>();
+        eveningSchedule = new HashMap<>();
+    }
+
+
+    public HRManager(int employeeID, String employeeName, String branch, String bankAccount, int salary,
+                     LocalDate startDate, LocalDate resignationDate, int vacationDays, String password) {
+        super(employeeID, employeeName, branch, bankAccount, salary, startDate, resignationDate, vacationDays, password);
         allEmployees = new HashMap<>();
         morningSchedule = new HashMap<>();
         eveningSchedule = new HashMap<>();
@@ -45,6 +56,10 @@ public class HRManager extends Employee{
         allEmployees.put(employeeID, employee);
         //------------sql-------------
         shiftEmployeeRepository.add(employee);
+        shiftEmployeeRolesRepository.add(new Pair<>(employeeID,role));
+        for (Preferences p : employee.getPreferences()){
+            preferencesRepository.add(p);
+        }
         //------------sql-------------
         return employee;
     }
@@ -54,9 +69,6 @@ public class HRManager extends Employee{
         if (!checkEmployee(id))
             return id + " not exist";
         ShiftEmployee employee = allEmployees.remove(id);
-        //------------sql-------------
-        shiftEmployeeRepository.delete(allEmployees.get(id));
-        //------------sql-------------
         for (Shift s : morningSchedule.values()){
             if (s.contain(id) && s.date.isAfter(LocalDate.now())) {
                 Role role = s.shiftRoles.get(id);
@@ -72,6 +84,9 @@ public class HRManager extends Employee{
             }
         }
         employee.setResignationDate(LocalDate.now());
+        //------------sql-------------
+        shiftEmployeeRepository.update(employee);
+        //------------sql-------------
         return ans;
     }
 
@@ -142,16 +157,31 @@ public class HRManager extends Employee{
         }
         Shift s = new Shift(date,shiftManager,shiftRoles,startTime,endTime,period);
         if (period == Period.MORNING){
+            if (morningSchedule.containsKey(date))
+                //------------sql-------------
+                shiftRepository.delete(morningSchedule.get(date));
+                //------------sql-------------
             morningSchedule.put(date,s);
             //------------sql-------------
             shiftRepository.add(s);
+            for (Map.Entry<Integer,Role> e :s.shiftRoles.entrySet())
+            {
+                shiftRolesRepository.add(new Pair<>(e.getKey(),s));
+            }
             //------------sql-------------
         }
         else{
-
+            if (eveningSchedule.containsKey(date))
+                //------------sql-------------
+                shiftRepository.delete(eveningSchedule.get(date));
+                //------------sql-------------
             eveningSchedule.put(date,s);
             //------------sql-------------
             shiftRepository.add(s);
+            for (Map.Entry<Integer,Role> e :s.shiftRoles.entrySet())
+            {
+                shiftRolesRepository.add(new Pair<>(e.getKey(),s));
+            }
             //------------sql-------------
         }
         return null;

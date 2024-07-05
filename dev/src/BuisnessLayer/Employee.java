@@ -32,6 +32,20 @@ public abstract class Employee {
         this.startDate = LocalDate.now();
     }
 
+    public Employee(int employeeID, String employeeName, String branch, String bankAccount, int salary,
+                    LocalDate startDate, LocalDate resignationDate, int vacationDays, String password) {
+        this.employeeID = employeeID;
+        this.employeeName = employeeName;
+        this.branch = branch;
+        this.bankAccount = bankAccount;
+        this.salary = salary;
+        this.startDate = startDate;
+        this.resignationDate = resignationDate;
+        this.vacationDays = vacationDays;
+        this.password = password;
+        this.isLoggedIn = false;
+    }
+
     //getters and setters
     public int getID() {
         return employeeID;
@@ -80,7 +94,7 @@ public abstract class Employee {
         this.startDate = startDate;
     }
 
-    public String getBanckAccount() {
+    public String getBankAccount() {
         return bankAccount;
     }
 

@@ -16,20 +16,24 @@ import java.util.Map;
 public class ShiftDao implements Dao<Shift>{
 
     private Connection connection;
+
+    public ShiftDao() {
+        this.connection = DBConnection.getConnection();
+    }
     @Override
     public List<Shift> getAll() {
         List<Shift> shifts = new ArrayList<>();
-        String query = "SELECT * FROM Shift";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        String query = "SELECT * FROM SHIFT";
+        try (PreparedStatement statement = connection.prepareStatement(query.toUpperCase())) {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String branch = resultSet.getString("branch");
-                LocalDate date = resultSet.getDate("date").toLocalDate();
-                Employee shiftManager = getEmployeeById(resultSet.getInt("shiftManagerId"));
-                LocalTime startTime = resultSet.getTime("startTime").toLocalTime();
-                LocalTime endTime = resultSet.getTime("endTime").toLocalTime();
-                Period period = Period.valueOf(resultSet.getString("period"));
+                String branch = resultSet.getString("BRANCH");
+                LocalDate date = resultSet.getDate("DATE").toLocalDate();
+                Employee shiftManager = getEmployeeById(resultSet.getInt("SHIFTMANAGERID"));
+                LocalTime startTime = resultSet.getTime("STARTTIME").toLocalTime();
+                LocalTime endTime = resultSet.getTime("ENDTIME").toLocalTime();
+                Period period = Period.valueOf(resultSet.getString("PERIOD"));
                 Map<Integer,Role> shiftRoles = getShiftRolesByBranchDatePeriod(branch, date, period);
                 Shift shift = new Shift(date, shiftManager, shiftRoles, startTime, endTime, period);
                 shifts.add(shift);
@@ -47,11 +51,9 @@ public class ShiftDao implements Dao<Shift>{
 
     public Map<Integer, Role> getShiftRolesByBranchDatePeriod(String branch, LocalDate date, Period period) {
         Map<Integer, Role> shiftRoles = new HashMap<>();
-        String query = "SELECT s.shiftId, r.roleName " +
-                "FROM Shift s " +
-                "JOIN ShiftRoles sr ON s.shiftId = sr.shiftId " +
-                "JOIN Role r ON sr.roleId = r.roleId " +
-                "WHERE s.branch = ? AND s.date = ? AND s.period = ?";
+        String query = "SELECT EMPLOYEEID, ROLE" +
+                " FROM SHIFTROLES" +
+                " WHERE BRANCH = ? AND DATE = ? AND PERIOD = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, branch);
             statement.setDate(2, java.sql.Date.valueOf(date));
@@ -59,8 +61,8 @@ public class ShiftDao implements Dao<Shift>{
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                int shiftId = resultSet.getInt("shiftId");
-                String roleName = resultSet.getString("roleName");
+                int shiftId = resultSet.getInt("EMPLOYEEID");
+                String roleName = resultSet.getString("ROLE");
                 Role role = Role.valueOf(roleName); // Assuming Role has a constructor that takes a roleName
                 shiftRoles.put(shiftId, role);
             }
@@ -72,8 +74,8 @@ public class ShiftDao implements Dao<Shift>{
 
     @Override
     public void create(Shift shift) {
-        String query = "INSERT INTO Shift (branch, date, shiftManagerID, startTime, endTime, period) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        String query = "INSERT INTO SHIFT (BRANCH, DATE, SHIFTMANAGERID, STARTTIME, ENDTIME, PERIOD) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(query.toUpperCase())) {
             statement.setString(1, shift.getShiftManager().getBranch());
             statement.setDate(2, java.sql.Date.valueOf(shift.getDate()));
             statement.setInt(3, shift.getShiftManager().getID());
@@ -89,7 +91,8 @@ public class ShiftDao implements Dao<Shift>{
 
     @Override
     public void update(Shift shift) {
-        String query = "UPDATE Shift SET branch = ?, date = ?, shiftManagerID = ?, startTime = ?, endTime = ?, period = ? WHERE shiftId = ?";
+        String query = "UPDATE SHIFT SET BRANCH = ?, DATE = ?, SHIFTMANAGERID = ?, STARTTIME = ?, ENDTIME = ?, PERIOD = ?" +
+                " WHERE SHIFTID = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, shift.getShiftManager().getBranch());
             statement.setDate(2, java.sql.Date.valueOf(shift.getDate()));
@@ -107,5 +110,28 @@ public class ShiftDao implements Dao<Shift>{
 
 
     @Override
-    public void delete(Shift shift) {}
+    public void delete(Shift shift) {
+        String query = "DELETE FROM SHIFT WHERE BRANCH = ? AND DATE = ? AND PERIOD = ? ";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            String branch = shift.getShiftManager().getBranch();
+            preparedStatement.setString(1,branch );
+            preparedStatement.setDate(2, java.sql.Date.valueOf(shift.getDate()));
+            preparedStatement.setString(1,shift.getPeriod().toString());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        query = "DELETE FROM SHIFTROLES WHERE BRANCH = ? AND DATE = ? AND PERIOD = ? ";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            String branch = shift.getShiftManager().getBranch();
+            preparedStatement.setString(1,branch );
+            preparedStatement.setDate(2, java.sql.Date.valueOf(shift.getDate()));
+            preparedStatement.setString(1,shift.getPeriod().toString());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+
+    }
 }

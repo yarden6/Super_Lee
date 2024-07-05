@@ -23,12 +23,12 @@ public class ShiftEmployeeRolesDao implements Dao<Pair<Integer,Role>> {
     public List<Pair<Integer,Role>> getAll() {
         List<Pair<Integer,Role>> employeeRoles = new LinkedList<>() {
         };
-        String query = "SELECT employeeId, roleId FROM ShiftEmplyeeRoles";
+        String query = "SELECT SHIFTEMPLOYEEID, SHIFTEMPLOYEEROLE FROM SHIFTEMPLOYEEROLE";
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
-                int employeeId = resultSet.getInt("employeeId");
-                String roleId = resultSet.getString("roleId");
+                int employeeId = resultSet.getInt("SHIFTEMPLOYEEID");
+                String roleId = resultSet.getString("SHIFTEMPLOYEEROLE");
                 Role role = Role.valueOf(roleId);
                 employeeRoles.add(new Pair<>(employeeId,role));
             }
@@ -40,7 +40,7 @@ public class ShiftEmployeeRolesDao implements Dao<Pair<Integer,Role>> {
 
     @Override
     public void create(Pair<Integer,Role> employeeRoles) {
-        String query = "INSERT INTO ShiftEmplyeeRoles (employeeId, roleId) VALUES (?, ?)";
+        String query = "INSERT INTO SHIFTEMPLOYEEROLE (SHIFTEMPLOYEEID, SHIFTEMPLOYEEROLE) VALUES (?, ?)";
         try {
             // Assuming the connection is already established and available as 'connection'
             connection.setAutoCommit(false); // Start transaction
@@ -65,7 +65,7 @@ public class ShiftEmployeeRolesDao implements Dao<Pair<Integer,Role>> {
 
     @Override
     public void delete(Pair<Integer,Role> employeeRoles) {
-        String query = "DELETE FROM ShiftEmplyeeRoles WHERE employeeId = ? AND roleId = ?";
+        String query = "DELETE FROM SHIFTEMPLOYEEROLE WHERE SHIFTEMPLOYEEID = ? AND SHIFTEMPLOYEEROLE = ?";
         try {
             // Assuming the connection is already established and available as 'connection'
             connection.setAutoCommit(false); // Start transaction

@@ -23,7 +23,8 @@ public class Shift {
 
     // constructor
 
-    public Shift(LocalDate date, Employee shiftManager, Map<Integer, Role> shiftRoles, LocalTime startTime, LocalTime endTime, Period period) {
+    public Shift(LocalDate date, Employee shiftManager, Map<Integer, Role> shiftRoles, LocalTime startTime,
+                 LocalTime endTime, Period period) {
         this.date = date;
         this.shiftManager = shiftManager;
         this.shiftRoles = shiftRoles;

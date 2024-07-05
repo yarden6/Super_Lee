@@ -6,6 +6,7 @@ import BuisnessLayer.ShiftEmployee;
 import BuisnessLayer.Vehicle;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,28 +14,38 @@ import java.util.List;
 public class ShiftEmployeeDao implements  Dao<ShiftEmployee>{
     private Connection connection;
 
+    public ShiftEmployeeDao() {
+        this.connection = DBConnection.getConnection();
+    }
+
+
     @Override
     public List<ShiftEmployee> getAll() {
         List<ShiftEmployee> shiftEmployees = new ArrayList<>();
-        String query = "SELECT e.employeeID, e.employeeName, e.branch, e.bankAccount, e.salary, " +
-                "e.password, s.isFullTime, s.HRid, s.License " +
-                "FROM ShiftEmployee s " +
-                "JOIN Employee e ON s.employeeID = e.employeeID";
+        String query = "SELECT EMPLOYEEID, EMPLOYEENAME, BRANCH, BANKACCOUNT, SALARY, " +
+                "STARTDATE, RESIGNATIONDATE, VACATIONDAYS, ISLOGGEDIN, PASSWORD, ISFULLTIME, HRID, LICENSE" +
+                "FROM SHIFTEMPLOYEE";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
 
             while (resultSet.next()) {
-                String employeeName = resultSet.getString("employeeName");
-                int employeeId = resultSet.getInt("employeeID");
-                String branch = resultSet.getString("branch");
-                String bankAccount = resultSet.getString("bankAccount");
-                int salary = resultSet.getInt("salary");
-                String password = resultSet.getString("password");
-                boolean isFullTime = resultSet.getBoolean("isFullTime");
-                int HRid = resultSet.getInt("HRid");
-                String license = resultSet.getString("License");
+                String employeeName = resultSet.getString("EMPLOYEENAME");
+                int employeeId = resultSet.getInt("EMPLOYEEID");
+                String branch = resultSet.getString("BRANCH");
+                String bankAccount = resultSet.getString("BANKACCOUNT");
+                int salary = resultSet.getInt("SALARY");
+                LocalDate startDate = resultSet.getDate("STARTDATE").toLocalDate();
+                LocalDate resignationDate = resultSet.getDate("RESIGNATIONDATE").toLocalDate();
+                int vacationDays = resultSet.getInt("VACATIONDAYS");
+                boolean isLoggedIn = resultSet.getBoolean("ISLOGGEDIN");
+                String password = resultSet.getString("PASSWORD");
+                boolean isFullTime = resultSet.getBoolean("ISFULLTIME");
+                int HRid = resultSet.getInt("HRID");
+                String license = resultSet.getString("LICENSE");
 
-                ShiftEmployee shiftEmployee = new ShiftEmployee(employeeName, employeeId, branch, bankAccount, isFullTime, salary, password, HRid, null, Vehicle.valueOf(license));
+                ShiftEmployee shiftEmployee = new ShiftEmployee(employeeId, employeeName, branch, bankAccount, salary,
+                        startDate, resignationDate, vacationDays, password, isFullTime, null, null, HRid
+                        , Vehicle.valueOf(license));
                 List<Role> roles = getRolesByEmployeeId(employeeId);
                 for (Role role : roles) {
                     shiftEmployee.addRole(role);
@@ -54,16 +65,16 @@ public class ShiftEmployeeDao implements  Dao<ShiftEmployee>{
 
     private List<Role> getRolesByEmployeeId(int employeeId) {
         List<Role> roles = new ArrayList<>();
-        String query = "SELECT r.roleName " +
+        String query = "SELECT r.SHIFTEMPLOYEEROLE " +
                 "FROM ShiftEmployeeRole ser " +
-                "JOIN Role r ON ser.roleID = r.roleID " +
-                "WHERE ser.employeeID = ?";
+                "JOIN Role r ON ser.EMPLOYEEID = r.SHIFTEMPLOYEEID " +
+                "WHERE ser.EMPLOYEEID = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, employeeId);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String roleName = resultSet.getString("roleName");
+                String roleName = resultSet.getString("SHIFTEMPLOYEEROLE");
                 Role role = Role.valueOf(roleName); // Assuming Role has a constructor that takes a roleName
                 roles.add(role);
             }
@@ -75,7 +86,7 @@ public class ShiftEmployeeDao implements  Dao<ShiftEmployee>{
 
     public List<Preferences> getPreferencesByEmployeeId(int employeeId) {
         List<Preferences> preferences = new ArrayList<>();
-        String query = "SELECT * FROM Preferences WHERE employeeID = ?";
+        String query = "SELECT * FROM Preferences WHERE EMPLOYEEROLE = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, employeeId);
             ResultSet resultSet = statement.executeQuery();
@@ -101,17 +112,23 @@ public class ShiftEmployeeDao implements  Dao<ShiftEmployee>{
 
     @Override
     public void create(ShiftEmployee shiftEmployee) {
-        String query = "INSERT INTO ShiftEmployee (employeeID, employeeName, branch, bankAccount, salary, password, isFullTime, HRid, License) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO SHIFTEMPLOYEE (EMPLOYEEID, EMPLOYEENAME, BRANCH, BANKACCOUNT, SALARY, " +
+                "STARTDATE, RESIGNATIONDATE, VACATIONDAYS, ISLOGGEDIN, PASSWORD, ISFULLTIME, HRID, LICENSE) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, shiftEmployee.getID());
             statement.setString(2, shiftEmployee.getEmployeeName());
             statement.setString(3, shiftEmployee.getBranch());
-            statement.setString(4, shiftEmployee.getBanckAccount());
+            statement.setString(4, shiftEmployee.getBankAccount()); // Note: There's a typo in getBanckAccount(), consider renaming to getBankAccount()
             statement.setInt(5, shiftEmployee.getSalary());
-            statement.setString(6, shiftEmployee.getPassword());
-            statement.setBoolean(7, shiftEmployee.isFullTime());
-            statement.setInt(8, shiftEmployee.getHRid());
-            statement.setString(9, shiftEmployee.getLicense().toString());
+            statement.setDate(6, java.sql.Date.valueOf(shiftEmployee.getStartDate()));
+            statement.setDate(7, shiftEmployee.getResignationDate() != null ? java.sql.Date.valueOf(shiftEmployee.getResignationDate()) : null);
+            statement.setInt(8, shiftEmployee.getVacationDays());
+            statement.setBoolean(9, shiftEmployee.isLoggedIn());
+            statement.setString(10, shiftEmployee.getPassword());
+            statement.setBoolean(11, shiftEmployee.isFullTime());
+            statement.setInt(12, shiftEmployee.getHRid());
+            statement.setString(13, shiftEmployee.getLicense().toString());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -121,7 +138,28 @@ public class ShiftEmployeeDao implements  Dao<ShiftEmployee>{
 
     @Override
     public void update(ShiftEmployee shiftEmployee) {
-        //TODO
+        String query = "UPDATE SHIFTEMPLOYEE SET EMPLOYEENAME = ?, BRANCH = ?, BANKACCOUNT = ?, SALARY = ?, " +
+                "STARTDATE = ?, RESIGNATIONDATE = ?, VACATIONDAYS = ?, ISLOGGEDIN = ?, PASSWORD = ?, " +
+                "ISFULLTIME = ?, HRID = ?, LICENSE = ? WHERE EMPLOYEEID = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, shiftEmployee.getEmployeeName());
+            statement.setString(2, shiftEmployee.getBranch());
+            statement.setString(3, shiftEmployee.getBankAccount());
+            statement.setInt(4, shiftEmployee.getSalary());
+            statement.setDate(5, java.sql.Date.valueOf(shiftEmployee.getStartDate()));
+            statement.setDate(6, shiftEmployee.getResignationDate() != null ? java.sql.Date.valueOf(shiftEmployee.getResignationDate()) : null);
+            statement.setInt(7, shiftEmployee.getVacationDays());
+            statement.setBoolean(8, shiftEmployee.isLoggedIn());
+            statement.setString(9, shiftEmployee.getPassword());
+            statement.setBoolean(10, shiftEmployee.isFullTime());
+            statement.setInt(11, shiftEmployee.getHRid());
+            statement.setString(12, shiftEmployee.getLicense().toString());
+            statement.setInt(13, shiftEmployee.getID());
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

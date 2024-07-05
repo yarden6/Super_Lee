@@ -7,6 +7,7 @@ import Library.Pair;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Stack;
 
 public class ShiftEmployee extends Employee {
@@ -29,6 +30,18 @@ public class ShiftEmployee extends Employee {
         preferences = new Stack<>();
         preferences.push(new Preferences(getID()));
         preferences.push(new Preferences(new boolean[6][2], LocalDate.now().getDayOfYear()/7 + 1, getID()));
+        this.HRid = HRid;
+        this.license = license;
+
+    }
+
+    public ShiftEmployee(int employeeID, String employeeName, String branch, String bankAccount, int salary,
+                         LocalDate startDate, LocalDate resignationDate, int vacationDays, String password,
+                         boolean isFullTime, ArrayList<Role> roles, Stack<Preferences> preferences, int HRid, Vehicle license) {
+        super(employeeID, employeeName, branch, bankAccount, salary, startDate, resignationDate, vacationDays, password);
+        this.isFullTime = isFullTime;
+        this.roles = roles;
+        this.preferences = preferences;
         this.HRid = HRid;
         this.license = license;
     }

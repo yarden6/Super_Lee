@@ -1,31 +1,54 @@
 package DataLayer;
 
+import BuisnessLayer.Period;
 import BuisnessLayer.Role;
 import BuisnessLayer.Shift;
+import Library.Pair;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ShiftRolesDao implements Dao<Shift> {
+public class ShiftRolesDao implements Dao<Pair<Integer,Shift>> {
     private Connection connection;
+
+    public ShiftRolesDao() {
+        this.connection = DBConnection.getConnection();
+    }
     @Override
-    public List<Shift> getAll() {
-        return List.of();
+    public List<Pair<Integer,Shift>> getAll() {
+
+        return new LinkedList<>();
     }
 
     @Override
-    public void create(Shift integerRoleMap) {
+    public void create(Pair<Integer,Shift> integerRole) {
+        String query = "INSERT INTO SHIFTROLES (BRANCH,DATE,PERIOD,EMPLOYEEID,ROLE) VALUES ( ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, integerRole.getSecond().getShiftManager().getBranch());
+            statement.setDate(2, java.sql.Date.valueOf(integerRole.getSecond().getDate()));
+            statement.setString(3, integerRole.getSecond().getPeriod().toString());
+            statement.setInt(4, integerRole.getFirst());
+            statement.setString(5, integerRole.getSecond().getRole(integerRole.getFirst()));
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void update(Pair<Integer,Shift> integerRoleMap) {
 
     }
 
     @Override
-    public void update(Shift integerRoleMap) {
-
-    }
-
-    @Override
-    public void delete(Shift integerRoleMap) {
+    public void delete(Pair<Integer,Shift> integerRoleMap) {
 
     }
 }
