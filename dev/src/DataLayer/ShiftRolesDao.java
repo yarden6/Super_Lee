@@ -14,20 +14,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ShiftRolesDao implements Dao<Pair<Integer,Shift>> {
+public class ShiftRolesDao implements Dao<Pair<Integer, Shift>> {
     private Connection connection;
 
     public ShiftRolesDao() {
         this.connection = DBConnection.getConnection();
     }
+
     @Override
-    public List<Pair<Integer,Shift>> getAll() {
+    public List<Pair<Integer, Shift>> getAll() {
 
         return new LinkedList<>();
     }
 
     @Override
-    public void create(Pair<Integer,Shift> integerRole) {
+    public void create(Pair<Integer, Shift> integerRole) {
         String query = "INSERT INTO SHIFTROLES (BRANCH,DATE,PERIOD,EMPLOYEEID,ROLE) VALUES ( ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, integerRole.getSecond().getShiftManager().getBranch());
@@ -48,7 +49,24 @@ public class ShiftRolesDao implements Dao<Pair<Integer,Shift>> {
     }
 
     @Override
-    public void delete(Pair<Integer,Shift> integerRoleMap) {
-
+    public void delete(Pair<Integer, Shift> integerShiftPair) {
+        String query = "DELETE FROM SHIFTROLES " +
+                "WHERE EMPLOYEEID = ? AND DATE = ? AND PERIOD = ? AND BRANCH = ?";
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(4, integerShiftPair.getSecond().getShiftManager().getBranch());
+                statement.setDate(2, java.sql.Date.valueOf(integerShiftPair.getSecond().getDate()));
+                statement.setString(3, integerShiftPair.getSecond().getPeriod().toString());
+                statement.setInt(1, integerShiftPair.getFirst());
+                statement.executeUpdate();
+                connection.commit(); // Commit transaction
+            } catch (SQLException e) {
+                connection.rollback(); // Rollback transaction in case of error
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

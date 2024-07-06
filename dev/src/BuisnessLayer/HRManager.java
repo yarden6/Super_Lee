@@ -186,6 +186,15 @@ public class HRManager extends Employee{
         }
         return null;
     }
+
+    public void setShiftFromDB(Shift shift){
+        if (shift.getPeriod() == Period.MORNING){
+            morningSchedule.put(shift.getDate(),shift);
+        }
+        else{
+            eveningSchedule.put(shift.getDate(),shift);
+        }
+    }
     public String updateEmployee(ShiftEmployee employee){
         if (!checkEmployee(employee.getID()))
             return "Employee not exist";

@@ -26,18 +26,10 @@ public class PreferencesRepository implements Repository<Preferences>{
         preferencesDao.create(preferences);
     }
 
-//    public void add(Preferences preferences, int id) {
-//        preferencesDao.create(preferences, id);
-//    }
-
     @Override
     public void update(Preferences preferences){
         preferencesDao.update(preferences);
     }
-
-//    public void update(Preferences preferences, int id) {
-//        preferencesDao.update(preferences, id);
-//    }
 
     @Override
     public List<Preferences> findAll() {
