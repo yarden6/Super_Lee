@@ -74,7 +74,9 @@ public class PreferencesDao implements Dao<Preferences>{
     @Override
     public void update(Preferences preferences) {
         String query = "UPDATE PREFERENCES SET BOOL11 = ?, BOOL12 = ?, BOOL21 = ?, BOOL22 = ?, BOOL31 = ?, BOOL32 = ?, " +
-                "BOOL41 = ?, BOOL42 = ?, BOOL51 = ?, BOOL52 = ?, BOOL61 = ?, BOOL62 = ? WHERE EMPLOYEEID = ? AND MADEATWEEK = ?";
+                "BOOL41 = ?, BOOL42 = ?, BOOL51 = ?, BOOL52 = ?, BOOL61 = ?, BOOL62 = ? WHERE EMPLOYEEID = ? AND MADEATWEEK = ?;";
+        try {
+            connection.setAutoCommit(false); // Start transaction
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             boolean[][] shifts = preferences.getShifts();
             int index = 1;

@@ -42,20 +42,11 @@ public class ShiftEmployeeDao implements Dao<ShiftEmployee> {
                 boolean isFullTime = resultSet.getBoolean("ISFULLTIME");
                 int HRid = resultSet.getInt("HRID");
                 String license = resultSet.getString("LICENSE");
-
+                ArrayList<Role> roles = getRolesByEmployeeId(employeeId);
                 ShiftEmployee shiftEmployee = new ShiftEmployee(employeeId, employeeName, branch, bankAccount, salary,
-                        startDate, resignationDate, vacationDays, password, isFullTime, null, null, HRid
+                        startDate, resignationDate, vacationDays, password, isFullTime,roles,new Stack<Preferences>() ,  HRid
                         , Vehicle.valueOf(license));
-                List<Role> roles = getRolesByEmployeeId(employeeId);
-                for (Role role : roles) {
-                    shiftEmployee.addRole(role);
-                }
                 shiftEmployees.add(shiftEmployee);
-
-                List<Preferences> preferences = getPreferencesByEmployeeId(employeeId);
-                for (Preferences preference : preferences) {
-                    shiftEmployee.callPreferences(preference.getShifts(), preference.getMadeAtWeek());
-                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

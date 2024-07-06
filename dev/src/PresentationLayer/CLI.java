@@ -30,14 +30,41 @@ public class CLI {
         scanner.nextLine();
         System.out.println("Enter Password:");
         password = scanner.nextLine();
-        Employee employee = employeeFacade.login(id, password);
-        if (employee == null) {
-            System.out.println("can't log in, please try again");
-            logInMenu();
-        } else if (employee instanceof ShiftEmployee) {
-            shiftEmployee();
-        } else
-            hrManager();
+        if (id == 12345678 && password.equals("12345678"))
+            addHR();
+        else {
+            Employee employee = employeeFacade.login(id, password);
+            if (employee == null) {
+                System.out.println("can't log in, please try again");
+                logInMenu();
+            } else if (employee instanceof ShiftEmployee) {
+                shiftEmployee();
+            } else
+                hrManager();
+        }
+    }
+
+    private void addHR() {
+        System.out.println("Enter the new HR details");
+        System.out.println("ID:");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Name:");
+        String name = scanner.nextLine();
+        System.out.println("Branch:");
+        String branch = scanner.nextLine();
+        System.out.println("Bank Account:");
+        String bankAccount = scanner.nextLine();
+        System.out.println("SALARY:");
+        int salary = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("PASSWORD:");
+        String employeePassword = scanner.nextLine();
+        String ret = employeeFacade.AddHrManager(id, name, branch, bankAccount, salary, employeePassword);
+        if (ret != null) {
+            System.out.println(ret);
+        }
+        logInMenu();
     }
 
     private void hrManager() {
@@ -421,7 +448,9 @@ public class CLI {
             System.out.println("Enter the date of this week's sunday (in format of dd-mm-yyyy");
             stringDate = scanner.nextLine();
         }
-        System.out.println(employeeFacade.getAllShifts(id,convertStringToDate(stringDate)));
+        System.out.println(employeeFacade.getAllShifts(id, convertStringToDate(stringDate)));
+        System.out.println("Deliveries :");
+        System.out.println(employeeFacade.getAllDeliveries());
         hrManager();
     }
 

@@ -1,6 +1,6 @@
 package BuisnessLayer;
 
-import BuisnessLayer.Repositories.ShiftEmployeeRepository;
+import BuisnessLayer.Repositories.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,12 +10,19 @@ public class EmployeeFacade {
     Map<Integer, ShiftEmployee> shiftEmployees;
     Map<Integer, HRManager> HRManagers;
     private LinkedList<Delivery> deliveries;
+    DeliveryRepository deliveryRepository = DeliveryRepository.getInstance();
     ShiftEmployeeRepository shiftEmployeeRepository = ShiftEmployeeRepository.getInstance();
+    HRManagerRepository hrManagerRepository = HRManagerRepository.getInstance();
+    PreferencesRepository preferencesRepository = PreferencesRepository.getInstance();
+    ShiftRepository shiftRepository = ShiftRepository.getInstance();
+    ShiftEmployeeRolesRepository shiftEmployeeRolesRepository = ShiftEmployeeRolesRepository.getInstance();
+    ShiftRolesRepository shiftRolesRepository = ShiftRolesRepository.getInstance();
 
     public EmployeeFacade(List<HRManager> hrManagers, List<ShiftEmployee> shiftEmployees) {
         this.shiftEmployees = new HashMap<>();
         this.HRManagers = new HashMap<>();
-        for(HRManager hr : hrManagers) {
+        deliveries = new LinkedList<>();
+        for (HRManager hr : hrManagers) {
             this.HRManagers.put(hr.getID(), hr);
             for (ShiftEmployee emp : shiftEmployees) {
                 if (hr.getID() == emp.getHRid())
@@ -25,7 +32,28 @@ public class EmployeeFacade {
         for (ShiftEmployee e : shiftEmployees)
             this.shiftEmployees.put(e.getID(), e);
     }
+    public EmployeeFacade(){
+        this.shiftEmployees = new HashMap<>();
+        this.HRManagers = new HashMap<>();
+        deliveries = new LinkedList<>();
+        loadData();
 
+    }
+
+    public String AddHrManager(int ID, String name, String branch, String bankAccount, int salary, String password) {
+        if (shiftEmployees.containsKey(ID) || ID == 12345678)
+            return "this id is taken";
+        if (HRManagers.containsKey(ID))
+            return "already an HR";
+        for (HRManager hr : HRManagers.values()) {
+            if (hr.getBranch().equals(branch))
+                return "branch allready exist";
+        }
+        HRManager h = new HRManager(name, ID, branch, bankAccount, salary, password);
+        HRManagers.put(ID, h);
+        hrManagerRepository.add(h);
+        return null;
+    }
 
     //Shift Employee methods
     public String makePreferences(int employeeId, boolean[][] shifts, int startDate) {
@@ -73,7 +101,7 @@ public class EmployeeFacade {
         if (!checkLoggedin(HRid))
             return " not logged in";
         HRManager hr = getHRManager(HRid);
-        if (isHR(employeeID))
+        if (isHR(employeeID) || employeeID == 12345678)
             return employeeName + " is already HR manager";
         if (isShiftEmp(employeeID)) {
             ShiftEmployee employee = shiftEmployees.get(employeeID);
@@ -362,7 +390,49 @@ public class EmployeeFacade {
     public String getAllDeliveries() {
         String s = "";
         for (Delivery d : deliveries)
-            s = s + d.toString() + "\n";
+            if (d.getDate().compareTo(LocalDate.now()) >=0)
+                s = s + d.toString() + "\n";
         return s;
     }
+
+    private void loadData() {
+        List<ShiftEmployee> shiftEmployeesList = shiftEmployeeRepository.findAll();
+        List<Delivery> deliveries1 = deliveryRepository.findAll();
+        List<HRManager> hrManagerList = hrManagerRepository.findAll();
+        List<Preferences> preferences = preferencesRepository.findAll();
+        List<Shift> shiftList = shiftRepository.findAll();
+        for (HRManager hr : hrManagerList)
+            HRManagers.put(hr.getID(), hr);
+        for (ShiftEmployee e : shiftEmployeesList) {
+            shiftEmployees.put(e.getID(), e);
+            for (HRManager hr : HRManagers.values()) {
+                if (hr.getID() == e.getHRid())
+                    hr.addEmployee(e);
+            }
+        }
+        for (Delivery d : deliveries1){
+            if(d.getDate().isBefore(LocalDate.now()))
+                deliveryRepository.delete(d);
+            else
+                deliveries.add(d);
+        }
+        Collections.sort(preferences, Comparator.comparingInt(Preferences::getMadeAtWeek));
+        for (Preferences p : preferences) {
+            ShiftEmployee e = getShiftEmployee(p.getId());
+            e.getPreferences().push(new Preferences(p.getShifts(),p.getMadeAtWeek(),p.getId()));
+        }
+        for (Shift s : shiftList) {
+            Map<Integer,Role> shiftRoles = s.getShiftRoles();
+            ShiftEmployee shiftManager = null;
+            for (Map.Entry<Integer,Role> e : shiftRoles.entrySet()) {
+                if (e.getValue() == Role.SHIFTMANAGER) {
+                    shiftManager = getShiftEmployee(e.getKey());
+                }
+            }
+            s.setManager(shiftManager);
+            HRManager hr = getHRManager(s.getShiftManager().getHRid());
+            hr.setShiftFromDB(s);
+        }
+    }
+
 }

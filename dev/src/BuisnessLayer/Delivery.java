@@ -7,7 +7,6 @@ public class Delivery {
     private LocalDate date;
     private LocalTime hour;
     private Vehicle vehicle;
-
     @Override
     public String toString() {
         return date.toString() + "  " +  hour.toString() + " vehicle type : " +vehicle.toString();

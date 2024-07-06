@@ -92,11 +92,13 @@ public class HRManager extends Employee{
 
     private String setShiftReplacement(Shift s,Role role) {
         int week = s.date.getDayOfYear()/7;
-        int i =1 ;
+        int i=0;
         if (week == LocalDate.now().getDayOfYear()/7)
-            i=0;
+            i=1;
         for (ShiftEmployee e : allEmployees.values()){
-            if (e.getRoles().contains(role) && e.getPreferences().get(i).getShifts()[s.getDate().getDayOfWeek().getValue()-1][s.getPeriod().ordinal()] &&
+            int size = e.getPreferences().size();
+            if (e.getRoles().contains(role) &&
+                    e.getPreferences().get(size-1-i).getShifts()[s.getDate().getDayOfWeek().getValue()%7][s.getPeriod().ordinal()] &&
                     !s.contain(e.getID())){
                 s.addEmployee(e,role);
                 return "assigned " + e.getEmployeeName() + " (id: " + e.getID() +")"+ " to " + s.getDate() + " " + s.getPeriod() + " as " + role;
