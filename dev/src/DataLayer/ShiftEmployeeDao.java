@@ -44,7 +44,7 @@ public class ShiftEmployeeDao implements Dao<ShiftEmployee> {
                 String license = resultSet.getString("LICENSE");
                 ArrayList<Role> roles = getRolesByEmployeeId(employeeId);
                 ShiftEmployee shiftEmployee = new ShiftEmployee(employeeId, employeeName, branch, bankAccount, salary,
-                        startDate, resignationDate, vacationDays, password, isFullTime,roles,new Stack<Preferences>() ,  HRid
+                        startDate, resignationDate, vacationDays, password, isFullTime, roles, new Stack<Preferences>(), HRid
                         , Vehicle.valueOf(license));
                 shiftEmployees.add(shiftEmployee);
             }
@@ -162,6 +162,21 @@ public class ShiftEmployeeDao implements Dao<ShiftEmployee> {
 
     @Override
     public void delete(ShiftEmployee shiftEmployee) {
-        //TODO
+        String query = "DELETE FROM SHIFTEMPLOYEE WHERE EMPLOYEEID = ?";
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, shiftEmployee.getID());
+                statement.addBatch();
+                statement.executeBatch();
+                connection.commit(); // Commit transaction
+            } catch (SQLException e) {
+                connection.rollback(); // Rollback transaction in case of error
+                e.printStackTrace();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

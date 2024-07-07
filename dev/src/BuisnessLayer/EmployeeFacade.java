@@ -286,7 +286,7 @@ public class EmployeeFacade {
         }
     }
 
-    private ShiftEmployee getShiftEmployee(int id) {
+    public ShiftEmployee getShiftEmployee(int id) {
         return shiftEmployees.get(id);
     }
 
@@ -435,4 +435,8 @@ public class EmployeeFacade {
         }
     }
 
+    public void deleteSfitsFrom(LocalDate from) {
+        for (HRManager hr : HRManagers.values())
+            hr.deleteShifts(from);
+    }
 }

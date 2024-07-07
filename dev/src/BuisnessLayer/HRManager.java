@@ -257,4 +257,25 @@ public class HRManager extends Employee{
         }
         return s;
     }
+
+    public void deleteShifts(LocalDate from) {
+        ArrayList<Shift> toDelete = new ArrayList<>();
+
+        for (Map.Entry<LocalDate,Shift> entry : morningSchedule.entrySet()){
+            if (entry.getKey().compareTo(from) >= 0 )
+               toDelete.add(morningSchedule.get(entry.getKey()));
+        }
+        for (Map.Entry<LocalDate,Shift> entry : eveningSchedule.entrySet()){
+            if (entry.getKey().compareTo(from) >= 0  )
+                toDelete.add(eveningSchedule.get(entry.getKey()));
+        }
+        if (!toDelete.isEmpty()){
+            for (Shift s : toDelete){
+                eveningSchedule.remove(s.getDate());
+                //------------sql-------------
+                shiftRepository.delete(s);
+                //------------sql-------------
+            }
+        }
+    }
 }

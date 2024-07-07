@@ -1,5 +1,9 @@
 import BuisnessLayer.*;
+import BuisnessLayer.Repositories.ShiftEmployeeRepository;
+import BuisnessLayer.Repositories.ShiftEmployeeRolesRepository;
+import BuisnessLayer.Repositories.ShiftRepository;
 import DataLayer.DBConnection;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +18,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HRManagerTest {
-    private HRManager yosef;
-    private EmployeeFacade ef;
+    private static HRManager yosef;
+    private static EmployeeFacade ef;
+    private static ShiftEmployee temp;
 
     @BeforeEach
     public void setUp() {
@@ -41,6 +46,8 @@ public class HRManagerTest {
     public void testHireSuccess() {
         assertNull(ef.hireEmployee(1, "naama", 30, "4", true,
                 10000, "4", "DELIVERYGUY","A"));
+        temp = ef.getShiftEmployee(30);
+        ShiftEmployeeRepository.getInstance().delete(temp);
     }
 
 
@@ -52,14 +59,16 @@ public class HRManagerTest {
 
     @Test
      public void testFireSuccess() {
-        assertEquals("",ef.fireEmployee(30, 1));
+        assertEquals("",ef.fireEmployee(3, 1));
+        ef.hireEmployee(1, "Itamar", 3, "4", true,
+                10000, "4", "DELIVERYGUY","A");
     }
 
 
     @Test
-    public void testSetShift() {
+    public void testSetShiftFail() {
         Map<Integer, String> shiftRoles = new HashMap<>();
-        shiftRoles.put(2, Role.STOREKEEPER.toString());
+        shiftRoles.put(2, Role.CASHIER.toString());
         shiftRoles.put(4, Role.SHIFTMANAGER.toString());
         int fakeId = 20;
         //test with hrmanager that is not exist
@@ -90,7 +99,7 @@ public class HRManagerTest {
     @Test
     public void testSetShiftSuccess() {
         Map<Integer, String> shiftRoles = new HashMap<>();
-        shiftRoles.put(2, Role.STOREKEEPER.toString());
+        shiftRoles.put(5, Role.CASHIER.toString());
         shiftRoles.put(4, Role.SHIFTMANAGER.toString());
         //test for shift that created good
         assertNull(ef.HRSetShift(1,4,shiftRoles, LocalDate.of(2024,7,8),
@@ -111,12 +120,12 @@ public class HRManagerTest {
         String shiftTime = "MORNING";
         String shiftStart = "08:00";
         String shiftEnd = "16:00";
-        String role = "STOREKEEPER";
+        String role = "CASHIER";
         String role2 = "SHIFTMANAGER";
         assertEquals("Date: " + shiftDate+ " " + shiftTime + "  start: " + shiftStart + " end: " + shiftEnd +
                         "  shift manager: Saar \n" +
-                        "id: " + 2 + ", Role: " + role +"\n" +
-                        "id: " + 4 + ", Role: " + role2 +"\n",
+                        "id: " + 4 + ", Role: " + role2 +"\n" +
+                        "id: " + 5 + ", Role: " + role +"\n" ,
                 ef.getAllShifts(1, LocalDate.of(2024,7,8)));
     }
 
@@ -124,53 +133,47 @@ public class HRManagerTest {
     @Test
     public void testAddRoleFail() {
         int fakeId = 20;
-        String deliveryGuy = "DELIVERYGUY";
         assertEquals(fakeId + " doesn't exist", ef.addRoleToEmployee(1, fakeId, "CASHIER"));
-        assertEquals("naama is already " + deliveryGuy, ef.addRoleToEmployee(1, 30, deliveryGuy));
+        assertEquals("Itamar is already STOREKEEPER", ef.addRoleToEmployee(1, 3, "STOREKEEPER"));
         assertEquals("not valid HR", ef.addRoleToEmployee(9, 30, "CASHIER"));
     }
 
     @Test
     public void testAddRoleSuccess() {
-        assertNull(ef.addRoleToEmployee(1, 30, "CASHIER"));
+        assertNull(ef.addRoleToEmployee(1, 3, "CASHIER"));
     }
 
     @Test
     public void testRemoveRole() {
         int fakeId = 20;
-        String storeKeeper = "STOREKEEPER";
         assertEquals(fakeId + " doesn't exist", ef.deleteRoleFromEmployee(1, fakeId, "CASHIER"));
-        assertEquals("naama is not a " + storeKeeper, ef.deleteRoleFromEmployee(1, 30, storeKeeper));
+        assertEquals("Itamar is not a SHIFTMANAGER", ef.deleteRoleFromEmployee(1, 3, "SHIFTMANAGER"));
         assertEquals("not valid HR", ef.deleteRoleFromEmployee(9, 3, "CASHIER"));
     }
 
     @Test
     public void testRemoveRoleSuccess() {
-        assertNull(ef.deleteRoleFromEmployee(1, 30, "CASHIER"));
+        assertNull(ef.deleteRoleFromEmployee(1, 3, "CASHIER"));
     }
 
     @Test
     public void testChangeRole() {
         int fakeId = 20;
-        String storeKeeper = "STOREKEEPER";
+        String storeKeeper = "SHIFTMANAGER";
         String cashier = "CASHIER";
         assertEquals(fakeId + " doesn't exist", ef.changeRoleToEmployee(1, fakeId, "STOREKEEPER", "CASHIER"));
-        assertEquals("naama is not a " + storeKeeper, ef.changeRoleToEmployee(1, 30, storeKeeper, cashier));
+        assertEquals("Itamar is not a " + storeKeeper, ef.changeRoleToEmployee(1, 3, storeKeeper, cashier));
         assertEquals("not valid HR", ef.changeRoleToEmployee(9, 3, "STOREKEEPER", "CASHIER"));
     }
 
     @Test
     public void testChangeRoleSuccess() {
-        assertNull(ef.changeRoleToEmployee(1, 30,"DELIVERYGUY","CASHIER"));
+        assertNull(ef.changeRoleToEmployee(1, 3,"STOREKEEPER","CASHIER"));
+        ef.changeRoleToEmployee(1, 3,"CASHIER","STOREKEEPER");
     }
-//
-//    @Test
-//    public void testUpdateEmployee() {
-//        assertEquals("this employee is not exist", ef.updateEmployee(new ShiftEmployee("liron", 1232131, "1", "3",true, 10000, "3", 1, Role.CASHIER,Vehicle.A), 1));
-//        assertNull( ef.updateEmployee(new ShiftEmployee("liron", 3, "1", "3",true, 10000, "3", 1, Role.CASHIER,Vehicle.A), 1));
-//        assertNull(ef.updateEmployee(new ShiftEmployee("liron", 3, "1", "3",true, 10000, "3", 1, Role.CASHIER,Vehicle.A), 2));
-//    }
 
-
-
+@AfterAll
+    public static void clean() {
+    ef.deleteSfitsFrom(LocalDate.of(2024,7,8));
+    }
 }

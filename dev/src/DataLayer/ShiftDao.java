@@ -164,7 +164,6 @@ public class ShiftDao implements Dao<Shift> {
                 preparedStatement.setString(1, branch);
                 preparedStatement.setDate(2, java.sql.Date.valueOf(shift.getDate()));
                 preparedStatement.setString(3, shift.getPeriod().toString());
-                preparedStatement.executeUpdate();
                 preparedStatement.addBatch();
                 preparedStatement.executeBatch();
                 connection.commit(); // Commit transaction
