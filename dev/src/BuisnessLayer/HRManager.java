@@ -92,10 +92,10 @@ public class HRManager extends Employee{
 
     private String setShiftReplacement(Shift s,Role role) {
         int week = s.date.getDayOfYear()/7;
-        int i=0;
-        if (week == LocalDate.now().getDayOfYear()/7)
-            i=1;
         for (ShiftEmployee e : allEmployees.values()){
+            int i =1;
+            if (week >= e.getPreferences().peek().MadeAtWeek)
+                i = 0;
             int size = e.getPreferences().size();
             if (e.getRoles().contains(role) &&
                     e.getPreferences().get(size-1-i).getShifts()[s.getDate().getDayOfWeek().getValue()%7][s.getPeriod().ordinal()] &&
@@ -141,20 +141,24 @@ public class HRManager extends Employee{
         if (!checkEmployee(shiftManager.getID()))
             return "shift manager not exist ";
         int week =date.getDayOfYear()/7;
-        int i =1 ;
-        if (week == LocalDate.now().getDayOfYear()/7)
-            i=0;
+        int i =1;
+        if (week >= shiftManager.getPreferences().peek().MadeAtWeek)
+            i = 0;
+        int size = shiftManager.getPreferences().size();
         if (!shiftManager.getRoles().contains(Role.SHIFTMANAGER))
             return shiftManager.getEmployeeName() + " isn't a shift manager";
-        if (!shiftManager.getPreferences().get(i).getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
+        if (!shiftManager.getPreferences().get(size-1-i).getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
             return shiftManager.getEmployeeName() + " cant work this shift";
 
         for (Integer id : shiftRoles.keySet()){
             Role role = shiftRoles.get(id);
             ShiftEmployee employee = allEmployees.get(id);
+            if (week >= employee.getPreferences().peek().MadeAtWeek)
+                i=0;
+            size = employee.getPreferences().size();
             if (!employee.getRoles().contains(role))
                 return id + " was set to be " + role + " and dont have qualification for it";
-            if (!employee.getPreferences().get(i).getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
+            if (!employee.getPreferences().get(size-1-i).getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
                 return id + " cant work this shift";
         }
         Shift s = new Shift(date,shiftManager,shiftRoles,startTime,endTime,period);

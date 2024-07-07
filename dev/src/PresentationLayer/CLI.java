@@ -277,6 +277,8 @@ public class CLI {
             System.out.println("In our religion we don't work on Shabbat, choose again");
         }
         System.out.println(pref);
+        System.out.println("Deliveries :");
+        System.out.println(employeeFacade.getAllDeliveries());
         createSingleShift(date);
         date = date.plusDays(1);
         hrManager();
@@ -449,8 +451,6 @@ public class CLI {
             stringDate = scanner.nextLine();
         }
         System.out.println(employeeFacade.getAllShifts(id, convertStringToDate(stringDate)));
-        System.out.println("Deliveries :");
-        System.out.println(employeeFacade.getAllDeliveries());
         hrManager();
     }
 
