@@ -1,5 +1,10 @@
 package BuisnessLayer;
 
+import BuisnessLayer.Repositories.ShiftEmployeeRolesRepository;
+import BuisnessLayer.Repositories.ShiftRepository;
+import BuisnessLayer.Repositories.ShiftRolesRepository;
+import Library.Pair;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
@@ -9,16 +14,18 @@ import java.util.Objects;
 public class Shift {
 
     //variables
-    Employee shiftManager;
+    ShiftEmployee shiftManager;
     Map<Integer,Role> shiftRoles;
     LocalDate date;
     LocalTime startTime;
     LocalTime endTime;
     Period period;
+    ShiftRolesRepository shiftRolesRepository = ShiftRolesRepository.getInstance();
 
     // constructor
 
-    public Shift(LocalDate date, Employee shiftManager, Map<Integer, Role> shiftRoles, LocalTime startTime, LocalTime endTime, Period period) {
+    public Shift(LocalDate date, ShiftEmployee shiftManager, Map<Integer, Role> shiftRoles, LocalTime startTime,
+                 LocalTime endTime, Period period) {
         this.date = date;
         this.shiftManager = shiftManager;
         this.shiftRoles = shiftRoles;
@@ -38,8 +45,8 @@ public class Shift {
         return s;
     }
 
-    public void remove(int employeeID) {
-        shiftRoles.remove(employeeID);
+    public void setManager(ShiftEmployee shiftManager) {
+        this.shiftManager = shiftManager;
     }
 
 
@@ -62,11 +69,11 @@ public class Shift {
     }
 
     // getters and setters
-    public Employee getShiftManager() {
+    public ShiftEmployee getShiftManager() {
         return shiftManager;
     }
 
-    public void setShiftManager(Employee shiftManager) {
+    public void setShiftManager(ShiftEmployee shiftManager) {
         this.shiftManager = shiftManager;
     }
 
@@ -112,5 +119,14 @@ public class Shift {
 
     public void addEmployee(ShiftEmployee e, Role role) {
         shiftRoles.put(e.getID(),role);
+//        ------------sql-------------
+        shiftRolesRepository.add(new Pair(e.getID(),this));
+//        ------------sql-------------
+    }
+    public void remove(int employeeID) {
+        shiftRoles.remove(employeeID);
+        //------------sql-------------
+        shiftRolesRepository.delete(new Pair(employeeID,this));
+        //------------sql-------------
     }
 }

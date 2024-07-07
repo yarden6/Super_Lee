@@ -1,5 +1,9 @@
 package BuisnessLayer;
 
+import BuisnessLayer.Repositories.*;
+import DataLayer.ShiftRolesDao;
+import Library.Pair;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -10,9 +14,25 @@ public class HRManager extends Employee{
     private Map<Integer,ShiftEmployee> allEmployees;
     private Map<LocalDate,Shift> morningSchedule;
     private Map<LocalDate,Shift> eveningSchedule;
+    private HRManagerRepository hrManagerRepository = HRManagerRepository.getInstance();
+    private ShiftRepository shiftRepository = ShiftRepository.getInstance();
+    private ShiftRolesRepository shiftRolesRepository = ShiftRolesRepository.getInstance();
+    private ShiftEmployeeRepository shiftEmployeeRepository = ShiftEmployeeRepository.getInstance();
+    private PreferencesRepository preferencesRepository = PreferencesRepository.getInstance();
+
+    private ShiftEmployeeRolesRepository shiftEmployeeRolesRepository = ShiftEmployeeRolesRepository.getInstance();
 
     public HRManager(String employeeName, int employeeID, String branch, String bankAccount, int salary, String password) {
         super(employeeName, employeeID, branch, bankAccount, salary, password);
+        allEmployees = new HashMap<>();
+        morningSchedule = new HashMap<>();
+        eveningSchedule = new HashMap<>();
+    }
+
+
+    public HRManager(int employeeID, String employeeName, String branch, String bankAccount, int salary,
+                     LocalDate startDate, LocalDate resignationDate, int vacationDays, String password) {
+        super(employeeID, employeeName, branch, bankAccount, salary, startDate, resignationDate, vacationDays, password);
         allEmployees = new HashMap<>();
         morningSchedule = new HashMap<>();
         eveningSchedule = new HashMap<>();
@@ -34,6 +54,13 @@ public class HRManager extends Employee{
         ShiftEmployee employee = new ShiftEmployee(employeeName, employeeID, branch, bankAccount, isFull, salary,password
                 ,this.getID(),role,licencse);
         allEmployees.put(employeeID, employee);
+        //------------sql-------------
+        shiftEmployeeRepository.add(employee);
+        shiftEmployeeRolesRepository.add(new Pair<>(employeeID,role));
+        for (Preferences p : employee.getPreferences()){
+            preferencesRepository.add(p);
+        }
+        //------------sql-------------
         return employee;
     }
 
@@ -57,16 +84,21 @@ public class HRManager extends Employee{
             }
         }
         employee.setResignationDate(LocalDate.now());
+        //------------sql-------------
+        shiftEmployeeRepository.update(employee);
+        //------------sql-------------
         return ans;
     }
 
     private String setShiftReplacement(Shift s,Role role) {
         int week = s.date.getDayOfYear()/7;
-        int i =1 ;
-        if (week == LocalDate.now().getDayOfYear()/7)
-            i=0;
         for (ShiftEmployee e : allEmployees.values()){
-            if (e.getRoles().contains(role) && e.getPreferences().get(i).getShifts()[s.getDate().getDayOfWeek().getValue()-1][s.getPeriod().ordinal()] &&
+            int i =1;
+            if (week >= e.getPreferences().peek().MadeAtWeek)
+                i = 0;
+            int size = e.getPreferences().size();
+            if (e.getRoles().contains(role) &&
+                    e.getPreferences().get(size-1-i).getShifts()[s.getDate().getDayOfWeek().getValue()%7][s.getPeriod().ordinal()] &&
                     !s.contain(e.getID())){
                 s.addEmployee(e,role);
                 return "assigned " + e.getEmployeeName() + " (id: " + e.getID() +")"+ " to " + s.getDate() + " " + s.getPeriod() + " as " + role;
@@ -109,33 +141,73 @@ public class HRManager extends Employee{
         if (!checkEmployee(shiftManager.getID()))
             return "shift manager not exist ";
         int week =date.getDayOfYear()/7;
-        int i =1 ;
-        if (week == LocalDate.now().getDayOfYear()/7)
-            i=0;
+        int i =1;
+        if (week >= shiftManager.getPreferences().peek().MadeAtWeek)
+            i = 0;
+        int size = shiftManager.getPreferences().size();
         if (!shiftManager.getRoles().contains(Role.SHIFTMANAGER))
             return shiftManager.getEmployeeName() + " isn't a shift manager";
-        if (!shiftManager.getPreferences().get(i).getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
+        if (!shiftManager.getPreferences().get(size-1-i).getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
             return shiftManager.getEmployeeName() + " cant work this shift";
 
         for (Integer id : shiftRoles.keySet()){
             Role role = shiftRoles.get(id);
             ShiftEmployee employee = allEmployees.get(id);
+            if (week >= employee.getPreferences().peek().MadeAtWeek)
+                i=0;
+            size = employee.getPreferences().size();
             if (!employee.getRoles().contains(role))
                 return id + " was set to be " + role + " and dont have qualification for it";
-            if (!employee.getPreferences().get(i).getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
+            if (!employee.getPreferences().get(size-1-i).getShifts()[(date.getDayOfWeek().getValue()) % 7][period.ordinal()])
                 return id + " cant work this shift";
         }
         Shift s = new Shift(date,shiftManager,shiftRoles,startTime,endTime,period);
-        if (period == Period.MORNING)
+        if (period == Period.MORNING){
+            if (morningSchedule.containsKey(date))
+                //------------sql-------------
+                shiftRepository.delete(morningSchedule.get(date));
+                //------------sql-------------
             morningSchedule.put(date,s);
-        else
+            //------------sql-------------
+            shiftRepository.add(s);
+            for (Map.Entry<Integer,Role> e :s.shiftRoles.entrySet())
+            {
+                shiftRolesRepository.add(new Pair<>(e.getKey(),s));
+            }
+            //------------sql-------------
+        }
+        else{
+            if (eveningSchedule.containsKey(date))
+                //------------sql-------------
+                shiftRepository.delete(eveningSchedule.get(date));
+                //------------sql-------------
             eveningSchedule.put(date,s);
+            //------------sql-------------
+            shiftRepository.add(s);
+            for (Map.Entry<Integer,Role> e :s.shiftRoles.entrySet())
+            {
+                shiftRolesRepository.add(new Pair<>(e.getKey(),s));
+            }
+            //------------sql-------------
+        }
         return null;
+    }
+
+    public void setShiftFromDB(Shift shift){
+        if (shift.getPeriod() == Period.MORNING){
+            morningSchedule.put(shift.getDate(),shift);
+        }
+        else{
+            eveningSchedule.put(shift.getDate(),shift);
+        }
     }
     public String updateEmployee(ShiftEmployee employee){
         if (!checkEmployee(employee.getID()))
             return "Employee not exist";
         allEmployees.put(employee.getID(), employee);
+        //------------sql-------------
+        shiftEmployeeRepository.update(employee);
+        //------------sql-------------
         return null;
     }
     public boolean checkEmployee(int id){
@@ -188,5 +260,26 @@ public class HRManager extends Employee{
             return "no shifts found";
         }
         return s;
+    }
+
+    public void deleteShifts(LocalDate from) {
+        ArrayList<Shift> toDelete = new ArrayList<>();
+
+        for (Map.Entry<LocalDate,Shift> entry : morningSchedule.entrySet()){
+            if (entry.getKey().compareTo(from) >= 0 )
+               toDelete.add(morningSchedule.get(entry.getKey()));
+        }
+        for (Map.Entry<LocalDate,Shift> entry : eveningSchedule.entrySet()){
+            if (entry.getKey().compareTo(from) >= 0  )
+                toDelete.add(eveningSchedule.get(entry.getKey()));
+        }
+        if (!toDelete.isEmpty()){
+            for (Shift s : toDelete){
+                eveningSchedule.remove(s.getDate());
+                //------------sql-------------
+                shiftRepository.delete(s);
+                //------------sql-------------
+            }
+        }
     }
 }

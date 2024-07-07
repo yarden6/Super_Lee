@@ -1,8 +1,13 @@
 package BuisnessLayer;
 
+import BuisnessLayer.Repositories.PreferencesRepository;
+import BuisnessLayer.Repositories.ShiftEmployeeRolesRepository;
+import Library.Pair;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Stack;
 
 public class ShiftEmployee extends Employee {
@@ -11,7 +16,8 @@ public class ShiftEmployee extends Employee {
     private Stack<Preferences> preferences;
     private int HRid;
     private Vehicle license;
-
+    private PreferencesRepository preferencesRepository = PreferencesRepository.getInstance();
+    ShiftEmployeeRolesRepository shiftEmployeeRolesRepository = ShiftEmployeeRolesRepository.getInstance();
     // ---------------constructors---------------------
 
 
@@ -22,8 +28,20 @@ public class ShiftEmployee extends Employee {
         roles = new ArrayList<>();
         roles.add(role);
         preferences = new Stack<>();
-        preferences.push(new Preferences());
-        preferences.push(new Preferences(new boolean[6][2], LocalDate.now().getDayOfYear()/7 + 1));
+        preferences.push(new Preferences(getID()));
+        preferences.push(new Preferences(new boolean[6][2], LocalDate.now().getDayOfYear()/7 + 1, getID()));
+        this.HRid = HRid;
+        this.license = license;
+
+    }
+
+    public ShiftEmployee(int employeeID, String employeeName, String branch, String bankAccount, int salary,
+                         LocalDate startDate, LocalDate resignationDate, int vacationDays, String password,
+                         boolean isFullTime, ArrayList<Role> roles, Stack<Preferences> preferences, int HRid, Vehicle license) {
+        super(employeeID, employeeName, branch, bankAccount, salary, startDate, resignationDate, vacationDays, password);
+        this.isFullTime = isFullTime;
+        this.roles = roles;
+        this.preferences = preferences;
         this.HRid = HRid;
         this.license = license;
     }
@@ -32,8 +50,12 @@ public class ShiftEmployee extends Employee {
     public String addRole(Role role){
         if (roles.contains(role))
             return this.getEmployeeName() +" is already " + role;
-        else
+        else{
             roles.add(role);
+            //------------sql-------------
+            shiftEmployeeRolesRepository.add(new Pair<>(getID(),role));
+            //------------sql-------------
+        }
         return null;
     }
 
@@ -50,17 +72,32 @@ public class ShiftEmployee extends Employee {
     public String removeRole(Role role){
         if(!roles.contains(role))
             return this.getEmployeeName() + " is not a " + role;
-        else
+        else{
             roles.remove(role);
+            //------------sql-------------
+            shiftEmployeeRolesRepository.delete(new Pair<>(getID(),role));
+            //------------sql-------------
+        }
         return null;
     }
 
     public String callPreferences(boolean[][] shifts, int startDate){
         if (shifts.length != 6 || shifts[1].length != 2  )
             return "illegal shifts preference";
-        if (preferences.peek().getMadeAtWeek() == startDate)
+        Preferences newPref = new Preferences(shifts,startDate, getID());
+        if (preferences.peek().getMadeAtWeek() == startDate) {
             preferences.pop();
-        preferences.push(new Preferences(shifts,startDate));
+            //------------sql-------------
+            preferencesRepository.update(newPref);
+            //------------sql-------------
+        }
+        else{
+            //------------sql-------------
+            preferencesRepository.add(newPref);
+            //------------sql-------------
+        }
+        preferences.push(newPref);
+
         return null;
     }
 
@@ -100,5 +137,14 @@ public class ShiftEmployee extends Employee {
     public int getHRid() {
         return HRid;
     }
+
+    public Vehicle getLicense() {
+        return license;
+    }
+
+    public boolean isFullTime() {
+        return isFullTime;
+    }
+
 
 }

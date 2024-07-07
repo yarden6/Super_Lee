@@ -1,5 +1,7 @@
 package BuisnessLayer;
 
+import BuisnessLayer.Repositories.ShiftEmployeeRepository;
+
 import java.time.LocalDate;
 
 public abstract class Employee {
@@ -11,12 +13,10 @@ public abstract class Employee {
     private int salary;
     private LocalDate startDate;
     private LocalDate resignationDate;
-
-
-
     private int vacationDays;
     private boolean isLoggedIn;
     private String password;
+    private ShiftEmployeeRepository shiftEmployeeRepository = ShiftEmployeeRepository.getInstance();
 
     //constructor
 
@@ -30,6 +30,20 @@ public abstract class Employee {
         this.password = password;
         isLoggedIn=false;
         this.startDate = LocalDate.now();
+    }
+
+    public Employee(int employeeID, String employeeName, String branch, String bankAccount, int salary,
+                    LocalDate startDate, LocalDate resignationDate, int vacationDays, String password) {
+        this.employeeID = employeeID;
+        this.employeeName = employeeName;
+        this.branch = branch;
+        this.bankAccount = bankAccount;
+        this.salary = salary;
+        this.startDate = startDate;
+        this.resignationDate = resignationDate;
+        this.vacationDays = vacationDays;
+        this.password = password;
+        this.isLoggedIn = false;
     }
 
     //getters and setters
@@ -78,5 +92,25 @@ public abstract class Employee {
     }
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public String getBankAccount() {
+        return bankAccount;
+    }
+
+    public int getSalary() {
+        return salary;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public int getVacationDays() {
+        return vacationDays;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
