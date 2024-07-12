@@ -1,5 +1,5 @@
 package DataLayer.IM;
-import DataLayer.DBConnection;
+import DataLayer.DBConnectionIM;
 import DataLayer.Dao;
 import DomainLayer.IM.Category;
 
@@ -15,7 +15,7 @@ public class CategoryDao implements Dao<Category> {
     private Connection connection;
 
     public CategoryDao() {
-        this.connection = DBConnection.getConnection();
+        this.connection = DBConnectionIM.getConnection();
     }
 
 

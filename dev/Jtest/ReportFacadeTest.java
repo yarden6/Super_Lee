@@ -1,4 +1,4 @@
-import DataLayer.DBConnection;
+import DataLayer.DBConnectionIM;
 import DomainLayer.IM.CategoryFacade;
 import DomainLayer.IM.ReportFacade;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,7 @@ class ReportFacadeTest {
 
     @BeforeEach
     public void setUpClass() {
-        DBConnection.connect("SuperLeeTest.db");
+        DBConnectionIM.connect("SuperLeeTest.db");
         cf = new CategoryFacade();
         rf = new ReportFacade(cf);
         cf.loadData();

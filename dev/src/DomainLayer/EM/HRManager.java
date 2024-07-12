@@ -18,7 +18,6 @@ public class HRManager extends Employee{
     private ShiftRolesRepository shiftRolesRepository = ShiftRolesRepository.getInstance();
     private ShiftEmployeeRepository shiftEmployeeRepository = ShiftEmployeeRepository.getInstance();
     private PreferencesRepository preferencesRepository = PreferencesRepository.getInstance();
-
     private ShiftEmployeeRolesRepository shiftEmployeeRolesRepository = ShiftEmployeeRolesRepository.getInstance();
 
     public HRManager(String employeeName, int employeeID, String branch, String bankAccount, int salary, String password) {

@@ -1,4 +1,4 @@
-import DataLayer.DBConnection;
+import DataLayer.DBConnectionIM;
 import DomainLayer.IM.Item;
 import DomainLayer.IM.Repositories.ItemRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,7 +15,7 @@ class ItemTest {
 
     @BeforeAll
     public static void setUpClass() {
-        DBConnection.connect("SuperLeeTest.db");
+        DBConnectionIM.connect("SuperLeeTest.db");
     }
 
     @BeforeEach

@@ -1,7 +1,8 @@
 package PresentationLayer;
 
 
-import DataLayer.DBConnection;
+import DataLayer.DBConnectionIM;
+import DataLayer.DBConnectionEM;
 import DomainLayer.EM.Role;
 import DomainLayer.EM.*;
 import DomainLayer.IM.CategoryFacade;
@@ -17,6 +18,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CLI {
+    public static void main(String[] args) {
+        DBConnectionEM.connect("Employees.db");
+        DBConnectionIM.connect("SuperLee.db");
+        CLI cli = new CLI();
+    }
+
     public static Scanner scanner = new Scanner(System.in);
     EmployeeFacade employeeFacade;
     int id;
@@ -65,7 +72,7 @@ public class CLI {
         while (true){
             System.out.println("StoreKeeper Menu:");
             System.out.println("1. ShiftEmployee Menu");
-            System.out.println("2. Inventory Menu ");
+            System.out.println("2. Inventory Menu");
             System.out.println("3. LogOut ");
             int choice = scanner.nextInt();
             scanner.nextLine();

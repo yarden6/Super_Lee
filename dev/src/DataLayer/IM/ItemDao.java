@@ -1,6 +1,6 @@
 package DataLayer.IM;
 
-import DataLayer.DBConnection;
+import DataLayer.DBConnectionIM;
 import DataLayer.Dao;
 import DomainLayer.IM.Item;
 
@@ -16,7 +16,7 @@ public class ItemDao implements Dao<Item> {
     private Connection connection;
 
     public ItemDao(){
-        this.connection = DBConnection.getConnection();
+        this.connection = DBConnectionIM.getConnection();
     }
 
     private LocalDate changeToLocalDate(String date){

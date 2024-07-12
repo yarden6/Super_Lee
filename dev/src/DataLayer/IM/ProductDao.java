@@ -1,6 +1,6 @@
 package DataLayer.IM;
 
-import DataLayer.DBConnection;
+import DataLayer.DBConnectionIM;
 import DataLayer.Dao;
 import DomainLayer.IM.Product;
 
@@ -15,7 +15,7 @@ public class ProductDao implements Dao<Product> {
     private Connection connection;
 
     public ProductDao(){
-        this.connection = DBConnection.getConnection();
+        this.connection = DBConnectionIM.getConnection();
     }
     private LocalDate changeToLocalDate(String date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
