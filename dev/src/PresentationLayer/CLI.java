@@ -63,9 +63,9 @@ public class CLI {
 
     private void chooseModule() {
         while (true){
-            System.out.println("what to do today");
-            System.out.println("1. Update Preferences");
-            System.out.println("2. Manage Inventory ");
+            System.out.println("StoreKeeper Menu:");
+            System.out.println("1. ShiftEmployee Menu");
+            System.out.println("2. Inventory Menu ");
             System.out.println("3. LogOut ");
             int choice = scanner.nextInt();
             scanner.nextLine();
