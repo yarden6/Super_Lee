@@ -1,13 +1,6 @@
-import BuisnessLayer.*;
-import BuisnessLayer.Repositories.*;
 import DataLayer.DBConnection;
-import Library.Pair;
+import DataLayer.DBConnectionEM;
 import PresentationLayer.CLI;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Main {
@@ -15,7 +8,8 @@ public class Main {
         startSession();
     }
     public static void startSession(){
-        DBConnection.connect("Employees.db");
+        DBConnectionEM.connect("Employees.db");
+        DBConnection.connect("SuperLee.db");
         CLI cli = new CLI();
     }
 }

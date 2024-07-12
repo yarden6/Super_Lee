@@ -1,6 +1,7 @@
-import BuisnessLayer.*;
-import BuisnessLayer.Repositories.ShiftEmployeeRepository;
-import DataLayer.DBConnection;
+
+import DataLayer.DBConnectionEM;
+import DomainLayer.EM.*;
+import DomainLayer.EM.Repositories.ShiftEmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ public class ShiftEmployeeTest {
 
     @BeforeEach
     public void setUp() {
-        DBConnection.connect("TESTSDB.db");
+        DBConnectionEM.connect("TESTSDB.db");
         ef = new EmployeeFacade();
         yosef = ef.getHRManager(1);
         yosef.login("1");

@@ -1,8 +1,11 @@
-import BuisnessLayer.*;
-import BuisnessLayer.Repositories.ShiftEmployeeRepository;
-import BuisnessLayer.Repositories.ShiftEmployeeRolesRepository;
-import BuisnessLayer.Repositories.ShiftRepository;
+
 import DataLayer.DBConnection;
+import DataLayer.DBConnectionEM;
+import DomainLayer.EM.EmployeeFacade;
+import DomainLayer.EM.HRManager;
+import DomainLayer.EM.Repositories.ShiftEmployeeRepository;
+import DomainLayer.EM.Role;
+import DomainLayer.EM.ShiftEmployee;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,9 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +25,7 @@ public class HRManagerTest {
 
     @BeforeEach
     public void setUp() {
-        DBConnection.connect("TESTSDB.db");
+        DBConnectionEM.connect("TESTSDB.db");
         ef = new EmployeeFacade();
         yosef = ef.getHRManager(1);
         yosef.login("1");
