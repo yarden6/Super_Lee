@@ -3,7 +3,6 @@ package PresentationLayer;
 
 import DataLayer.DBConnectionIM;
 import DataLayer.DBConnectionEM;
-import DomainLayer.EM.Role;
 import DomainLayer.EM.*;
 import DomainLayer.IM.CategoryFacade;
 import DomainLayer.IM.Item;
@@ -59,7 +58,7 @@ public class CLI {
                 System.out.println("can't log in, please try again");
                 logInMenu();
             } else if (employee instanceof ShiftEmployee) {
-                if (((ShiftEmployee)employee).getROles().contains(Role.STOREKEEPER.name()))
+                if (employeeFacade.checkForStoreKeeper(id))
                     chooseModule();
                 else
                     shiftEmployee();
@@ -67,7 +66,6 @@ public class CLI {
                 hrManager();
         }
     }
-
     private void chooseModule() {
         while (true){
             System.out.println("StoreKeeper Menu:");

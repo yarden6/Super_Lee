@@ -242,7 +242,9 @@ public class EmployeeFacade {
             return e;
         return null;
     }
-
+    public boolean checkForStoreKeeper(int id){
+       return getShiftEmployee(id).getROles().contains(Role.STOREKEEPER.name());
+    }
     public void logout(int id) {
         Employee e = getEmp(id);
         e.logout();
